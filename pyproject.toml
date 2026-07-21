@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "chatcut"
+name = "chatmonteur"
 version = "0.1.0.dev0"
 description = "Agent-orchestrated talking-head video editing — one command, raw footage to finished video."
 readme = "README.md"
@@ -16,16 +16,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Local transcription backend (default, no API key). Installed by setup or `pip install chatcut[whisper]`.
+# Local transcription backend (default, no API key). Installed by setup or `pip install chatmonteur[whisper]`.
 whisper = ["faster-whisper>=1.0"]
 dev = ["pytest>=8.0"]
 
 [project.scripts]
-chatcut = "chatcut.cli:main"
+chatmonteur = "chatmonteur.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ArtCog/chatcut"
-Issues = "https://github.com/ArtCog/chatcut/issues"
+Homepage = "https://github.com/ArtCog/chatmonteur"
+Issues = "https://github.com/ArtCog/chatmonteur/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["chatcut"]
+packages = ["chatmonteur"]

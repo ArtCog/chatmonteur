@@ -1,4 +1,4 @@
-"""chatcut core — config, tool registry, pipeline runner, checkpoints.
+"""chatmonteur core — config, tool registry, pipeline runner, checkpoints.
 
 This package is the stable contract layer. It knows nothing about ffmpeg,
 whisper, or any specific engine; it only knows how to load config, discover
@@ -6,7 +6,7 @@ tools by capability, and run a pipeline step-by-step with resume.
 """
 
 from .errors import (
-    ChatcutError,
+    ChatmonteurError,
     ConfigError,
     MissingDependencyError,
     PipelineError,
@@ -19,7 +19,7 @@ from .checkpoint import Checkpoint
 from .pipeline import Pipeline, PipelineRunner, Step
 
 __all__ = [
-    "ChatcutError",
+    "ChatmonteurError",
     "ConfigError",
     "ToolError",
     "MissingDependencyError",

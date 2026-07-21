@@ -13,8 +13,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from chatcut.core import RunContext, ToolRegistry, load_config  # noqa: E402
-from chatcut import media  # noqa: E402
+from chatmonteur.core import RunContext, ToolRegistry, load_config  # noqa: E402
+from chatmonteur import media  # noqa: E402
 
 
 def make_clip(path: Path) -> None:

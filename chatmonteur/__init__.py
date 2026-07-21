@@ -1,4 +1,4 @@
-"""chatcut — agent-orchestrated talking-head video editing.
+"""chatmonteur — agent-orchestrated talking-head video editing.
 
 One command turns raw footage into a finished video. The core is small and
 engine-agnostic: tools declare *capabilities*, pipelines order capabilities,

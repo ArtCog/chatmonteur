@@ -37,6 +37,9 @@ projects/*/transcripts/*.json
 *.wav
 !examples/**/*.mp4
 
+# --- local strategy docs (not for the public repo) ---
+PLAN.local.md
+
 # --- os / editor ---
 .DS_Store
 Thumbs.db

@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from chatcut.core import Pipeline, PipelineRunner, RunContext, ToolRegistry, load_config  # noqa: E402
+from chatmonteur.core import Pipeline, PipelineRunner, RunContext, ToolRegistry, load_config  # noqa: E402
 
 
 def make_clip(path: Path) -> None:
@@ -37,7 +37,7 @@ def main() -> int:
         print("discovered:", sorted(t.manifest.name for c in reg._by_capability.values() for t in c))
 
         pl = Pipeline(name="mini", steps=tuple())
-        from chatcut.core import Step
+        from chatmonteur.core import Step
         pl = Pipeline(
             name="mini",
             steps=(

@@ -1,11 +1,11 @@
-# Contributing to chatcut
+# Contributing to chatmonteur
 
-chatcut grows by adding tools and pipelines — contributions welcome.
+chatmonteur grows by adding tools and pipelines — contributions welcome.
 
 ## Dev setup
 
 ```bash
-git clone https://github.com/ArtCog/chatcut && cd chatcut
+git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
 python -m pip install -e ".[whisper,dev]"
 python -m pip install auto-editor      # silence removal backend
 pytest -q                              # fast guard tests (no ffmpeg)
@@ -20,7 +20,7 @@ python tests/smoke_cut_meaning.py
 
 ## Adding things
 
-- **A capability (tool):** new module in `chatcut/tools/` exposing `TOOL`.
+- **A capability (tool):** new module in `chatmonteur/tools/` exposing `TOOL`.
 - **A flow (pipeline):** a YAML in `pipelines/`.
 
 See [docs/extending.md](docs/extending.md). Tools must read everything from

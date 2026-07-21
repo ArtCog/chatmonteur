@@ -4,7 +4,7 @@ A *tool* implements a single *capability* (e.g. ``transcribe``, ``cut_silence``)
 by wrapping a best-of-breed engine. Pipelines reference capabilities, not tools,
 so the engine underneath is swappable.
 
-A tool module under ``chatcut.tools`` exposes a module-level ``TOOL`` instance::
+A tool module under ``chatmonteur.tools`` exposes a module-level ``TOOL`` instance::
 
     TOOL = MyTool()
 
@@ -89,7 +89,7 @@ class ToolRegistry:
     def for_capability(self, capability: str) -> list[Tool]:
         return list(self._by_capability.get(capability, []))
 
-    def discover(self, package: str = "chatcut.tools") -> "ToolRegistry":
+    def discover(self, package: str = "chatmonteur.tools") -> "ToolRegistry":
         """Import every submodule of ``package`` and register its ``TOOL``.
 
         Tools that fail to import (e.g. an optional dep missing at import time)

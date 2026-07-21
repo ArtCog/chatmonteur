@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from chatcut.core import RunContext, ToolRegistry, load_config  # noqa: E402
+from chatmonteur.core import RunContext, ToolRegistry, load_config  # noqa: E402
 
 
 def make_clip(path: Path) -> None:
@@ -39,7 +39,7 @@ def main() -> int:
         tr_path.write_text(json.dumps({
             "language": "en", "duration": 3,
             "segments": [
-                {"start": 0.0, "end": 1.5, "text": "Hello from chatcut", "words": []},
+                {"start": 0.0, "end": 1.5, "text": "Hello from chatmonteur", "words": []},
                 {"start": 1.5, "end": 3.0, "text": "captions and color work", "words": []},
             ],
         }), encoding="utf-8")

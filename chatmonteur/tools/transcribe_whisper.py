@@ -28,7 +28,7 @@ class WhisperTranscribeTool(Tool):
         try:
             from faster_whisper import WhisperModel
         except ImportError as exc:  # pragma: no cover - guarded by requires_py
-            raise ToolError("faster-whisper not installed; run setup or `pip install chatcut[whisper]`") from exc
+            raise ToolError("faster-whisper not installed; run setup or `pip install chatmonteur[whisper]`") from exc
 
         model_name = model or ctx.config.transcribe.model
         lang = language or ctx.config.transcribe.language

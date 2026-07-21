@@ -1,13 +1,13 @@
-# CLAUDE.md — driving chatcut
+# CLAUDE.md — driving chatmonteur
 
-You (the agent) are the control plane for **chatcut**: an extensible talking-head
+You (the agent) are the control plane for **chatmonteur**: an extensible talking-head
 video editor. A creator points you at raw footage and describes what they want;
 you run the pipeline and iterate. Default language with the user: theirs.
 
 ## The one command
 
 ```
-chatcut edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
+chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
 ```
 
 This runs the **talking_head** pipeline: normalize → transcribe → subtitles →
@@ -16,6 +16,15 @@ cut (fillers + pauses) → color → render. Output lands in
 
 For fine control, run capabilities individually via the registry (see
 `docs/extending.md`) instead of the whole pipeline.
+
+## The editorial brain: skills/
+
+The CLI is the hands; **`skills/` is the head.** At the start of any edit
+session read `skills/montage.md` (the orchestrator — routes mechanical vs
+editorial work, defines the ①skeleton→②edit→③final pipeline and the approval
+gates). `skills/INDEX.md` maps the rest: cutting (two-tier), subtitles, motion,
+hook editing, sound, plus `skills/references/` loaded on demand. When the
+skills and this file disagree on editing procedure, the skills win.
 
 ## Cut-plan discipline (IMPORTANT)
 
@@ -49,7 +58,7 @@ projects/<name>/
   transcripts/   master.json, captions.srt, edl.json
   previews/      fast proxy renders
   renders/       final.mp4  (the only "output")
-  .chatcut/      checkpoint.json (resume state)
+  .chatmonteur/      checkpoint.json (resume state)
 ```
 Never write to `raw/` or the repo root. Finals go only to `renders/`.
 
@@ -60,5 +69,5 @@ Default transcription is local `faster-whisper` (no API key). Paid backends
 
 ## Extending
 
-New capability = new module in `chatcut/tools/` exposing `TOOL`. New flow = a
+New capability = new module in `chatmonteur/tools/` exposing `TOOL`. New flow = a
 YAML in `pipelines/`. See `docs/extending.md`.

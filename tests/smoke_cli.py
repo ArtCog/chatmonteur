@@ -1,4 +1,4 @@
-"""Smoke test the full `chatcut edit` pipeline end-to-end on a synthetic clip.
+"""Smoke test the full `chatmonteur edit` pipeline end-to-end on a synthetic clip.
 
 Run from repo root:  python tests/smoke_cli.py
 Uses the tiny whisper model. Verifies a final render is produced.
@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from chatcut.cli import main  # noqa: E402
+from chatmonteur.cli import main  # noqa: E402
 
 
 def make_clip(path: Path) -> None:
@@ -32,10 +32,10 @@ def run() -> int:
         clip = tmp / "talk.mp4"
         make_clip(clip)
 
-        print("--- chatcut tools ---")
+        print("--- chatmonteur tools ---")
         assert main(["tools"]) == 0
 
-        print("\n--- chatcut edit ---")
+        print("\n--- chatmonteur edit ---")
         rc = main(["edit", str(clip), "--root", str(tmp), "--model", "tiny"])
         assert rc == 0, f"edit exited {rc}"
 

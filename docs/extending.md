@@ -1,14 +1,14 @@
-# Extending chatcut
+# Extending chatmonteur
 
-chatcut is built to grow. Two extension points, no core changes needed.
+chatmonteur is built to grow. Two extension points, no core changes needed.
 
 ## Add a capability (a tool)
 
 A tool wraps one engine to provide one *capability*. Drop a module in
-`chatcut/tools/` that exposes a module-level `TOOL`:
+`chatmonteur/tools/` that exposes a module-level `TOOL`:
 
 ```python
-# chatcut/tools/denoise_deepfilter.py
+# chatmonteur/tools/denoise_deepfilter.py
 from ..core.tool import Tool, ToolManifest, ToolResult
 from ..core.context import RunContext
 from .. import media
@@ -31,7 +31,7 @@ class DenoiseTool(Tool):
 TOOL = DenoiseTool()
 ```
 
-The registry discovers it automatically (`chatcut tools` will list it). If its
+The registry discovers it automatically (`chatmonteur tools` will list it). If its
 binaries/modules are missing, that surfaces as a clear `MissingDependencyError`
 only when something actually needs the capability.
 
@@ -64,7 +64,7 @@ steps:
     params: { input: "${normalize.video}" }
 ```
 
-Run it: `chatcut edit clip.mp4 --pipeline shorts`.
+Run it: `chatmonteur edit clip.mp4 --pipeline shorts`.
 
 ## Optional steps
 

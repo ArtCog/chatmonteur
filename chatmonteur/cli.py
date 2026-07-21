@@ -1,9 +1,9 @@
-"""``chatcut`` command-line entry point — the "one command" front door.
+"""``chatmonteur`` command-line entry point — the "one command" front door.
 
-    chatcut edit raw/talk.mp4            # raw footage -> finished video
-    chatcut edit raw/talk.mp4 --lut cool_cinema --project my-vlog
-    chatcut tools                        # list capabilities and their backends
-    chatcut version
+    chatmonteur edit raw/talk.mp4            # raw footage -> finished video
+    chatmonteur edit raw/talk.mp4 --lut cool_cinema --project my-vlog
+    chatmonteur tools                        # list capabilities and their backends
+    chatmonteur version
 
 An agent (Claude Code / Codex) can call exactly the same command — see CLAUDE.md
 / AGENTS.md for the orchestration contract.
@@ -18,7 +18,7 @@ from pathlib import Path
 
 from . import __version__
 from .core import (
-    ChatcutError,
+    ChatmonteurError,
     Pipeline,
     PipelineRunner,
     RunContext,
@@ -42,16 +42,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         return args.func(args)
-    except ChatcutError as exc:
-        print(f"chatcut: {exc}", file=sys.stderr)
+    except ChatmonteurError as exc:
+        print(f"chatmonteur: {exc}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
-        print("\nchatcut: interrupted (resume with the same command)", file=sys.stderr)
+        print("\nchatmonteur: interrupted (resume with the same command)", file=sys.stderr)
         return 130
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="chatcut", description="Agent-orchestrated talking-head video editing.")
+    p = argparse.ArgumentParser(prog="chatmonteur", description="Agent-orchestrated talking-head video editing.")
     sub = p.add_subparsers(dest="command", required=True)
 
     edit = sub.add_parser("edit", help="raw footage -> finished video")
@@ -68,7 +68,7 @@ def _build_parser() -> argparse.ArgumentParser:
     tools.set_defaults(func=_cmd_tools)
 
     ver = sub.add_parser("version", help="print version")
-    ver.set_defaults(func=lambda _a: (print(f"chatcut {__version__}"), 0)[1])
+    ver.set_defaults(func=lambda _a: (print(f"chatmonteur {__version__}"), 0)[1])
 
     return p
 
@@ -76,13 +76,13 @@ def _build_parser() -> argparse.ArgumentParser:
 def _cmd_edit(args: argparse.Namespace) -> int:
     src = Path(args.input).expanduser().resolve()
     if not src.is_file():
-        print(f"chatcut: input not found: {src}", file=sys.stderr)
+        print(f"chatmonteur: input not found: {src}", file=sys.stderr)
         return 1
 
     pipeline_file = _PIPELINES / f"{args.pipeline}.yaml"
     if not pipeline_file.is_file():
         available = ", ".join(sorted(f.stem for f in _PIPELINES.glob("*.yaml"))) or "(none)"
-        print(f"chatcut: pipeline '{args.pipeline}' not found. Available: {available}", file=sys.stderr)
+        print(f"chatmonteur: pipeline '{args.pipeline}' not found. Available: {available}", file=sys.stderr)
         return 1
 
     config = load_config(args.root)
@@ -106,7 +106,7 @@ def _cmd_edit(args: argparse.Namespace) -> int:
 
 def _cmd_tools(_args: argparse.Namespace) -> int:
     registry = ToolRegistry().discover()
-    print("chatcut capabilities:\n")
+    print("chatmonteur capabilities:\n")
     for cap in sorted(registry._by_capability):  # noqa: SLF001 - simple introspection
         for tool in registry.for_capability(cap):
             missing = tool.missing_requirements()

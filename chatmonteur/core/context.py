@@ -63,7 +63,7 @@ class ProjectPaths:
 
 
 def _default_logger(msg: str) -> None:
-    print(f"[chatcut] {msg}", file=sys.stderr)
+    print(f"[chatmonteur] {msg}", file=sys.stderr)
 
 
 @dataclass

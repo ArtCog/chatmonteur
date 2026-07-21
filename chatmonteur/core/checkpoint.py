@@ -1,6 +1,6 @@
 """Resumable checkpoints.
 
-State for one project run lives in ``projects/<name>/.chatcut/checkpoint.json``.
+State for one project run lives in ``projects/<name>/.chatmonteur/checkpoint.json``.
 Each completed step records its input hash + produced artifacts, so re-running a
 pipeline skips work whose inputs haven't changed (saves time and paid API calls).
 """
@@ -26,7 +26,7 @@ class Checkpoint:
 
     @classmethod
     def for_project(cls, project_root: Path) -> "Checkpoint":
-        return cls(project_root / ".chatcut" / "checkpoint.json")
+        return cls(project_root / ".chatmonteur" / "checkpoint.json")
 
     def is_done(self, step_id: str, input_hash: str) -> bool:
         entry = self._data["steps"].get(step_id)

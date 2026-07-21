@@ -4,15 +4,15 @@ and never swallowed — a core correctness rule (no silent failures)."""
 from __future__ import annotations
 
 
-class ChatcutError(Exception):
-    """Base class for all chatcut errors."""
+class ChatmonteurError(Exception):
+    """Base class for all chatmonteur errors."""
 
 
-class ConfigError(ChatcutError):
+class ConfigError(ChatmonteurError):
     """Invalid or missing configuration."""
 
 
-class ToolError(ChatcutError):
+class ToolError(ChatmonteurError):
     """A tool failed while running."""
 
 
@@ -34,7 +34,7 @@ class MissingDependencyError(ToolError):
         super().__init__(msg)
 
 
-class PipelineError(ChatcutError):
+class PipelineError(ChatmonteurError):
     """A pipeline could not complete. Resume is possible from the checkpoint."""
 
     def __init__(self, step_id: str, cause: BaseException) -> None:

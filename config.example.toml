@@ -1,4 +1,4 @@
-# chatcut config — copy to `config.toml` and edit. All keys are optional;
+# chatmonteur config — copy to `config.toml` and edit. All keys are optional;
 # the values shown are the built-in defaults. Unknown keys are ignored.
 
 [transcribe]

@@ -13,10 +13,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from chatcut.core import Pipeline, ToolRegistry, load_config  # noqa: E402
-from chatcut.core.config import Config  # noqa: E402
-from chatcut.core.errors import ConfigError  # noqa: E402
-from chatcut.tools.cut_meaning import _invert, _merge, _removed_intervals  # noqa: E402
+from chatmonteur.core import Pipeline, ToolRegistry, load_config  # noqa: E402
+from chatmonteur.core.config import Config  # noqa: E402
+from chatmonteur.core.errors import ConfigError  # noqa: E402
+from chatmonteur.tools.cut_meaning import _invert, _merge, _removed_intervals  # noqa: E402
 
 
 def test_defaults_are_free_and_cross_platform(tmp_path):
