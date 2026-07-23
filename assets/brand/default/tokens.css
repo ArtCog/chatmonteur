@@ -1,0 +1,43 @@
+/* ============================================================
+   ИИмерсивный — Mono · design tokens (ChatMonteur default brand)
+   Source: Claude Design «ИИмерсивный - Mono» → source/*.dc.html
+   Monochrome (ink/paper) + one green accent. Fonts bundled in fonts/.
+   ============================================================ */
+:root {
+  /* --- Monochrome base --- */
+  --ink:        #0B0B0C;   /* near-black — text on paper, fills, chips */
+  --paper:      #FAFAF7;   /* bone/off-white — text on ink, light frames */
+
+  /* --- Grayscale --- */
+  --surface:    #1A1B1D;   /* dark frame / panel background */
+  --surface-2:  #212225;   /* raised dark surface, hatch lines */
+  --gray-1:     #B7B7B2;   /* light gray — secondary text on dark */
+  --gray-2:     #8A8A85;   /* muted gray — labels, meta */
+  --gray-3:     #3A3B3E;   /* faint — placeholders, dividers on dark */
+  --paper-2:    #E6E6E1;   /* light divider / border on paper */
+  --line:       #E0E0DB;   /* hairline on light */
+
+  /* --- Accent (use once per moment, never as a wash) --- */
+  --accent:     #2BE86A;   /* Mono-green — the single brand accent */
+  --info:       #4C63F5;   /* blue — rare semantic use only */
+
+  /* --- Subtitle scrim (semi-transparent plate behind captions) --- */
+  --scrim:      rgba(8, 9, 10, 0.52);
+
+  /* --- Type families (TTF in fonts/) --- */
+  --font-sans:  'Golos Text', system-ui, sans-serif;   /* headlines, subtitles, body */
+  --font-mono:  'JetBrains Mono', ui-monospace, monospace;  /* labels, meta, typewriter caption */
+  --font-serif: 'Playfair Display', serif;             /* big numbers, names, editorial accents */
+
+  /* --- Weights seen in the system --- */
+  --w-body: 400; --w-med: 500; --w-bold: 700; --w-black: 800;
+
+  /* --- Letter-spacing rhythm --- */
+  --ls-label: 0.2em;    /* mono uppercase labels */
+  --ls-meta:  0.14em;   /* lower-third subtitle line */
+  --ls-tight: 0.04em;   /* section titles */
+
+  /* --- Geometry --- */
+  --hatch: repeating-linear-gradient(135deg, #212225 0 2px, #1A1B1D 2px 11px); /* "your footage" frame */
+  --grid-fine: 44px;    /* light-bg infographic grid */
+}
