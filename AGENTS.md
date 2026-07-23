@@ -12,9 +12,14 @@ chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
 chatmonteur tools     # list capabilities + readiness
 ```
 
-Pipeline `talking_head`: normalize → transcribe → subtitles → cut → color →
-render. Output: `projects/<name>/renders/final.mp4`. Re-runs resume from
-checkpoints.
+Pipeline `talking_head` (mechanical only): normalize (CFR + loudnorm) →
+cut pauses by audio level → transcribe → subtitles → color → render.
+Output: `projects/<name>/renders/final.mp4`. Re-runs resume from checkpoints.
+
+The INTELLIGENT cut (fillers/false starts/retakes) is the agent's reasoning,
+not a pipeline step: read `transcripts/master.json`, write `transcripts/edl.json`,
+show the cut-plan, wait for approval, then run the `cut_edl` capability and
+re-run color/render. See `skills/cutting.md` Tier 2.
 
 ## Always
 

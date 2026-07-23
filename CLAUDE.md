@@ -10,9 +10,10 @@ you run the pipeline and iterate. Default language with the user: theirs.
 chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
 ```
 
-This runs the **talking_head** pipeline: normalize → transcribe → subtitles →
-cut (fillers + pauses) → color → render. Output lands in
-`projects/<name>/renders/final.mp4`. Re-running resumes from checkpoints.
+This runs the **talking_head** pipeline — mechanical steps only: normalize
+(CFR + loudnorm −14) → cut pauses by audio level → transcribe → subtitles →
+color → render. Output lands in `projects/<name>/renders/final.mp4`.
+Re-running resumes from checkpoints.
 
 For fine control, run capabilities individually via the registry (see
 `docs/extending.md`) instead of the whole pipeline.
@@ -26,13 +27,21 @@ gates). `skills/INDEX.md` maps the rest: cutting (two-tier), subtitles, motion,
 hook editing, sound, plus `skills/references/` loaded on demand. When the
 skills and this file disagree on editing procedure, the skills win.
 
-## Cut-plan discipline (IMPORTANT)
+## The intelligent cut is YOUR job, not a script's (IMPORTANT)
 
-Before a heavy final render, **show the user the plan and get approval**:
-- After `cut_meaning`, read `projects/<name>/transcripts/edl.json` and summarise
-  in plain language what will be removed (fillers, pauses, ranges, kept seconds).
-- Offer a fast preview (`render … preview=True`, 720p libx264) before the full
-  1440p render. Cheap iteration beats re-rendering 20 minutes.
+Fillers, false starts, retakes: no tool auto-decides these. Per
+`skills/cutting.md` Tier 2 (video-use methodology), YOU:
+
+1. Read the word-level transcript (`projects/<name>/transcripts/master.json`).
+2. Tag fillers/stumbles/retakes at decision time, reasoning by meaning — ASR
+   mishears brands, so never trust the words blindly.
+3. Write the plan as `projects/<name>/transcripts/edl.json`
+   (`{"removed": [[a,b], …]}`), and **show the user a plain-language cut-plan
+   (timestamp, quoted text, reason). STOP for approval.**
+4. Only after approval: run the `cut_edl` capability (single frame-accurate
+   ffmpeg pass), then re-run color/render on the result.
+5. Offer a fast preview (`render … preview=True`, 720p) before the full 1440p
+   render. Cheap iteration beats re-rendering 20 minutes.
 
 ## Production-correctness rules (never break these)
 

@@ -18,10 +18,15 @@ from chatmonteur.core import RunContext, ToolRegistry, load_config  # noqa: E402
 
 
 def make_clip(path: Path) -> None:
+    # Speech-like signal (pink noise) with a real 1s silence in the middle, so
+    # cut_silence has a pause to remove. A pure continuous tone is a degenerate
+    # input auto-editor reads as no-content ("timeline empty"); broadband noise
+    # with a gap behaves like real audio for the level threshold.
     subprocess.run(
         ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
          "-f", "lavfi", "-i", "testsrc=size=640x360:rate=30:duration=3",
-         "-f", "lavfi", "-i", "sine=frequency=440:duration=3",
+         "-f", "lavfi", "-i", "anoisesrc=color=pink:duration=3:amplitude=0.5",
+         "-af", "volume=0:enable='between(t,1,2)'",
          "-shortest", str(path)],
         check=True,
     )

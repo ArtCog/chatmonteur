@@ -16,7 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from chatmonteur.core import Pipeline, ToolRegistry, load_config  # noqa: E402
 from chatmonteur.core.config import Config  # noqa: E402
 from chatmonteur.core.errors import ConfigError  # noqa: E402
-from chatmonteur.tools.cut_meaning import _invert, _merge, _removed_intervals  # noqa: E402
+from chatmonteur.core.errors import ToolError  # noqa: E402
+from chatmonteur.tools.cut_edl import _invert, _keep_ranges, _merge  # noqa: E402
 
 
 def test_defaults_are_free_and_cross_platform(tmp_path):
@@ -37,20 +38,21 @@ def test_merge_overlapping():
     assert _merge([[0, 1], [0.5, 2], [3, 4]]) == [[0, 2], [3, 4]]
 
 
-def test_cut_removes_filler_and_pause():
-    # words: hello | um(filler) | world | <gap> | bye
-    words = [
-        {"start": 0.0, "end": 0.5, "word": "hello"},
-        {"start": 0.5, "end": 1.0, "word": "um"},
-        {"start": 1.0, "end": 1.5, "word": "world"},
-        {"start": 2.5, "end": 3.0, "word": "bye"},
-    ]
-    removed = _removed_intervals(words, {"um"}, pause_max=0.7, keep_pad=0.12)
-    keep = _invert(removed, duration=3.0, min_len=0.1)
-    # 'um' [0.5,1.0] removed; pause [1.62,2.38] removed → 3 kept ranges
-    assert len(keep) == 3
-    kept = sum(b - a for a, b in keep)
-    assert 1.5 < kept < 2.2  # shortened, but not gutted
+def test_edl_removed_inverts_to_keep():
+    # agent removed [1.0, 2.0] from a 3s clip → keep [0,1] + [2,3]
+    keep = _keep_ranges({"removed": [[1.0, 2.0]]}, duration=3.0)
+    assert keep == [[0.0, 1.0], [2.0, 3.0]]
+
+
+def test_edl_keep_is_clamped_and_merged():
+    # overlapping + out-of-bounds keep ranges are normalised, tiny slivers dropped
+    keep = _keep_ranges({"keep": [[-1.0, 1.0], [0.5, 2.0], [2.9, 2.95], [2.5, 99.0]]}, duration=3.0)
+    assert keep == [[0.0, 2.0], [2.5, 3.0]]
+
+
+def test_edl_requires_keep_or_removed():
+    with pytest.raises(ToolError):
+        _keep_ranges({}, duration=3.0)
 
 
 def test_pipeline_parse_and_duplicate_id(tmp_path):
@@ -68,5 +70,5 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_meaning", "subtitles", "color", "motion", "render"}
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "color", "motion", "render"}
     assert expected <= caps

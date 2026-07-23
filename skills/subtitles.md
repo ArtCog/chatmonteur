@@ -23,12 +23,29 @@ Based on Netflix Timed Text Style Guides + BBC Subtitle Guidelines. Goal: every 
 | Min gap between cues | ≥ 2 frames | Netflix |
 | Line breaks | at clause boundaries; balance line lengths; never split noun+adjective or preposition+noun | BBC |
 
-## Styling (defaults; the user's brand kit overrides)
+## THE STANDARD (locked — geometry from the tuner, style from the brand kit)
 
-- **One font, one size for the whole video.** Default height ≈ **4.5% of frame height** (1080p → ~48, 1440p → ~64).
-- Base color near-white; **black outline** (3 px @1080p / 4 px @1440p) + shadow 1 — readable on any footage.
-- Emphasis word: accent color recolor only.
-- Position: lower-center (`Alignment=2`, `MarginV` ≈ 70 @1080p / 95 @1440p). Keep clear of important on-screen content — never caption over the thing the viewer must see.
+Captions never move. Size/position are a % of frame height/width so they hold at 1080p and
+1440p. **Geometry** was set in the tuner; **style** (font, colour, plate) comes from the default
+brand `assets/brand/default/brand.md` («ИИмерсивный - Mono»). Rendered via ASS with PlayRes
+pinned to the frame — see `references/edit-sequence.md` and the note below.
+
+| Parameter | Value | px @1080 / @1440 | Why |
+|---|---|---|---|
+| **Font size** | **5% of frame height** | 54 / 72 | Legible without eating the frame (6% covers too much, 4.5% is TV-min) |
+| **Bottom margin** (MarginV) | **9% of frame height** | 97 / 130 | Sits ABOVE YouTube's player controls/progress bar (lower ~8–10% gets covered) |
+| **Max line width** | **80% of frame width** | — | Short lines read faster; >85% makes the eye travel edge to edge |
+| **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
+| **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
+| **Colour** | paper `#FAFAF7` text on scrim `rgba(8,9,10,.52)` | — | Brand «C · чисто» caption; plate (ASS BorderStyle=4) reads on any footage |
+| **Emphasis** | one word INVERTED (`bg:#FAFAF7; fg:#0B0B0C`); NEVER size-scaled | — | Brand «B · акцент»: inversion, not colour; size-scaling is the karaoke tell we avoid |
+
+Brand caption variants (all Golos Bold, paper-on-scrim, soft-in — `brand.md`): **A** read-aloud
+(word-by-word), **B** accent (inverted word), **C** clean (default), **D** typewriter (JetBrains Mono).
+
+> Baseline agreed in the tuner + design kit; WILL be refined. When it changes, update HERE and in
+> `chatmonteur/tools/subtitles.py` (the `_to_ass` constants) together. Verify on a real frame —
+> libass scales SRT+force_style by its 288 PlayResY; we use ASS with real PlayRes to get true pixels.
 
 ## Build procedure
 

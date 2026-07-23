@@ -39,6 +39,7 @@ projects/*/transcripts/*.json
 
 # --- local strategy docs (not for the public repo) ---
 PLAN.local.md
+ROADMAP.local.md
 
 # --- os / editor ---
 .DS_Store

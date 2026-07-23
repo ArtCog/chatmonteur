@@ -53,16 +53,18 @@ finalises.
 
 ```
 raw footage
-  → normalize (clean CFR)            don't desync on variable-framerate input
+  → normalize (clean CFR, −14 LUFS)  don't desync on VFR input; level-control the audio
+  → cut pauses (audio level)         auto-editor, locked thresholds — blind to meaning, safe
   → transcribe (word-level)          faster-whisper (local) / ElevenLabs (opt-in)
-  → detect stumbles & pauses
-  → cut-plan (you approve)           never auto-cuts blindly
-  → cut (EDL, padded by cut type)
   → subtitles
-  → motion graphics (optional)       hyperframes
-  → sound (music bed, ducking, SFX)
   → color (LUT)
   → render                           correctness-checked output
+
+agent-driven on top (never automatic):
+  → intelligent cut                  the AGENT reasons over the transcript, writes an
+    (fillers, stumbles, retakes)     EDL cut-plan, you approve → one frame-accurate pass
+  → motion graphics                  hyperframes compositions authored by the agent
+  → sound (music bed, ducking, SFX)
 ```
 
 The decision layer behind every step lives in [`skills/`](skills/INDEX.md) — readable,

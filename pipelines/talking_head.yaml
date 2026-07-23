@@ -1,11 +1,19 @@
-# Talking-head pipeline: raw footage -> finished video, one pass.
+# Talking-head pipeline: raw footage -> finished video, one command.
+#
+# Every step here is MECHANICAL and safe to run unattended:
+#   normalize (CFR + loudnorm −14) -> cut pauses by AUDIO LEVEL (auto-editor)
+#   -> transcribe the pause-cleaned draft -> burn subtitles -> color -> render.
+#
+# The INTELLIGENT cut (fillers, false starts, retakes) is deliberately NOT a
+# pipeline step. Per skills/cutting.md Tier 2 (video-use methodology), the
+# driving agent reasons over the word-level transcript, writes edl.json, shows
+# the cut-plan, and only after user approval executes it via the `cut_edl`
+# capability — then re-runs color/render on the result. No detector script
+# auto-decides meaning cuts.
 #
 # The CLI seeds two pseudo-steps:
 #   ${source.video}  = the input file
 #   ${opts.lut}      = the chosen colour LUT
-#
-# Captions are burned BEFORE cutting, so each kept frame keeps its correct
-# caption and removed fillers take their captions with them — one transcribe.
 name: talking_head
 
 steps:
@@ -14,30 +22,34 @@ steps:
     params:
       input: "${source.video}"
 
+  - id: cut_silence
+    capability: cut_silence
+    params:
+      input: "${normalize.video}"
+      # threshold 0.14 is LOCKED for −14 LUFS-normalised audio (normalize does that).
+      threshold: 0.14
+
   - id: transcribe
     capability: transcribe
     params:
-      input: "${normalize.video}"
+      input: "${cut_silence.video}"
+
+  # Color BEFORE subtitles: grading the frame first, then burning captions as the
+  # TOP layer. The reverse (burn then grade) colours the caption pixels —
+  # tinting/washing the text and breaking the subtitle standard.
+  - id: color
+    capability: color
+    params:
+      input: "${cut_silence.video}"
+      lut: "${opts.lut}"
 
   - id: subtitles
     capability: subtitles
     params:
-      input: "${normalize.video}"
+      input: "${color.video}"
       transcript: "${transcribe.transcript}"
-
-  - id: cut
-    capability: cut_meaning
-    params:
-      input: "${subtitles.video}"
-      transcript: "${transcribe.transcript}"
-
-  - id: color
-    capability: color
-    params:
-      input: "${cut.video}"
-      lut: "${opts.lut}"
 
   - id: render
     capability: render
     params:
-      input: "${color.video}"
+      input: "${subtitles.video}"

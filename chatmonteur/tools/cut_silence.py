@@ -22,22 +22,47 @@ class CutSilenceTool(Tool):
         cost="free",
     )
 
-    def run(self, ctx: RunContext, *, input: str, margin: str = "0.15s") -> ToolResult:
+    def run(
+        self,
+        ctx: RunContext,
+        *,
+        input: str,
+        threshold: float = 0.14,
+        stream: int | None = None,
+        margin: str = "0.12s,0.10s",
+    ) -> ToolResult:
+        """Remove dead air with auto-editor.
+
+        ``threshold`` is a fraction of the track's peak, so it is only meaningful
+        on level-controlled audio. Two proven presets from production:
+          * Branch A — single mixed track, normalised to −14 LUFS first: ``0.14``.
+          * Branch B — separate clean voice track (OBS mic on stream 1), RAW: pass
+            ``threshold=0.06, stream=1`` and DON'T normalise first.
+        ``--margin`` lead 0.12s protects soft word onsets, tail 0.10s kills breath.
+        ``--sample-rate 48000`` stops auto-editor upsampling to 96k (clicks at joins).
+        """
         media.require("auto-editor", hint="pip install auto-editor")
         encoder = media.detect_encoder(ctx.config.encode.encoder)
         out = ctx.paths.clips / "cut_silence.mp4"
 
+        edit = f"audio:threshold={threshold}"
+        if stream is not None:
+            edit = f"audio:threshold={threshold},stream={stream}"
+
         media.run(
             [
                 "auto-editor", input,
+                "--edit", edit,
                 "--margin", margin,
                 "--video-codec", encoder,
                 "--video-bitrate", "10M",
+                "--audio-bitrate", "256k",
+                "--sample-rate", "48000",
                 "--no-open",
                 "-o", str(out),
             ],
             log=ctx.log,
-            desc=f"cut silence (margin {margin}, {encoder})",
+            desc=f"cut silence (edit {edit}, margin {margin}, {encoder})",
         )
         return ToolResult(artifacts={"video": str(out)}, meta={"mean_volume_db": media.mean_volume_db(out)})
 

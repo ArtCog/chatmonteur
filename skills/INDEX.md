@@ -23,3 +23,4 @@ loaded on demand.
 | `playbooks.md` | P1–P11 operation playbooks (phrase removal, concat, overlays, oval mask…) | ✅ ported |
 | `multiscene-pipeline.md` | Multi-scene assembly + LOCKED YouTube final render + concat-filter lesson | ✅ ported |
 | `final-render-and-audio.md` | ONE-PASS final render, EQ-pocket + gentle duck canon, mixing levels | ✅ ported |
+| `edit-sequence.md` | Why the 4-phase order is load-bearing (lock cut → geometry → color → top layers → sound → encode) | ✅ written |

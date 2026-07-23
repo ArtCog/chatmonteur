@@ -33,14 +33,20 @@ class RenderTool(Tool):
         # 4:4:4 / gbrp (which lut3d upstream can introduce). -ar 48000 resets the
         # samplerate loudnorm bumps to a non-standard value.
         vf = f"scale=-2:{height}:flags=lanczos,format=yuv420p"
-        af = f"loudnorm=I={enc_cfg.loudness_lufs}:TP=-1.5:LRA=11"
+        # loudnorm sets the level; a true-peak limiter after it catches the
+        # inter-sample peaks one-pass loudnorm leaves behind (measured up to
+        # −1.3 dBFS on real footage → clipping risk). limit=0.75 ≈ −2.5 dBTP.
+        af = (
+            f"loudnorm=I={enc_cfg.loudness_lufs}:TP=-1.5:LRA=11,"
+            "alimiter=limit=0.75:level=false:attack=3:release=30"
+        )
         cmd = [
             "ffmpeg", "-y", "-i", input,
             "-vf", vf,
             "-c:v", encoder, *media.encoder_quality_args(encoder),
             "-pix_fmt", "yuv420p",
             "-af", af,
-            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+            "-c:a", "aac", "-b:a", "256k", "-ar", "48000",  # 256k floor for speech
             "-movflags", "+faststart",
             str(out),
         ]

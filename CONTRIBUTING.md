@@ -15,7 +15,7 @@ The media smoke tests need ffmpeg on PATH:
 
 ```bash
 python tests/smoke_ffmpeg.py
-python tests/smoke_cut_meaning.py
+python tests/smoke_cut_edl.py
 ```
 
 ## Adding things

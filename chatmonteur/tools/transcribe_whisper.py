@@ -1,7 +1,7 @@
 """Capability: ``transcribe`` — word-level transcript via faster-whisper (local).
 
 The default, free, no-API-key transcription backend. Tries CUDA, falls back to
-CPU. Output is a JSON with segment + word timestamps that ``cut_meaning`` and
+CPU. Output is a JSON with segment + word timestamps that the agent (cut-plan) and
 ``subtitles`` consume.
 """
 

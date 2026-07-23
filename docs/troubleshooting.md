@@ -24,10 +24,19 @@ audio map upstream. Verify by *level*, not track duration.
 That's the drive-colon problem; chatmonteur runs ffmpeg from the file's folder to
 avoid it. If you wrote a custom tool, do the same (`cwd=` + bare filename).
 
-**Captions drift after cutting**
-chatmonteur burns captions *before* cutting so kept frames keep their captions. If
-you reorder steps, keep that order or re-transcribe the cut video.
+**Captions drift after an agent-driven meaning cut**
+Captions are burned before `cut_edl` runs, so kept frames keep their captions.
+If you cut a video whose captions were made from a DIFFERENT timeline,
+re-transcribe first — timings drift after every cut.
 
-**Everything got removed by `cut_meaning`**
-Thresholds too aggressive or a bad transcript. Raise `pause_max`, check the
-`transcripts/edl.json`, or pass a custom `fillers` list.
+**The pause cut removed too much / shredded words**
+`cut_silence`'s threshold (0.14) is a fraction of peak and is only valid on
+loudness-normalised audio — the default `normalize` step does that. If you fed
+it raw quiet audio, normalize first (never lower the threshold). A silent
+screen-demo can also sit under the threshold: check the preview and protect
+the range (see skills/cutting.md, "silent-demo trap").
+
+**`cut_edl` refused to run or output looks wrong**
+The EDL is authored by the agent, not detected by a script. Check
+`transcripts/edl.json` ranges against the transcript, and remember the
+cut-plan must be approved before executing (skills/cutting.md Tier 2).

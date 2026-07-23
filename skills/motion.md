@@ -7,14 +7,48 @@ a graphics engine for a lower third.
 
 ## Why visual interest exists (the retention math)
 
-- **The ~3-second rule:** every ~3 seconds SOMETHING should change — movement, angle, zoom,
-  graphic, sound. A monotone static shot bleeds retention hardest at seconds 4–12.
-- **B-roll/inserts enter at attention dips**, and the edit returns to the speaker's face for
-  direct contact on key statements.
+- **Change something on a meaning boundary, not on a timer.** Something should shift as each
+  new idea lands — movement, angle, zoom, graphic, sound. A monotone static shot bleeds
+  retention hardest early.
+- **B-roll/inserts enter at attention dips**; for a talking-head, the edit returns to the face
+  for direct contact on key statements (for voice-over, B-roll IS the visual channel — near-constant).
 - **Zoom classification** (from the transcript): normal statement 1.0x · emphasis 1.15x ·
   critical point 1.3x. Punch-ins land on the emphasized WORD, not vaguely near it.
-- Graphics illustrate what words can't (numbers, comparisons, structure). If the speaker's
-  face and voice already carry the moment, add NOTHING.
+- Graphics illustrate what words can't (numbers, comparisons, structure). If face and voice
+  already carry the moment, add NOTHING.
+
+## Pacing & style (target: educational-explainer + Fireship density, NOT MrBeast)
+
+Density comes from information-per-second, not stimulation-per-second. (MrBeast's own team
+slowed their cutting in 2024 — 38→23 cuts/min — and grew faster; a tech audience fatigues on
+overstim fastest.) Concrete cadence:
+
+- **First ~15 s — tightest:** a new screen/graphic/text every 3–6 s (the one figure every
+  source agrees on — steepest retention drop is the opening).
+- **Body — cut on meaning** (new sentence/concept), ~one visual change per 15–25 s. Not a clock.
+- **Every ~2–3 min — one longer "breathing" shot** (10–20 s) when an idea must sit.
+- **Zooms/punch-ins:** one specific element per use, never per sentence (seasick otherwise).
+- **On-screen text accent:** only the 1–3 words that matter (term/number/name), NEVER a
+  duplicate of the subtitle line.
+- **SFX:** 1–2 signature sounds reused (a whoosh on every cut is the amateur tell — see sound.md).
+- **Memes/reactions:** only at a real joke, ~1–3 per 10 min; never a default transition.
+- **J/L-cuts** are near-default for B-roll under continuous narration; **speed-ramp** waiting
+  moments in demos (installs/builds/loads) instead of hard-cutting them away.
+
+## Visual sources (voice-over: the screen must be filled continuously)
+
+Priority — own/exact first, stock only for generic. What to use per sentence:
+
+| Narration references… | Visual | Why |
+|---|---|---|
+| code / terminal / output | own screen capture (ffmpeg gdigrab / x11grab / avfoundation) | real, exact, no license |
+| a specific site/product UI | browser-automation capture (Playwright) of the real site | stock never matches a named product |
+| architecture / pipeline / data flow | HyperFrames or Manim diagram | precise, on-brand, anchor-word synced |
+| generic cutaway (hands, server, office) | CC0 stock: Pexels / Pixabay / Coverr / NASA (API, no attribution) | free, safe to bundle in MIT |
+| unfilmable abstraction | HyperFrames graphic first; AI-gen video only as last resort, disclosed | AI-slop hurts trust with a tech audience |
+
+CC0-safe to bundle: Pexels, Pixabay, Coverr, NASA. Avoid AI-generated B-roll as a default —
+YouTube penalises undisclosed synthetic media and this audience spots it fastest.
 
 ## Motion philosophy (locked)
 
@@ -33,14 +67,21 @@ transcript — never eyeballed.
 **Take the transcript from the FINAL cut draft** — timings drift after silence removal and
 meaning cuts; a transcript of the raw file is useless for sync.
 
-## Typography
+## Typography — the default brand «Mono»
 
-Banned fonts (they scream "AI-generated default") — never use:
-Inter, Roboto, Open Sans, Lato, Poppins, Outfit, Sora, Fraunces, Playfair Display,
-Cormorant Garamond, Syne, Cinzel, Nunito, Source Sans, PT Sans, Arimo.
+The default design system is `assets/brand/default/brand.md` («ИИмерсивный - Mono», imported
+from Claude Design). Use its fonts — do NOT pick your own:
 
-Pick fonts with character. The project's brand kit (`assets/brand/`) wins over any default;
-one display font per video.
+- **Golos Text** (sans) — headlines, subtitles, body. Cyrillic-strong.
+- **JetBrains Mono** — labels, meta (uppercase, wide tracking), the "typewriter" caption.
+- **Playfair Display** (serif) — big numbers, names, editorial accents (used DELIBERATELY here —
+  it is not an "AI default" in this system).
+
+TTF bundled in `assets/brand/default/fonts/`. Components (subtitles A/B/C/D, lower-third,
+callout, infographic) with exact specs are in `brand.md` — build them on-brand, don't reinvent.
+
+Still-banned "AI-default" fonts (never use as a substitute): Inter, Roboto, Open Sans, Lato,
+Poppins, Outfit, Sora, Nunito, Source Sans, PT Sans, Arimo. One display font per video.
 
 ## Workflow (approval gates are mandatory)
 

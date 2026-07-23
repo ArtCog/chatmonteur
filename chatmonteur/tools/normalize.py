@@ -3,6 +3,13 @@
 Real-world raw footage is variable-frame-rate with messy timestamps. Cutting it
 directly desyncs audio. This step rebuilds a clean CFR file that every later step
 can safely seek and cut. (Hard-won rule from production use.)
+
+It also loudness-normalises to the configured target (−14 LUFS) by default:
+the silence threshold downstream (``cut_silence`` 0.14) is a fraction of peak
+and is only valid on level-controlled audio — on a quiet recording it shreds
+words. Pass ``loudness=False`` for flows that must cut RAW audio (e.g. the
+separate-voice-track branch, where normalising before the cut destroys the
+speech/pause gap — see skills/cutting.md Branch B).
 """
 
 from __future__ import annotations
@@ -21,27 +28,31 @@ class NormalizeTool(Tool):
         requires_bin=("ffmpeg", "ffprobe"),
     )
 
-    def run(self, ctx: RunContext, *, input: str, fps: float | None = None) -> ToolResult:
+    def run(self, ctx: RunContext, *, input: str, fps: float | None = None, loudness: bool = True) -> ToolResult:
         media.require("ffmpeg")
         src = input
         target_fps = fps or media.source_fps(src, default=float(ctx.config.encode.fps))
         out = ctx.paths.clips / "normalized.mov"
 
+        # One-pass loudnorm here is Branch-A prep for the level-relative silence
+        # threshold (two-pass linear is cleaner; tracked as a future upgrade).
+        af = ["-af", f"loudnorm=I={ctx.config.encode.loudness_lufs}:TP=-1.5:LRA=11"] if loudness else []
         media.run(
             [
                 "ffmpeg", "-y", "-fflags", "+genpts", "-i", src,
                 "-map", "0:v:0", "-map", "0:a:0",
                 "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p",
                 "-r", str(target_fps), "-fps_mode", "cfr",
+                *af,
                 "-c:a", "pcm_s16le", "-ar", "48000",
                 str(out),
             ],
             log=ctx.log,
-            desc=f"normalize → CFR {target_fps}fps",
+            desc=f"normalize → CFR {target_fps}fps{', loudnorm −14' if loudness else ''}",
         )
         return ToolResult(
             artifacts={"video": str(out)},
-            meta={"fps": target_fps, "mean_volume_db": media.mean_volume_db(out)},
+            meta={"fps": target_fps, "loudness": loudness, "mean_volume_db": media.mean_volume_db(out)},
         )
 
 

@@ -1,6 +1,6 @@
-"""Smoke test for cut_meaning: filler + pause removal shortens the clip.
+"""Smoke test for cut_edl: executing an approved EDL shortens the clip.
 
-Run from repo root:  python tests/smoke_cut_meaning.py
+Run from repo root:  python tests/smoke_cut_edl.py
 """
 
 from __future__ import annotations
@@ -35,25 +35,17 @@ def main() -> int:
         reg = ToolRegistry().discover()
         ctx = RunContext.for_project(load_config(str(tmp)), "smoke")
 
-        # word-level transcript: "um" is filler; 1.5..2.5 is a long pause.
-        tr = ctx.paths.transcripts / "master.json"
-        tr.write_text(json.dumps({
-            "language": "en", "duration": 3.0,
-            "segments": [{"start": 0, "end": 3, "text": "hello um world bye", "words": [
-                {"start": 0.0, "end": 0.5, "word": "hello"},
-                {"start": 0.5, "end": 1.0, "word": "um"},
-                {"start": 1.0, "end": 1.5, "word": "world"},
-                {"start": 2.5, "end": 3.0, "word": "bye"},
-            ]}],
-        }), encoding="utf-8")
+        # The agent's approved plan: remove [1.0, 2.0] from the 3s clip.
+        edl = ctx.paths.transcripts / "edl.json"
+        edl.write_text(json.dumps({"removed": [[1.0, 2.0]]}), encoding="utf-8")
 
-        res = reg.get("cut_meaning_transcript").run(ctx, input=str(raw), transcript=str(tr))
+        res = reg.get("cut_edl_ffmpeg").run(ctx, input=str(raw), edl=str(edl))
         out = res.artifacts["video"]
         out_dur = float(media.ffprobe_json(out)["format"]["duration"])
-        print(f"cut_meaning -> {res.meta}; actual out duration={out_dur:.2f}s")
-        assert out_dur < 2.4, f"expected shortened clip, got {out_dur}s"
-        assert res.meta["ranges"] == 3, res.meta
-        print("PASS: cut_meaning removes filler + pause")
+        print(f"cut_edl -> {res.meta}; actual out duration={out_dur:.2f}s")
+        assert 1.8 < out_dur < 2.3, f"expected ~2s clip, got {out_dur}s"
+        assert res.meta["ranges"] == 2, res.meta
+        print("PASS: cut_edl executes an approved EDL")
         return 0
     finally:
         import shutil

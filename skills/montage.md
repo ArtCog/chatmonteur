@@ -3,6 +3,10 @@
 Read at the start of ANY edit session. This skill routes the work; the specialist skills do
 it. `production-rules.md` always applies.
 
+**Default brand:** `assets/brand/default/brand.md` («ИИмерсивный - Mono») — the design system
+for subtitles, lower-thirds, callouts, infographics, colours and fonts. Every on-screen element
+follows it; don't invent styles.
+
 ## Step 0: classify the task — don't grab the first tool
 
 **The boundary question: do you need to understand the CONTENT to decide where to cut?**
@@ -17,28 +21,47 @@ it. `production-rules.md` always applies.
   silently default to mechanical.
 - Voice and visuals recorded SEPARATELY, matched by meaning → `hook-editing.md`.
 
-## The full edit pipeline (hybrid — most videos pass all three phases)
+## The full edit pipeline (four phases; order is load-bearing)
+
+The order below is not arbitrary — it follows professional post-production (lock the cut →
+lock the geometry → color → topmost layers → sound → one encode). Each rule prevents rework
+or a visible defect; the "why" is in `references/edit-sequence.md`.
 
 ```
 ① SKELETON (mechanical — no content understanding needed)
-   trim heads/tails → route audio branch → normalize (Branch A only) →
-   silence removal PER SCENE → concat parts → working 1080p draft
+   trim heads/tails → route audio branch → normalize (CFR + loudnorm −14, Branch A) →
+   silence removal by AUDIO LEVEL, per scene → concat parts → working draft
    → cutting.md Tier 1 + references/multiscene-pipeline.md
 
-② EDIT (editorial — transcript-driven, approval-gated)
-   verbatim transcript of the DRAFT → intelligent cut-plan (fillers/retakes) → APPROVAL →
-   EDL execution → subtitles → storyboard (anchor words) → APPROVAL → graphics per scene
-   → cutting.md Tier 2 + subtitles.md + motion.md
+② MEANING CUT (editorial — transcript-driven, approval-gated) — locks the audio spine
+   verbatim transcript of the DRAFT → intelligent cut-plan (fillers/false starts/retakes)
+   → APPROVAL → cut_edl (one pass). This is the audio "picture-lock".
+   → cutting.md Tier 2
 
-③ FINAL (mechanical — one pass)
-   1440p upscale + music/SFX/ducking + all overlays in ONE render → true-peak fix → verify
+③ VISUAL MONTAGE (editorial, approval-gated) — locks the GEOMETRY, before color
+   lay B-roll/screen/graphics under the narration by meaning + zooms/punch-ins +
+   block-transition cards → storyboard → APPROVAL. ALL framing/zoom/placement is fixed here.
+   Why before color: grade must see the final geometry; an overlay in absolute coords
+   would drift/clip if a zoom lands after it.
+   → motion.md + hook-editing.md
+
+④ FINISH (one render pass, fewest encode generations)
+   color grade → graphics + subtitles as the TOP layer OVER the grade → music+ducking+SFX
+   → loudness −14 LUFS / true-peak LAST → single encode
    → sound.md + references/final-render-and-audio.md + references/multiscene-pipeline.md Step 6
 ```
 
-- Phase ② is optional: a clean tutorial with no fillers and no graphics ships after ① + ③.
-- Never reorder: meaning cuts AFTER silence removal (a shorter transcript = less LLM work);
-  music and final overlays are NEVER added before all cutting is done.
+- Phases ②③ are optional: a clean tutorial with no fillers and no graphics ships after ① + ④.
+- **Subtitles/graphics burn AFTER color, never before** — grading colours the caption pixels
+  otherwise (tints/washes the text, breaks the subtitle standard). They are a top layer.
+- **Geometry (B-roll placement, zooms) locks BEFORE color** — grade the frame the viewer
+  actually sees.
+- Meaning cut AFTER silence removal (shorter transcript = less LLM work); music and final
+  overlays NEVER before all cutting is done.
 - Transcripts for subtitles/graphics come from the FINAL draft — timings drift after every cut.
+- Style target for pacing/graphics: educational-explainer + Fireship density, NOT MrBeast
+  overstim — see motion.md. Visual sources: own screen-capture / browser shots / HyperFrames
+  first, CC0 stock (Pexels/Pixabay/Coverr/NASA) for generic cutaways — see motion.md.
 
 ## Approval gates (never render past one silently)
 
