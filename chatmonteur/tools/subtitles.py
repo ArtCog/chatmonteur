@@ -110,10 +110,18 @@ _FADE_MS = 150        # per-word soft-in for read_aloud (brand: ~0.2s)
 # Brand colours as ASS BGR (&HAABBGGRR; AA alpha: 00 opaque … FF transparent).
 _PAPER_BGR = "&H00F7FAFA"    # paper #FAFAF7 — caption text
 _SCRIM_BGR = "&H7A0A0908"    # scrim rgba(8,9,10,.52) → ink #08090A @ ~48% alpha
-_ACCENT_C = "&H6AE82B&"      # accent #2BE86A as ASS \1c colour (BGR, no alpha) — burned "B · акцент"
+_INK_C = "&H0C0B0B&"         # ink #0B0B0C as \1c — text on the inverted chip
+_PAPER_C = "&HF7FAFA&"       # paper as \3c/\4c — the chip itself
 _BRAND_FONT = "Golos Text"
 _VARIANT_FONT = {"typewriter": "JetBrains Mono"}  # D uses the mono face
 _VARIANTS = {"clean", "read_aloud", "accent", "typewriter"}
+# Designer's caption spec (ИИмерсивный - Mono source HTML): scrim plate ONLY on the
+# static styles (C · чисто, B · акцент); the dynamic ones (A word-by-word, D typed)
+# burn without a plate — Артур 2026-07-24: "для них фон не нужен". Plate padding is
+# 7px at 26px font; D is 23px at A-C's 26. All exact ratios, not taste.
+_BOXED = {"clean", "accent"}
+_PAD_EM = 7 / 26
+_TYPE_SCALE = 23 / 26
 # Bundled brand fonts (Golos/JetBrains/Playfair, OFL) — libass finds them by family.
 _BRAND_FONT_DIR = str(pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / "default" / "fonts")
 
@@ -134,10 +142,17 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
     cue's text animates (whole-line, word fade-in, accent word, or typed reveal).
     """
     fs = round(_SIZE_FRAC * height)
+    if variant == "typewriter":
+        fs = round(fs * _TYPE_SCALE)             # designer: D is 23px at A-C's 26
     mv = round(_MARGIN_FRAC * height)
-    pad = max(6, round(0.010 * height))          # scrim box padding around text
     side = round((1 - _WIDTH_FRAC) / 2 * width)  # L/R margin → 80% text width
-    bold = 0 if variant == "typewriter" else -1  # D is regular weight, A/B/C bold
+    bold = 0 if variant == "typewriter" else -1  # D is Mono 500, A/B/C Golos 700
+    if variant in _BOXED:
+        # BorderStyle 4 = plate in BackColour; Outline = plate padding (designer 7/26 em).
+        border = f"4,{max(6, round(_PAD_EM * fs))},0"
+    else:
+        # Dynamic styles burn plain — no plate, no outline, no shadow.
+        border = "1,0,0"
     header = (
         "[Script Info]\n"
         "ScriptType: v4.00+\n"
@@ -148,17 +163,16 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        # Alignment 2 = bottom-center (fixed); BorderStyle 4 = box in BackColour
-        # (the scrim); Outline = box padding; Shadow 0.
+        # Alignment 2 = bottom-center (fixed).
         f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SCRIM_BGR},{_SCRIM_BGR},"
-        f"{bold},0,0,0,100,100,0,0,4,{pad},0,2,{side},{side},{mv},1\n\n"
+        f"{bold},0,0,0,100,100,0,0,{border},2,{side},{side},{mv},1\n\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     render = _RENDERERS[variant]
     lines = []
     for cue in _build_cues(data, max_chars):
-        body = render(cue, max_chars)
+        body = render(cue, max_chars, fs)
         lines.append(
             f"Dialogue: 0,{_ass_time(cue['start'])},{_ass_time(cue['end'])},Default,,0,0,0,,{body}"
         )
@@ -167,13 +181,13 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
 
 # --- per-variant cue renderers (cue -> ASS body text) --------------------------
 
-def _r_clean(cue: dict, max_chars: int) -> str:
-    """C · чисто — the whole line at once."""
-    return _wrap(cue["text"], max_chars).replace("\n", "\\N")
+def _r_clean(cue: dict, max_chars: int, fs: int = 0) -> str:
+    """C · чисто — the whole line at once, brand soft-in fade."""
+    return "{\\fad(180,0)}" + _wrap(cue["text"], max_chars).replace("\n", "\\N")
 
 
-def _r_read_aloud(cue: dict, max_chars: int) -> str:
-    """A · читаем вслух — each word fades in at its own spoken time."""
+def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0) -> str:
+    """A · читаем вслух — each word fades in at its own spoken time. No plate."""
     words = cue.get("words") or []
     if not words:
         return _r_clean(cue, max_chars)  # no timings → can't stagger, show as clean
@@ -188,11 +202,10 @@ def _r_read_aloud(cue: dict, max_chars: int) -> str:
     return _layout(tokens, max_chars, render)
 
 
-def _r_accent(cue: dict, max_chars: int) -> str:
-    """B · акцент — the emphasised word (``"emph": true``) in brand green.
-
-    libass can't box one glyph inside a scrim line, so burned emphasis = colour on
-    the accent word (brand green). The true inverted chip is the HyperFrames caption.
+def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
+    """B · акцент — the emphasised word (``"emph": true``) INVERTED, per the design:
+    paper chip `#FAFAF7`, ink text `#0B0B0C`. In ASS the chip is a per-run BorderStyle-4
+    box: swapping \\3c/\\4c to paper and \\1c to ink inverts just that word's run.
     """
     words = cue.get("words") or []
     if not words:
@@ -204,13 +217,15 @@ def _r_accent(cue: dict, max_chars: int) -> str:
 
     def render(tok: dict) -> str:
         if tok["emph"]:
-            return f"{{\\1c{_ACCENT_C}}}{tok['text']}{{\\r}}"
+            # \3a/\4a opaque: the chip is SOLID paper (the line's scrim is 52%).
+            return (f"{{\\1c{_INK_C}\\3c{_PAPER_C}\\4c{_PAPER_C}\\3a&H00&\\4a&H00&}}"
+                    f"{tok['text']}{{\\r}}")
         return tok["text"]
 
-    return _layout(tokens, max_chars, render)
+    return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_typewriter(cue: dict, max_chars: int) -> str:
+def _r_typewriter(cue: dict, max_chars: int, fs: int = 0) -> str:
     """D · печатная машинка — chars type in at a steady pace, cursor follows the caret.
 
     Untyped chars are hidden AND zero-width (`\\fscx0`), not just transparent — else the

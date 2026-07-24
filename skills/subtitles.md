@@ -37,31 +37,34 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 | **Max line width** | **80% of frame width** | — | Short lines read faster; >85% makes the eye travel edge to edge |
 | **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
 | **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
-| **Colour** | paper `#FAFAF7` text on scrim `rgba(8,9,10,.52)` | — | Brand «C · чисто» caption; plate (ASS BorderStyle=4) reads on any footage |
-| **Emphasis** | one word set apart; NEVER size-scaled | — | inversion/colour, not a bigger font — size-scaling is the karaoke tell we avoid |
+| **Colour** | paper `#FAFAF7` text; plate = scrim `rgba(8,9,10,.52)` on static variants ONLY | — | Plate (ASS BorderStyle=4, padding 7/26 em) on C/B; dynamic A/D burn plain (Артур 2026-07-24) |
+| **Emphasis** | one word INVERTED: solid paper chip `#FAFAF7`, ink text `#0B0B0C`; NEVER size-scaled | — | designer's «B · акцент» exactly; size-scaling is the karaoke tell we avoid |
 
 ## The four brand variants — the agent PICKS ONE PER VIDEO, then asks
 
 Geometry above is identical for all four; only the per-word motion and font differ.
 Pass `variant=` to the `subtitles` capability. Verified on real frames (2026-07-24).
 
-| `variant=` | Brand | Look | Use it for | Font |
-|---|---|---|---|---|
-| `clean` | C · чисто | whole line, no motion | the safe default; dense talking-head | Golos Bold |
-| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | narrated key lines, the hook | Golos Bold |
-| `accent` | B · акцент | one word set apart (see note) | a single punch-word per line | Golos Bold |
-| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor | "agent typing live" / terminal moments | JetBrains Mono |
+| `variant=` | Brand | Look | Plate | Use it for | Font |
+|---|---|---|---|---|---|
+| `clean` | C · чисто | whole line, soft-in | scrim | the safe default; dense talking-head | Golos Bold |
+| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | **none** | narrated key lines, the hook | Golos Bold |
+| `accent` | B · акцент | one word on a solid inverted chip | scrim | a single punch-word per line | Golos Bold |
+| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor, 23/26 size | **none** | "agent typing live" / terminal moments | JetBrains Mono |
 
 **Choosing is an APPROVAL GATE — never silently default past it.** Propose the fittest
 variant for the video's tone (dense explainer → `clean`; punchy hook → `read_aloud`;
 terminal/agent demo → `typewriter`) and ASK the user to confirm or switch. One variant per
 video unless they ask to mix.
 
-**B · акцент — burned vs HyperFrames (honest split).** The brand draws accent as an INVERTED
-chip (paper bg, ink word). libass can't box a single glyph inside a scrim line (BorderStyle=4
-is a per-line box), so **burned captions colour the accent word brand-green `#2BE86A`** instead
-— the true inverted chip is the HyperFrames caption. Which word: the agent marks it in the
-transcript (`"emph": true` on the word); unmarked → renders as `clean`.
+**B · акцент = true inversion, burned.** Per-run box-colour swap in libass (`\3c\4c` paper +
+`\3a\4a` opaque + `\1c` ink inside a BorderStyle=4 line) renders the designer's solid inverted
+chip directly — verified on real frames 2026-07-24. Which word: the agent marks it in the
+transcript (`"emph": true`); unmarked → renders as `clean`.
+
+**No plate on dynamic variants — mind the footage.** A/D are plain paper text; over light areas
+(white mic, hands, bright screens) legibility dips. That's the accepted trade-off (Артур
+2026-07-24); if a key line lands on a light zone, prefer `clean`/`accent` there or re-time.
 
 > Baseline agreed in the tuner + design kit; WILL be refined. When it changes, update HERE and in
 > `chatmonteur/tools/subtitles.py` (the `_to_ass` constants) together. Verify on a real frame —

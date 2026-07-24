@@ -91,14 +91,22 @@ def test_variant_read_aloud_fades_each_word():
     assert ass.count("\\t(") == 4 and "\\alpha&HFF&" in ass  # 4 words, each fades in
 
 
-def test_variant_accent_colors_only_the_emph_word():
-    ass = _ass("accent")
-    assert "\\1c&H6AE82B&" in ass and ass.count("\\1c&H6AE82B&") == 1  # brand green, one word
+def test_variant_accent_inverts_only_the_emph_word():
+    ass = _ass("accent")  # designer spec: paper chip + ink text, exactly one word
+    assert ass.count("\\1c&H0C0B0B&") == 1 and ass.count("\\3c&HF7FAFA&") == 1
 
 
 def test_variant_typewriter_is_mono_with_cursor():
     ass = _ass("typewriter", font="JetBrains Mono")
     assert "JetBrains Mono" in ass and "▌" in ass and "\\t(" in ass
+
+
+def test_dynamic_variants_have_no_plate_static_ones_do():
+    for variant, boxed in (("clean", True), ("accent", True),
+                           ("read_aloud", False), ("typewriter", False)):
+        style = next(l for l in _ass(variant).splitlines() if l.startswith("Style: Default"))
+        border_style = style.split(",")[15]
+        assert border_style == ("4" if boxed else "1"), variant
 
 
 def test_fit_timing_extends_a_flashing_cue():

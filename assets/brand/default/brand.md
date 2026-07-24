@@ -28,11 +28,14 @@ lower-thirds, callouts and infographics on-brand.
 
 ## Components (exact specs from the design)
 
-### Subtitles — 4 styles (all: Golos Text Bold, `#FAFAF7`, on scrim `rgba(8,9,10,.52)`, padding 7×16, soft-in)
-- **A · читаем вслух** — words appear one-by-one (soft-in, ~0.2s stagger). For narrated key lines.
-- **B · акцент** — one word inverted: `background:#FAFAF7; color:#0B0B0C; padding:3px 11px`. Emphasis by INVERSION, not color.
-- **C · чисто** — plain line, no per-word motion. The default.
-- **D · печатная машинка** — JetBrains Mono 500, typed reveal + blinking cursor `▌`. For "agent typing live" moments.
+### Subtitles — 4 styles (Golos Text Bold `#FAFAF7`; plate = scrim `rgba(8,9,10,.52)`, padding 7/26 em, soft-in)
+- **A · читаем вслух** — words appear one-by-one (soft-in, ~0.2s stagger). **NO plate** —
+  Артур 2026-07-24: динамичные стили жгутся чистым текстом (в макете плашка была, решение сильнее макета).
+- **B · акцент** — one word inverted: SOLID `background:#FAFAF7; color:#0B0B0C`. Emphasis by
+  INVERSION, not colour. On plate.
+- **C · чисто** — plain line, no per-word motion. On plate. The default.
+- **D · печатная машинка** — JetBrains Mono 500 at 23/26 of base size, typed reveal + blinking
+  cursor `▌`. **NO plate** (same rule as A). For "agent typing live" moments.
 
 Geometry (fixed, from ChatMonteur standard): size ≈5% frame height, bottom margin ≈9%,
 line width ≈80%, bottom-center anchor. See `../../../skills/subtitles.md`.
