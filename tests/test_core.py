@@ -18,6 +18,9 @@ from chatmonteur.core.config import Config  # noqa: E402
 from chatmonteur.core.errors import ConfigError  # noqa: E402
 from chatmonteur.core.errors import ToolError  # noqa: E402
 from chatmonteur.tools.cut_edl import _invert, _keep_ranges, _merge  # noqa: E402
+from chatmonteur.tools.subtitles import (  # noqa: E402
+    _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
+)
 
 
 def test_defaults_are_free_and_cross_platform(tmp_path):
@@ -53,6 +56,92 @@ def test_edl_keep_is_clamped_and_merged():
 def test_edl_requires_keep_or_removed():
     with pytest.raises(ToolError):
         _keep_ranges({}, duration=3.0)
+
+
+# --- subtitle variants (pure ASS generation, no ffmpeg) ------------------------
+
+_SUBS = {
+    "segments": [{
+        "start": 0.0, "end": 2.4, "text": "Claude Code это агент",
+        "words": [
+            {"start": 0.0, "end": 0.5, "word": "Claude"},
+            {"start": 0.5, "end": 1.0, "word": " Code"},
+            {"start": 1.0, "end": 1.4, "word": " это"},
+            {"start": 1.4, "end": 2.4, "word": " агент", "emph": True},
+        ],
+    }],
+}
+
+
+def test_cue_keeps_its_words():
+    cues = _build_cues(_SUBS, 42)
+    assert len(cues) == 1 and len(cues[0]["words"]) == 4  # words survive for A/B/D
+
+
+def _ass(variant, font="Golos Text"):
+    return _to_ass(_SUBS, 42, 1920, 1080, font, variant)
+
+
+def test_variant_clean_has_no_per_word_motion():
+    assert "\\t(" not in _ass("clean")  # C is a static line
+
+
+def test_variant_read_aloud_fades_each_word():
+    ass = _ass("read_aloud")
+    assert ass.count("\\t(") == 4 and "\\alpha&HFF&" in ass  # 4 words, each fades in
+
+
+def test_variant_accent_colors_only_the_emph_word():
+    ass = _ass("accent")
+    assert "\\1c&H6AE82B&" in ass and ass.count("\\1c&H6AE82B&") == 1  # brand green, one word
+
+
+def test_variant_typewriter_is_mono_with_cursor():
+    ass = _ass("typewriter", font="JetBrains Mono")
+    assert "JetBrains Mono" in ass and "▌" in ass and "\\t(" in ass
+
+
+def test_fit_timing_extends_a_flashing_cue():
+    cues = [{"start": 0.0, "end": 0.2, "text": "Да", "words": []}]
+    _fit_timing(cues)
+    assert cues[0]["end"] >= 0.83  # never flash below min duration
+
+
+def test_fit_timing_extends_fast_cue_for_cps():
+    # 34 chars in 0.5 s = 68 CPS → must extend toward ≤17 CPS (2.0 s)
+    cues = [{"start": 0.0, "end": 0.5, "text": "тридцать четыре символа ровно текст", "words": []}]
+    _fit_timing(cues)
+    assert cues[0]["end"] >= len(cues[0]["text"]) / 17.0 - 1e-9
+
+
+def test_fit_timing_never_overlaps_next():
+    cues = [{"start": 0.0, "end": 0.2, "text": "первая длинная реплика", "words": []},
+            {"start": 0.5, "end": 1.5, "text": "вторая", "words": []}]
+    _fit_timing(cues)
+    assert cues[0]["end"] <= cues[1]["start"] - 0.08 + 1e-9
+
+
+def test_line_break_carries_preposition_down():
+    words = "это очень длинная строка про агентов и код".split()
+    lines = _break_lines(words, 20)
+    for ln in lines[:-1]:  # no non-final line ends on a function word
+        assert not _is_orphan(words[ln[-1]])
+
+
+def test_geometry_is_locked_at_1080p():
+    style = next(l for l in _ass("clean").splitlines() if l.startswith("Style: Default"))
+    assert ",54," in style and ",192,192,97," in style  # 5% size, 80% width, 9% margin
+
+
+def test_unknown_variant_rejected(tmp_path):
+    reg = ToolRegistry().discover()
+    tool = reg.get("subtitles_ffmpeg")
+    tr = tmp_path / "t.json"
+    tr.write_text('{"segments": []}')
+    from chatmonteur.core import RunContext
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+    with pytest.raises(ToolError):
+        tool.run(ctx, input="x.mp4", transcript=str(tr), variant="sparkle")
 
 
 def test_pipeline_parse_and_duplicate_id(tmp_path):

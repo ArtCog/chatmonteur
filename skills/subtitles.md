@@ -38,19 +38,49 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 | **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
 | **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
 | **Colour** | paper `#FAFAF7` text on scrim `rgba(8,9,10,.52)` | — | Brand «C · чисто» caption; plate (ASS BorderStyle=4) reads on any footage |
-| **Emphasis** | one word INVERTED (`bg:#FAFAF7; fg:#0B0B0C`); NEVER size-scaled | — | Brand «B · акцент»: inversion, not colour; size-scaling is the karaoke tell we avoid |
+| **Emphasis** | one word set apart; NEVER size-scaled | — | inversion/colour, not a bigger font — size-scaling is the karaoke tell we avoid |
 
-Brand caption variants (all Golos Bold, paper-on-scrim, soft-in — `brand.md`): **A** read-aloud
-(word-by-word), **B** accent (inverted word), **C** clean (default), **D** typewriter (JetBrains Mono).
+## The four brand variants — the agent PICKS ONE PER VIDEO, then asks
+
+Geometry above is identical for all four; only the per-word motion and font differ.
+Pass `variant=` to the `subtitles` capability. Verified on real frames (2026-07-24).
+
+| `variant=` | Brand | Look | Use it for | Font |
+|---|---|---|---|---|
+| `clean` | C · чисто | whole line, no motion | the safe default; dense talking-head | Golos Bold |
+| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | narrated key lines, the hook | Golos Bold |
+| `accent` | B · акцент | one word set apart (see note) | a single punch-word per line | Golos Bold |
+| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor | "agent typing live" / terminal moments | JetBrains Mono |
+
+**Choosing is an APPROVAL GATE — never silently default past it.** Propose the fittest
+variant for the video's tone (dense explainer → `clean`; punchy hook → `read_aloud`;
+terminal/agent demo → `typewriter`) and ASK the user to confirm or switch. One variant per
+video unless they ask to mix.
+
+**B · акцент — burned vs HyperFrames (honest split).** The brand draws accent as an INVERTED
+chip (paper bg, ink word). libass can't box a single glyph inside a scrim line (BorderStyle=4
+is a per-line box), so **burned captions colour the accent word brand-green `#2BE86A`** instead
+— the true inverted chip is the HyperFrames caption. Which word: the agent marks it in the
+transcript (`"emph": true` on the word); unmarked → renders as `clean`.
 
 > Baseline agreed in the tuner + design kit; WILL be refined. When it changes, update HERE and in
 > `chatmonteur/tools/subtitles.py` (the `_to_ass` constants) together. Verify on a real frame —
 > libass scales SRT+force_style by its 288 PlayResY; we use ASS with real PlayRes to get true pixels.
 
+## What the tool automates vs what YOU (the agent) must do
+
+The `subtitles` capability enforces the **deterministic** half of the spec automatically:
+CPL 39 (Cyrillic-friendly wrap), orphan-safe line breaks (prepositions stay with their noun),
+and timing fit (min 0.83 s, ≤17 CPS, no cue overlap — `_fit_timing`). Don't hand-tune these.
+
+The **semantic** half is YOURS and is NOT scripted (a naive pass would break it, like the deleted
+`cut_meaning`): **casing** (never lowercase a proper noun — «Claude», «OBS», names) and **ASR
+mishear repair** («код-код» → Claude Code). Fix these in the transcript text before burning.
+
 ## Build procedure
 
 1. Transcribe with word timings. **Fix ASR mishears by meaning** before writing cues (brands and technical terms suffer most), and apply proper capitalization/punctuation — a raw transcript is uncased garbage; never burn it as-is.
-2. Segment into ≤2-line cues respecting CPL and CPS; break at clause boundaries.
+2. Segment into ≤2-line cues respecting CPL and CPS; break at clause boundaries. *(The tool does this — CPL 39, orphan-safe breaks, timing fit. Override only for a deliberate reason.)*
 3. Build the cue file with ONE style: SRT + `force_style` (simple) or ASS (per-word accent color / karaoke).
 4. Burn in, forcing the locked style (never trust the SRT's own casing/size):
 ```bash
@@ -65,7 +95,8 @@ ffmpeg -i video.mp4 -vf "subtitles=subs.srt:fontsdir='<fonts-dir>':force_style='
 
 - [ ] sentence case, no random caps  · [ ] one font size everywhere · [ ] ≤2 lines
 - [ ] CPL within limit (≤39 Cyrillic / ≤42 latin) · [ ] ≤17 CPS, ≥0.83 s per cue
-- [ ] outline+shadow on; accent color only on emphasis words · [ ] lower-center, clear of key content
+- [ ] scrim plate on (brand «Mono» — no outline); accent only on the one emphasis word · [ ] lower-center, clear of key content
+- [ ] `variant=` confirmed with the user for this video (clean / read_aloud / accent / typewriter)
 
 ## Sources
 

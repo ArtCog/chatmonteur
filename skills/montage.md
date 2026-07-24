@@ -69,7 +69,9 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
 2. **Voice tempo** (hook editing) — before any visuals.
 3. **Storyboard** (graphics) — beats + anchor words + animation types.
 4. **Overlay wording** — exact strings confirmed (ASR mishears; burned typos cost a re-render).
-5. **Mix test clip** (30–40 s) — levels approved before the full final render.
+5. **Subtitle variant** — which of the four brand styles (clean / read_aloud / accent /
+   typewriter) fits this video. Propose the fittest, ASK before burning. → `subtitles.md`.
+6. **Mix test clip** (30–40 s) — levels approved before the full final render.
 
 Everything else — executing an approved plan, excluding read-script frames, format
 normalization, verification — is autonomous: do it and mention it.
