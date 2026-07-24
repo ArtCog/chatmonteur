@@ -32,12 +32,12 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 
 | Parameter | Value | px @1080 / @1440 | Why |
 |---|---|---|---|
-| **Font size** | **5% of frame height** | 54 / 72 | Legible without eating the frame (6% covers too much, 4.5% is TV-min) |
+| **Font size** | **5.5% of frame height** | 59 / 79 | Артур 2026-07-24: 5% мелковато; 6% уже ест кадр |
 | **Bottom margin** (MarginV) | **9% of frame height** | 97 / 130 | Sits ABOVE YouTube's player controls/progress bar (lower ~8–10% gets covered) |
 | **Max line width** | **80% of frame width** | — | Short lines read faster; >85% makes the eye travel edge to edge |
 | **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
 | **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
-| **Colour** | paper `#FAFAF7` text; plate = scrim `rgba(8,9,10,.52)` on static variants ONLY | — | Plate (ASS BorderStyle=4, padding 7/26 em) on C/B; dynamic A/D burn plain (Артур 2026-07-24) |
+| **Colour** | paper `#FAFAF7` text on scrim `rgba(8,9,10,.52)` — plate on EVERY variant | — | Captions must read on any footage (Артур 2026-07-24, финальное). Dynamic variants draw the FULL line's plate from cue start (BorderStyle-3 underlay) and animate text on top — the plate never grows piecewise |
 | **Emphasis** | one word INVERTED: solid paper chip `#FAFAF7`, ink text `#0B0B0C`; NEVER size-scaled | — | designer's «B · акцент» exactly; size-scaling is the karaoke tell we avoid |
 
 ## The four brand variants — the agent PICKS ONE PER VIDEO, then asks
@@ -45,12 +45,13 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 Geometry above is identical for all four; only the per-word motion and font differ.
 Pass `variant=` to the `subtitles` capability. Verified on real frames (2026-07-24).
 
-| `variant=` | Brand | Look | Plate | Use it for | Font |
-|---|---|---|---|---|---|
-| `clean` | C · чисто | whole line, soft-in | scrim | the safe default; dense talking-head | Golos Bold |
-| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | **none** | narrated key lines, the hook | Golos Bold |
-| `accent` | B · акцент | one word on a solid inverted chip | scrim | a single punch-word per line | Golos Bold |
-| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor, 23/26 size | **none** | "agent typing live" / terminal moments | JetBrains Mono |
+| `variant=` | Brand | Look | Use it for | Font |
+|---|---|---|---|---|
+| `clean` | C · чисто | whole line, soft-in | the safe default; dense talking-head | Golos Bold |
+| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | narrated key lines, the hook | Golos Bold |
+| `accent` | B · акцент | one word on a solid inverted chip | a single punch-word per line | Golos Bold |
+| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor, 23/26 size | "agent typing live" / terminal moments | JetBrains Mono |
+| `highlight` | E · караоке | whole line visible; the SPOKEN word inverts in sync | the modern default look (CapCut/Submagic era); dynamic yet readable | Golos Bold |
 
 **Choosing is an APPROVAL GATE — never silently default past it.** Propose the fittest
 variant for the video's tone (dense explainer → `clean`; punchy hook → `read_aloud`;
@@ -62,9 +63,12 @@ video unless they ask to mix.
 chip directly — verified on real frames 2026-07-24. Which word: the agent marks it in the
 transcript (`"emph": true`); unmarked → renders as `clean`.
 
-**No plate on dynamic variants — mind the footage.** A/D are plain paper text; over light areas
-(white mic, hands, bright screens) legibility dips. That's the accepted trade-off (Артур
-2026-07-24); if a key line lands on a light zone, prefer `clean`/`accent` there or re-time.
+**Plate implementation note (learned on real frames).** libass BorderStyle=4 draws its box per
+glyph-run — fine under opaque text, but an invisible-text underlay turns into patchy word boxes
+with ghost glyph edges. The full-line underlay for A/D therefore uses **BorderStyle=3** (one solid
+rectangle per event) with primary alpha FF in the style itself, and `\h` hard spaces. Colour
+default of the whole pipeline: NO grade — the original look; a LUT is an explicit agent-asked
+choice (`color` passes through when `lut` is empty).
 
 > Baseline agreed in the tuner + design kit; WILL be refined. When it changes, update HERE and in
 > `chatmonteur/tools/subtitles.py` (the `_to_ass` constants) together. Verify on a real frame —

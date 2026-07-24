@@ -59,7 +59,7 @@ def _build_parser() -> argparse.ArgumentParser:
     edit.add_argument("--project", help="project name (default: input file stem)")
     edit.add_argument("--root", default=".", help="workspace root holding projects/ (default: cwd)")
     edit.add_argument("--pipeline", default="talking_head", help="pipeline name in pipelines/")
-    edit.add_argument("--lut", default="warm_film", help="colour LUT name or .cube path")
+    edit.add_argument("--lut", default=None, help="colour LUT name or .cube path (default: ungraded original)")
     edit.add_argument("--model", help="override transcription model (e.g. tiny, large-v3)")
     edit.add_argument("--no-resume", action="store_true", help="ignore checkpoints, run everything")
     edit.set_defaults(func=_cmd_edit)

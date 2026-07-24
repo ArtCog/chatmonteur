@@ -101,12 +101,21 @@ def test_variant_typewriter_is_mono_with_cursor():
     assert "JetBrains Mono" in ass and "▌" in ass and "\\t(" in ass
 
 
-def test_dynamic_variants_have_no_plate_static_ones_do():
-    for variant, boxed in (("clean", True), ("accent", True),
-                           ("read_aloud", False), ("typewriter", False)):
+def test_every_variant_has_a_plate():
+    # static/highlight: box on the text style; dynamic: full-line Plate underlay
+    for variant in ("clean", "accent", "highlight"):
         style = next(l for l in _ass(variant).splitlines() if l.startswith("Style: Default"))
-        border_style = style.split(",")[15]
-        assert border_style == ("4" if boxed else "1"), variant
+        assert style.split(",")[15] == "4", variant
+    for variant in ("read_aloud", "typewriter"):
+        ass = _ass(variant)
+        assert "Style: Plate," in ass and "&HFF000000" in ass, variant  # box-only underlay
+        assert "Dialogue: 0," in ass and "\\h" in ass, variant  # one continuous plate per line
+
+
+def test_variant_highlight_inverts_each_word_in_turn():
+    ass = _ass("highlight")
+    assert ass.count("\\1c&H0C0B0B&") == 4  # every word gets its spoken-time chip
+    assert ass.count("\\1c&HF7FAFA&") == 4  # and flips back after
 
 
 def test_fit_timing_extends_a_flashing_cue():
@@ -150,7 +159,7 @@ def test_line_break_carries_preposition_down():
 
 def test_geometry_is_locked_at_1080p():
     style = next(l for l in _ass("clean").splitlines() if l.startswith("Style: Default"))
-    assert ",54," in style and ",192,192,97," in style  # 5% size, 80% width, 9% margin
+    assert ",59," in style and ",192,192,97," in style  # 5.5% size, 80% width, 9% margin
 
 
 def test_unknown_variant_rejected(tmp_path):

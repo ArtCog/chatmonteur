@@ -26,7 +26,12 @@ class ColorTool(Tool):
         cost="free",
     )
 
-    def run(self, ctx: RunContext, *, input: str, lut: str = "warm_film") -> ToolResult:
+    def run(self, ctx: RunContext, *, input: str, lut: str | None = None) -> ToolResult:
+        if not lut or lut == "none":
+            # Default = the original look, ungraded (Артур 2026-07-24). Grading is
+            # an explicit choice the agent ASKS about, never a silent default.
+            ctx.log("color: no LUT chosen, passing through ungraded")
+            return ToolResult(artifacts={"video": str(input)}, meta={"lut": None})
         media.require("ffmpeg")
         lut_path = self._resolve_lut(lut)
         encoder = media.detect_encoder(ctx.config.encode.encoder)
