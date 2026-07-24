@@ -121,6 +121,18 @@ def test_fit_timing_never_overlaps_next():
     assert cues[0]["end"] <= cues[1]["start"] - 0.08 + 1e-9
 
 
+def test_flash_cue_merges_into_previous_when_next_is_adjacent():
+    # extension can't help (next cue starts immediately) → tail merges backward
+    data = {"segments": [
+        {"start": 0.0, "end": 2.0, "text": "первая длинная реплика", "words": []},
+        {"start": 2.0, "end": 2.3, "text": "хвост", "words": []},
+        {"start": 2.3, "end": 5.0, "text": "следующее предложение", "words": []},
+    ]}
+    cues = _build_cues(data, 39)
+    assert len(cues) == 2 and cues[0]["text"].endswith("хвост")
+    assert all(c["end"] - c["start"] >= 0.83 for c in cues)
+
+
 def test_line_break_carries_preposition_down():
     words = "это очень длинная строка про агентов и код".split()
     lines = _break_lines(words, 20)

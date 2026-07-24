@@ -361,7 +361,28 @@ def _build_cues(data: dict, max_chars: int) -> list[dict]:
                 "start": float(seg["start"]), "end": float(seg["end"]),
                 "text": seg["text"].strip(), "words": [],
             })
-    return _fit_timing(cues)
+    return _fit_timing(_merge_flashes(cues, max_chars))
+
+
+def _merge_flashes(cues: list[dict], max_chars: int) -> list[dict]:
+    """Merge cues too short to display into the PREVIOUS cue.
+
+    _fit_timing can only extend into free time; when the next cue starts
+    immediately (dense speech) a short cue would flash regardless. Such a cue
+    is usually the tail of the previous sentence — merging backward keeps it
+    with its sentence. Skipped when the merged text would exceed 2 lines.
+    """
+    out: list[dict] = []
+    for c in cues:
+        prev = out[-1] if out else None
+        if (prev is not None and c["end"] - c["start"] < _MIN_DUR
+                and len(prev["text"]) + 1 + len(c["text"]) <= max_chars * 2):
+            prev["end"] = c["end"]
+            prev["text"] += " " + c["text"]
+            prev["words"] += c["words"]
+        else:
+            out.append(c)
+    return out
 
 
 # Reading-comfort limits (Netflix/BBC). See skills/subtitles.md.
