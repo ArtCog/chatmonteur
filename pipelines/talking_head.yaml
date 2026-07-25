@@ -48,6 +48,11 @@ steps:
     params:
       input: "${color.video}"
       transcript: "${transcribe.transcript}"
+      # Артур 2026-07-26: дефолт = караоке с зелёным акцентом. NB: на роликах Артура
+      # полные субтитры чаще НЕ нужны — вместо них смысловые текстовые вставки
+      # (см. skills/motion.md); субтитры остаются опцией.
+      variant: highlight
+      accent: green
 
   - id: render
     capability: render
