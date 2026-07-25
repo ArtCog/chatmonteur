@@ -8,15 +8,14 @@ Five brand «Mono» styles (see ``assets/brand/default/brand.md`` and
 
 * ``clean``       — C · чисто: plain line, no per-word motion. The pipeline default.
 * ``read_aloud``  — A · читаем вслух: words fade in one-by-one, synced to speech.
-* ``accent``      — B · акцент: the marked word (``"emph": true``) on a solid inverted
-                    chip — paper bg, ink text, per the design source.
+* ``accent``      — B · акцент: the marked word (``"emph": true``) in the accent colour.
 * ``typewriter``  — D · печатная машинка: JetBrains Mono, typed char-by-char + cursor.
-* ``highlight``   — E · караоке: the whole line is visible; the word being SPOKEN
-                    inverts in sync (the CapCut/Submagic-era standard look).
+* ``highlight``   — E · караоке: whole line visible; the word being SPOKEN takes the
+                    accent colour in sync (the dominant 2026 caption look).
 
-Every variant sits on the scrim plate; dynamic ones (A/D) draw the full line's plate
-as an underlay from cue start and animate the text on top — the plate never grows
-piecewise. Geometry is fixed (5.5% / 9% / 80%); motion and font differ by variant.
+NO plate, NO outline (Артур 2026-07-24, final): bold white text with a soft drop
+shadow only; key words pop by COLOUR (``accent=`` green|yellow). Geometry is fixed
+(5.5% / 9% / 80%); motion and font differ by variant.
 """
 
 from __future__ import annotations
@@ -49,12 +48,15 @@ class SubtitlesTool(Tool):
         max_chars: int = 39,  # Cyrillic-friendly CPL (≤39); safe for latin too
         burn: bool = True,
         variant: str = "clean",
+        accent: str = "green",
         font: str | None = None,
         font_dir: str | None = None,
     ) -> ToolResult:
         media.require("ffmpeg")
         if variant not in _VARIANTS:
             raise ToolError(f"unknown subtitle variant {variant!r}; choose one of {sorted(_VARIANTS)}")
+        if accent not in _ACCENTS:
+            raise ToolError(f"unknown accent colour {accent!r}; choose one of {sorted(_ACCENTS)}")
         font = font or _VARIANT_FONT.get(variant, _BRAND_FONT)
         font_dir = font_dir or _BRAND_FONT_DIR
         data = json.loads(open(transcript, encoding="utf-8").read())
@@ -75,7 +77,7 @@ class SubtitlesTool(Tool):
             # frame, so FontSize/margins are REAL PIXELS. SRT+force_style is scaled
             # by libass's default 288 PlayResY → a giant caption. (Learned the hard way.)
             ass_path = ctx.paths.transcripts / "captions.ass"
-            ass_path.write_text(_to_ass(data, max_chars, w, h, font, variant), encoding="utf-8")
+            ass_path.write_text(_to_ass(data, max_chars, w, h, font, variant, accent), encoding="utf-8")
             artifacts["ass"] = str(ass_path)
             fd = f":fontsdir='{media.filter_path(font_dir)}'" if font_dir else ""
             # Run from the ASS's folder, reference by bare name (dodge drive colon).
@@ -112,21 +114,22 @@ _FADE_MS = 150        # per-word soft-in for read_aloud (brand: ~0.2s)
 
 # Brand colours as ASS BGR (&HAABBGGRR; AA alpha: 00 opaque … FF transparent).
 _PAPER_BGR = "&H00F7FAFA"    # paper #FAFAF7 — caption text
-_SCRIM_BGR = "&H7A0A0908"    # scrim rgba(8,9,10,.52) → ink #08090A @ ~48% alpha
-_INK_C = "&H0C0B0B&"         # ink #0B0B0C as \1c — text on the inverted chip
-_PAPER_C = "&HF7FAFA&"       # paper as \3c/\4c — the chip itself
+_PAPER_C = "&HF7FAFA&"       # paper as a \1c value (flip back after a highlight)
+# Accent colours for the key/spoken word (\1c values). Артур выбирает `accent=`:
+_ACCENTS = {
+    "green": "&H6AE82B&",    # brand #2BE86A
+    "yellow": "&H00D7FF&",   # industry-standard caption yellow #FFD700
+}
 _BRAND_FONT = "Golos Text"
 _VARIANT_FONT = {"typewriter": "JetBrains Mono"}  # D uses the mono face
 _VARIANTS = {"clean", "read_aloud", "accent", "typewriter", "highlight"}
-# Plate rule (Артур 2026-07-24, second pass): EVERY variant sits on the scrim plate —
-# captions must read on any footage. What was ugly on dynamic styles wasn't the plate,
-# it was the plate growing word-by-word; now dynamic variants draw the FULL line's
-# plate at cue start (a separate underlay layer) and animate the words on top of it.
-# Plate padding 7px at 26px font; D is 23px at A-C's 26 — designer's exact ratios.
-_BOXED = {"clean", "accent", "highlight"}      # single event, plate around visible text
-_UNDERLAY = {"read_aloud", "typewriter"}       # plate layer below + animated text above
-_PAD_EM = 7 / 26
+# Plate rule (Артур 2026-07-24, FINAL): NO plate, NO outline — ever. The designer's
+# scrim boxes are out; the industry look (Hormozi/GaryVee era) is bold white text with
+# the key word in an accent COLOUR. Legibility aid = a soft dark drop shadow only
+# (~0.05 em, 50% ink) — depth, not a visible frame.
 _TYPE_SCALE = 23 / 26
+_SHADOW_EM = 0.05            # shadow offset as a fraction of font size
+_SHADOW_BGR = "&H800A0908"   # ink #08090A at ~50% — the drop shadow colour
 # Bundled brand fonts (Golos/JetBrains/Playfair, OFL) — libass finds them by family.
 _BRAND_FONT_DIR = str(pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / "default" / "fonts")
 
@@ -140,36 +143,20 @@ def _video_wh(path: str) -> tuple[int, int]:
 
 # --- ASS document --------------------------------------------------------------
 
-def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str) -> str:
+def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str,
+            accent: str = "green") -> str:
     """ASS with PlayRes pinned to the real frame → FontSize/margins are real px.
 
-    One Dialogue per cue for every variant; the per-variant renderer decides how the
-    cue's text animates (whole-line, word fade-in, accent word, or typed reveal).
+    One Dialogue per cue; the per-variant renderer decides how the cue's text
+    animates. No plate, no outline — bold text with a soft drop shadow only.
     """
     fs = round(_SIZE_FRAC * height)
     if variant == "typewriter":
         fs = round(fs * _TYPE_SCALE)             # designer: D is 23px at A-C's 26
     mv = round(_MARGIN_FRAC * height)
     side = round((1 - _WIDTH_FRAC) / 2 * width)  # L/R margin → 80% text width
-    bold = 0 if variant == "typewriter" else -1  # D is Mono 500, A/B/C Golos 700
-    pad = max(6, round(_PAD_EM * fs))
-    # BorderStyle 4 = plate in BackColour, Outline = plate padding (designer 7/26 em).
-    border = f"4,{pad},0" if variant in _BOXED else "1,0,0"
-    common = f"{bold},0,0,0,100,100,0,0"
-    tail = f"2,{side},{side},{mv},1"
-    styles = (
-        f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SCRIM_BGR},{_SCRIM_BGR},"
-        f"{common},{border},{tail}\n"
-    )
-    if variant in _UNDERLAY:
-        # The plate underlay: BorderStyle **3** = ONE solid rectangle per event (4 boxes
-        # per glyph-run → patchy plate + ghost glyph edges once the text is transparent;
-        # found on real frames). Text invisible IN THE STYLE (alpha FF primary), not via
-        # a tag (\1a fights \fad).
-        styles += (
-            f"Style: Plate,{font},{fs},&HFF000000,&HFF000000,{_SCRIM_BGR},{_SCRIM_BGR},"
-            f"{common},3,{pad},0,{tail}\n"
-        )
+    bold = 0 if variant == "typewriter" else -1  # D is Mono 500, others Golos 700
+    sh = max(2, round(_SHADOW_EM * fs))          # soft drop shadow — the only aid
     header = (
         "[Script Info]\n"
         "ScriptType: v4.00+\n"
@@ -180,33 +167,32 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        + styles +
-        "\n[Events]\n"
+        # BorderStyle 1, Outline 0 → no box, no stroke; Shadow in BackColour (\4c).
+        f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SHADOW_BGR},{_SHADOW_BGR},"
+        f"{bold},0,0,0,100,100,0,0,1,0,{sh},2,{side},{side},{mv},1\n\n"
+        "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     render = _RENDERERS[variant]
+    ac = _ACCENTS[accent]
     lines = []
     for cue in _build_cues(data, max_chars):
-        t0, t1 = _ass_time(cue["start"]), _ass_time(cue["end"])
-        if variant in _UNDERLAY:
-            # Layer 0: the full line's plate, on from cue start (soft-in). Hard spaces
-            # (\h) keep each line one run → one continuous box, not per-word patches.
-            plate_text = _wrap(cue["text"], max_chars).replace(" ", "\\h").replace("\n", "\\N")
-            lines.append(f"Dialogue: 0,{t0},{t1},Plate,,0,0,0,,{{\\fad(180,0)}}{plate_text}")
-        body = render(cue, max_chars, fs)
-        lines.append(f"Dialogue: 1,{t0},{t1},Default,,0,0,0,,{body}")
+        body = render(cue, max_chars, fs, ac)
+        lines.append(
+            f"Dialogue: 0,{_ass_time(cue['start'])},{_ass_time(cue['end'])},Default,,0,0,0,,{body}"
+        )
     return header + "\n".join(lines) + "\n"
 
 
 # --- per-variant cue renderers (cue -> ASS body text) --------------------------
 
-def _r_clean(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_clean(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
     """C · чисто — the whole line at once, brand soft-in fade."""
     return "{\\fad(180,0)}" + _wrap(cue["text"], max_chars).replace("\n", "\\N")
 
 
-def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0) -> str:
-    """A · читаем вслух — each word fades in at its own spoken time. No plate."""
+def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+    """A · читаем вслух — each word fades in at its own spoken time."""
     words = cue.get("words") or []
     if not words:
         return _r_clean(cue, max_chars)  # no timings → can't stagger, show as clean
@@ -221,10 +207,10 @@ def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0) -> str:
     return _layout(tokens, max_chars, render)
 
 
-def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
-    """B · акцент — the emphasised word (``"emph": true``) INVERTED, per the design:
-    paper chip `#FAFAF7`, ink text `#0B0B0C`. In ASS the chip is a per-run BorderStyle-4
-    box: swapping \\3c/\\4c to paper and \\1c to ink inverts just that word's run.
+def _r_accent(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+    """B · акцент — the emphasised word (``"emph": true``) in the accent COLOUR.
+
+    Industry standard (Hormozi-era): key words pop by colour, nothing else changes.
     """
     words = cue.get("words") or []
     if not words:
@@ -235,23 +221,14 @@ def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
         return _r_clean(cue, max_chars)  # nothing marked → plain line
 
     def render(tok: dict) -> str:
-        if tok["emph"]:
-            # \3a/\4a opaque: the chip is SOLID paper (the line's scrim is 52%).
-            return f"{{{_CHIP_ON}}}{tok['text']}{{\\r}}"
-        return tok["text"]
+        return f"{{\\1c{ac}}}{tok['text']}{{\\r}}" if tok["emph"] else tok["text"]
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-_CHIP_ON = f"\\1c{_INK_C}\\3c{_PAPER_C}\\4c{_PAPER_C}\\3a&H00&\\4a&H00&"
-_CHIP_OFF = f"\\1c{_PAPER_C}\\3c&H0A0908&\\4c&H0A0908&\\3a&H7A&\\4a&H7A&"
-
-
-def _r_highlight(cue: dict, max_chars: int, fs: int = 0) -> str:
-    """E · караоке — the whole line shows at once; the word being spoken inverts.
-
-    The modern word-highlight look (CapCut/Submagic-era standard), drawn with the
-    brand's inversion chip instead of a colour pop. Needs word timings.
+def _r_highlight(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+    """E · караоке — the whole line shows at once; the word being SPOKEN takes the
+    accent colour, then flips back. The dominant 2026 caption look. Needs word timings.
     """
     words = cue.get("words") or []
     if not words:
@@ -263,14 +240,14 @@ def _r_highlight(cue: dict, max_chars: int, fs: int = 0) -> str:
               for w in words if w["word"].strip()]
 
     def render(tok: dict) -> str:
-        s, e = tok["s"], max(tok["e"], tok["s"] + 120)  # chip holds ≥120ms, never blinks
-        return (f"{{\\t({s},{s + 80},{_CHIP_ON})\\t({e},{e + 80},{_CHIP_OFF})}}"
+        s, e = tok["s"], max(tok["e"], tok["s"] + 120)  # colour holds ≥120ms, never blinks
+        return (f"{{\\t({s},{s + 80},\\1c{ac})\\t({e},{e + 80},\\1c{_PAPER_C})}}"
                 f"{tok['text']}{{\\r}}")
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_typewriter(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_typewriter(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
     """D · печатная машинка — chars type in at a steady pace, cursor follows the caret.
 
     Untyped chars are hidden AND zero-width (`\\fscx0`), not just transparent — else the

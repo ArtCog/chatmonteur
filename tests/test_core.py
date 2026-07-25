@@ -91,9 +91,11 @@ def test_variant_read_aloud_fades_each_word():
     assert ass.count("\\t(") == 4 and "\\alpha&HFF&" in ass  # 4 words, each fades in
 
 
-def test_variant_accent_inverts_only_the_emph_word():
-    ass = _ass("accent")  # designer spec: paper chip + ink text, exactly one word
-    assert ass.count("\\1c&H0C0B0B&") == 1 and ass.count("\\3c&HF7FAFA&") == 1
+def test_variant_accent_colors_only_the_emph_word():
+    green = _ass("accent")  # brand green by default, exactly one word marked
+    assert green.count("\\1c&H6AE82B&") == 1
+    yellow = _to_ass(_SUBS, 42, 1920, 1080, "Golos Text", "accent", "yellow")
+    assert yellow.count("\\1c&H00D7FF&") == 1
 
 
 def test_variant_typewriter_is_mono_with_cursor():
@@ -101,21 +103,20 @@ def test_variant_typewriter_is_mono_with_cursor():
     assert "JetBrains Mono" in ass and "▌" in ass and "\\t(" in ass
 
 
-def test_every_variant_has_a_plate():
-    # static/highlight: box on the text style; dynamic: full-line Plate underlay
-    for variant in ("clean", "accent", "highlight"):
-        style = next(l for l in _ass(variant).splitlines() if l.startswith("Style: Default"))
-        assert style.split(",")[15] == "4", variant
-    for variant in ("read_aloud", "typewriter"):
+def test_no_plate_no_outline_shadow_only():
+    for variant in ("clean", "accent", "highlight", "read_aloud", "typewriter"):
         ass = _ass(variant)
-        assert "Style: Plate," in ass and "&HFF000000" in ass, variant  # box-only underlay
-        assert "Dialogue: 0," in ass and "\\h" in ass, variant  # one continuous plate per line
+        assert "Style: Plate," not in ass, variant
+        style = next(l for l in ass.splitlines() if l.startswith("Style: Default"))
+        parts = style.split(",")
+        border_style, outline, shadow = parts[15], parts[16], parts[17]
+        assert border_style == "1" and outline == "0" and int(shadow) >= 2, variant
 
 
-def test_variant_highlight_inverts_each_word_in_turn():
+def test_variant_highlight_colors_each_word_in_turn():
     ass = _ass("highlight")
-    assert ass.count("\\1c&H0C0B0B&") == 4  # every word gets its spoken-time chip
-    assert ass.count("\\1c&HF7FAFA&") == 4  # and flips back after
+    assert ass.count("\\1c&H6AE82B&") == 4  # every word takes the accent at its time
+    assert ass.count("\\1c&HF7FAFA&") == 4  # and flips back to paper after
 
 
 def test_fit_timing_extends_a_flashing_cue():

@@ -37,38 +37,31 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 | **Max line width** | **80% of frame width** | — | Short lines read faster; >85% makes the eye travel edge to edge |
 | **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
 | **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
-| **Colour** | paper `#FAFAF7` text on scrim `rgba(8,9,10,.52)` — plate on EVERY variant | — | Captions must read on any footage (Артур 2026-07-24, финальное). Dynamic variants draw the FULL line's plate from cue start (BorderStyle-3 underlay) and animate text on top — the plate never grows piecewise |
-| **Emphasis** | one word INVERTED: solid paper chip `#FAFAF7`, ink text `#0B0B0C`; NEVER size-scaled | — | designer's «B · акцент» exactly; size-scaling is the karaoke tell we avoid |
+| **Colour** | paper `#FAFAF7` bold text, **NO plate, NO outline** | — | Артур 2026-07-24 (финальное, отменяет плашки): индустрия жжёт жирный белый текст без рамок. Читаемость держит только мягкая тень (0.05 em, ink 50%) — глубина, не рамка |
+| **Accent** | key/spoken word in COLOUR: `green` #2BE86A (бренд) или `yellow` #FFD700 (индустрия) | — | Hormozi/GaryVee-стандарт: акцент цветом, не инверсией и не размером. `accent=` параметр |
+| **Emphasis** | = the Accent row (colour); NEVER size-scaled, NEVER caps | — | size-scaling and caps остаются запрещены |
 
-## The four brand variants — the agent PICKS ONE PER VIDEO, then asks
+## The five variants — the agent PICKS PER VIDEO, then asks
 
-Geometry above is identical for all four; only the per-word motion and font differ.
-Pass `variant=` to the `subtitles` capability. Verified on real frames (2026-07-24).
+Geometry above is identical for all five; only the per-word motion and font differ.
+Pass `variant=` (+ `accent=` green|yellow) to the `subtitles` capability. Verified on
+real frames (2026-07-24).
 
-| `variant=` | Brand | Look | Use it for | Font |
-|---|---|---|---|---|
-| `clean` | C · чисто | whole line, soft-in | the safe default; dense talking-head | Golos Bold |
-| `read_aloud` | A · читаем вслух | words fade in one-by-one, synced to speech | narrated key lines, the hook | Golos Bold |
-| `accent` | B · акцент | one word on a solid inverted chip | a single punch-word per line | Golos Bold |
-| `typewriter` | D · печатная машинка | chars typed in + `▌` cursor, 23/26 size | "agent typing live" / terminal moments | JetBrains Mono |
-| `highlight` | E · караоке | whole line visible; the SPOKEN word inverts in sync | the modern default look (CapCut/Submagic era); dynamic yet readable | Golos Bold |
+| `variant=` | Look | Use it for | Font |
+|---|---|---|---|
+| `clean` | whole line, soft-in, no per-word motion | the safe default; dense talking-head | Golos Bold |
+| `read_aloud` | words fade in one-by-one, synced to speech | narrated key lines, the hook | Golos Bold |
+| `accent` | the marked word (`"emph": true`) in the accent colour | a single punch-word per line | Golos Bold |
+| `typewriter` | chars typed in + `▌` cursor, 23/26 size | "agent typing live" / terminal moments | JetBrains Mono |
+| `highlight` | whole line visible; the SPOKEN word takes the accent colour in sync | the dominant modern look (Hormozi/CapCut era) | Golos Bold |
 
 **Choosing is an APPROVAL GATE — never silently default past it.** Propose the fittest
-variant for the video's tone (dense explainer → `clean`; punchy hook → `read_aloud`;
-terminal/agent demo → `typewriter`) and ASK the user to confirm or switch. One variant per
-video unless they ask to mix.
+variant + accent colour for the video's tone and ASK the user to confirm or switch. One
+variant per video unless they ask to mix. Accent words: the agent marks them in the
+transcript (`"emph": true`) by MEANING (terms, numbers, names — not random).
 
-**B · акцент = true inversion, burned.** Per-run box-colour swap in libass (`\3c\4c` paper +
-`\3a\4a` opaque + `\1c` ink inside a BorderStyle=4 line) renders the designer's solid inverted
-chip directly — verified on real frames 2026-07-24. Which word: the agent marks it in the
-transcript (`"emph": true`); unmarked → renders as `clean`.
-
-**Plate implementation note (learned on real frames).** libass BorderStyle=4 draws its box per
-glyph-run — fine under opaque text, but an invisible-text underlay turns into patchy word boxes
-with ghost glyph edges. The full-line underlay for A/D therefore uses **BorderStyle=3** (one solid
-rectangle per event) with primary alpha FF in the style itself, and `\h` hard spaces. Colour
-default of the whole pipeline: NO grade — the original look; a LUT is an explicit agent-asked
-choice (`color` passes through when `lut` is empty).
+Colour default of the whole pipeline: NO grade — the original look; a LUT is an explicit
+agent-asked choice (`color` passes through when `lut` is empty).
 
 > Baseline agreed in the tuner + design kit; WILL be refined. When it changes, update HERE and in
 > `chatmonteur/tools/subtitles.py` (the `_to_ass` constants) together. Verify on a real frame —
@@ -86,7 +79,7 @@ mishear repair** («код-код» → Claude Code). Fix these in the transcrip
 
 ## Build procedure
 
-1. Transcribe with word timings. **Fix ASR mishears by meaning** before writing cues (brands and technical terms suffer most), and apply proper capitalization/punctuation — a raw transcript is uncased garbage; never burn it as-is.
+1. Transcribe with word timings. **Fix ASR mishears by meaning** before writing cues (brands and technical terms suffer most), and apply proper capitalization/punctuation — a raw transcript is uncased garbage; never burn it as-is. **Delete Whisper's ghost credits**: the RU model hallucinates lines like «Субтитры делал DimaTorzok» / «Субтитры сделал …» / «Продолжение следует» on silence — they are NEVER real speech; drop the whole segment. Fix mangled anglicisms the same pass («код-код» → Claude Code, «капкат» → CapCut).
 2. Segment into ≤2-line cues respecting CPL and CPS; break at clause boundaries. *(The tool does this — CPL 39, orphan-safe breaks, timing fit. Override only for a deliberate reason.)*
 3. Build the cue file with ONE style: SRT + `force_style` (simple) or ASS (per-word accent color / karaoke).
 4. Burn in, forcing the locked style (never trust the SRT's own casing/size):

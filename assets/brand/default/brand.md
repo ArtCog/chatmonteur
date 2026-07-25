@@ -28,18 +28,18 @@ lower-thirds, callouts and infographics on-brand.
 
 ## Components (exact specs from the design)
 
-### Subtitles — 5 styles (Golos Text Bold `#FAFAF7`; plate = scrim `rgba(8,9,10,.52)`, padding 7/26 em, soft-in)
-Plate on EVERY style (Артур 2026-07-24, финальное — «подложка должна быть, чтобы всегда были
-видны»). Dynamic styles draw the full line's plate from cue start and animate text on top —
-the plate never builds up word-by-word.
+### Subtitles — 5 styles (Golos Text Bold `#FAFAF7`; NO plate, NO outline; soft drop shadow only)
+⚠️ Overrides the designer source (Артур 2026-07-24, финальное): scrim plates & inversion chips
+are OUT for captions. Bold white text; the key/spoken word pops by COLOUR — `green` `#2BE86A`
+(brand) or `yellow` `#FFD700` (industry). Plates/inversion stay for OTHER components
+(lower-third, callout) — only captions changed.
 - **A · читаем вслух** — words appear one-by-one (soft-in, ~0.2s stagger). For narrated key lines.
-- **B · акцент** — one word inverted: SOLID `background:#FAFAF7; color:#0B0B0C`. Emphasis by
-  INVERSION, not colour.
+- **B · акцент** — the marked word in the accent colour. A single punch-word per line.
 - **C · чисто** — plain line, no per-word motion. The safe default.
 - **D · печатная машинка** — JetBrains Mono 500 at 23/26 of base size, typed reveal + blinking
   cursor `▌`. For "agent typing live" moments.
-- **E · караоке (highlight)** — whole line visible, the word being spoken inverts in sync
-  (the B-chip travelling with speech). Modern word-highlight standard, added 2026-07-24.
+- **E · караоке (highlight)** — whole line visible, the word being SPOKEN takes the accent
+  colour in sync. The dominant modern caption look (2026).
 
 Geometry (fixed, from ChatMonteur standard): size ≈5.5% frame height, bottom margin ≈9%,
 line width ≈80%, bottom-center anchor. See `../../../skills/subtitles.md`.
