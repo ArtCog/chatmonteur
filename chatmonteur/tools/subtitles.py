@@ -65,7 +65,12 @@ class SubtitlesTool(Tool):
 
         cues = sum(1 for s in data.get("segments", []) if s.get("text", "").strip())
         artifacts = {"srt": str(srt_path)}
-        if burn and not cues:
+        if not burn:
+            # Default on this channel: captions stay OFF (meaning-inserts are the text
+            # layer). The SRT is still written — YouTube takes it as a caption file.
+            ctx.log("subtitles: burn off — SRT only, video passes through")
+            artifacts["video"] = str(input)
+        elif burn and not cues:
             # Nothing to burn (e.g. silent/music clip) — pass the video through.
             ctx.log("subtitles: empty transcript, skipping burn")
             artifacts["video"] = str(input)

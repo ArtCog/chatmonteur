@@ -40,7 +40,9 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
 
 ③ VISUAL MONTAGE (editorial, approval-gated) — locks the GEOMETRY, before color
    lay B-roll/screen/graphics under the narration by meaning + zooms/punch-ins +
-   block-transition cards → storyboard → APPROVAL. ALL framing/zoom/placement is fixed here.
+   block-transition cards + MEANING-INSERTS (1–2 in the hook MANDATORY; body by
+   meaning — see motion.md) → storyboard → APPROVAL. ALL framing/zoom/placement is
+   fixed here.
    Why before color: grade must see the final geometry; an overlay in absolute coords
    would drift/clip if a zoom lands after it.
    → motion.md + hook-editing.md

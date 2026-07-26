@@ -30,15 +30,19 @@ overstim fastest.) Concrete cadence:
 - **Zooms/punch-ins:** one specific element per use, never per sentence (seasick otherwise).
 - **On-screen text accent:** only the 1–3 words that matter (term/number/name), NEVER a
   duplicate of the subtitle line.
-- **Meaning-inserts (смысловые вставки) — Артур's primary text layer (2026-07-26).** NOT
-  full captions: selective pop-up text at key beats only (the MrBeast/Ривера pattern).
-  One concise line = the POINT of what's being said («🚫 ноль программ монтажа»), an
-  attention emoji, the key words in the accent colour (juicy yellow #FFD700 or brand
-  green), lower-center, pop/fade-in ~0.2s, gone in 2.5–3.5s. 3–6 per minute at natural
-  emphasis moments; full subtitles are usually OFF on this channel (karaoke-green if
-  ever needed). Build: agent picks beats from the transcript → card (emoji+phrase+accent)
-  → HyperFrames/HTML render → overlay timed to the anchor word. Never cover the speaker's
-  face or what the viewer must see.
+- **Meaning-inserts (смысловые вставки) — Артур's primary text layer (2026-07-26, LOCKED).**
+  NOT full captions: selective pop-up text at key beats only (the MrBeast/Ривера pattern).
+  **STANDARD look = «эмоджи сверху»**: attention emoji above (~135px @1080), below it ONE
+  concise line = the POINT of what's said («🚫 ноль программ монтажа»), Golos 800 ~96px
+  white, key words in juicy yellow `#FFD700`, no plate, soft shadow, lower-center,
+  fade/pop-in ~0.2s, gone in 2.5–3.5s. Alt look «стикер» (white rounded chip, ink text) —
+  ONLY when Артур asks. **The HOOK gets 1–2 inserts MANDATORY**; body — by meaning or on
+  request. Full subtitles are OFF unless Артур explicitly says «добавь субтитры»
+  (then karaoke-green). WHEN: inserts are built in phase ③ VISUAL MONTAGE, together with
+  the rest of the motion pass — after the meaning cut locks timing, before color.
+  Build: agent picks beats from the FINAL-cut transcript → card (emoji+phrase+accent) →
+  HTML/HyperFrames render → overlay timed to the anchor word. Never cover the speaker's
+  face/hands or what the viewer must see (face-safe-zone).
 - **SFX:** 1–2 signature sounds reused (a whoosh on every cut is the amateur tell — see sound.md).
 - **Memes/reactions:** only at a real joke, ~1–3 per 10 min; never a default transition.
 - **J/L-cuts** are near-default for B-roll under continuous narration; **speed-ramp** waiting
@@ -79,7 +83,10 @@ meaning cuts; a transcript of the raw file is useless for sync.
 ## Typography — the default brand «Mono»
 
 The default design system is `assets/brand/default/brand.md` («ИИмерсивный - Mono», imported
-from Claude Design). Use its fonts — do NOT pick your own:
+from Claude Design). **The brand is BLACK-GRAY MONOCHROME (ink `#0B0B0C` / paper `#FAFAF7` /
+grays)** — green `#2BE86A` is a SMALL accent, never the base of a composition (Артур
+2026-07-26: «наш бренд чёрно-серый»). Motion graphics live in that monochrome world.
+Use its fonts — do NOT pick your own:
 
 - **Golos Text** (sans) — headlines, subtitles, body. Cyrillic-strong.
 - **JetBrains Mono** — labels, meta (uppercase, wide tracking), the "typewriter" caption.
