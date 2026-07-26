@@ -18,6 +18,10 @@ from chatmonteur.core.config import Config  # noqa: E402
 from chatmonteur.core.errors import ConfigError  # noqa: E402
 from chatmonteur.core.errors import ToolError  # noqa: E402
 from chatmonteur.tools.cut_edl import _invert, _keep_ranges, _merge  # noqa: E402
+from chatmonteur.tools.inserts import _emoji_bottom as _ins_emoji_bottom  # noqa: E402
+from chatmonteur.tools.inserts import _filter_graph as _ins_filter_graph  # noqa: E402
+from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
+from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -174,6 +178,58 @@ def test_unknown_variant_rejected(tmp_path):
         tool.run(ctx, input="x.mp4", transcript=str(tr), variant="sparkle")
 
 
+# --- meaning-inserts (pure ASS generation, no ffmpeg) --------------------------
+
+_INS = [{"start": 5.5, "end": 8.8, "emoji": "🚫",
+         "text": "ноль программ монтажа", "key": "ноль программ"}]
+
+
+def _ins_ass(style="emoji_top", accent="yellow", items=None):
+    return _ins_to_ass(items or _INS, 1920, 1080, "Golos Text", style, accent)
+
+
+def test_insert_emoji_is_overlaid_as_a_picture_not_ass():
+    # libass renders outline glyphs only → a colour emoji would come out grey.
+    ass = _ins_ass()
+    assert "🚫" not in ass
+    assert len([l for l in ass.splitlines() if l.startswith("Dialogue:")]) == 1
+    graph = _ins_filter_graph("i.ass", "", [{"start": 5.5, "end": 8.8}], 1080)
+    assert "overlay=(W-w)/2:H-h-" in graph and "enable='between(t,5.500,8.800)'" in graph
+    assert graph.endswith("format=yuv420p[v]")
+
+
+def test_insert_emoji_clears_the_text_line():
+    # the emoji's bottom must sit above the text block, never on top of it
+    assert _ins_emoji_bottom(1080) > round(0.11 * 1080)
+
+
+def test_insert_colors_only_the_key_words():
+    ass = _ins_ass()
+    assert ass.count("\\1c&H00D7FF&") == 1  # juicy yellow, once
+    assert "\\1c" not in _ins_ass(items=[{**_INS[0], "key": ""}])  # no key → plain line
+
+
+def test_insert_key_missing_from_text_falls_back_to_plain():
+    ass = _ins_ass(items=[{**_INS[0], "key": "которого там нет"}])
+    assert "\\1c" not in ass
+
+
+def test_insert_standard_has_no_plate_sticker_does():
+    std = next(l for l in _ins_ass().splitlines() if l.startswith("Style: Ins"))
+    assert std.split(",")[15] == "1"  # BorderStyle 1 + shadow only
+    stick = next(l for l in _ins_ass("sticker").splitlines() if l.startswith("Style: Ins"))
+    assert stick.split(",")[15] == "3"  # paper plate
+    # on the paper plate the accent must switch to a paper-safe colour
+    assert "\\1c&H0C59E8&" in _ins_ass("sticker")
+
+
+def test_insert_plan_rejects_bad_ranges(tmp_path):
+    plan = tmp_path / "i.json"
+    plan.write_text('{"inserts": [{"start": 3, "end": 3, "text": "x"}]}', encoding="utf-8")
+    with pytest.raises(ToolError):
+        _load_ins_plan(plan)
+
+
 def test_pipeline_parse_and_duplicate_id(tmp_path):
     good = tmp_path / "p.yaml"
     good.write_text("name: t\nsteps:\n  - capability: normalize\n  - id: r\n    capability: render\n")
@@ -189,5 +245,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "color", "motion", "render"}
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts",
+                "color", "motion", "render"}
     assert expected <= caps

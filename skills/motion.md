@@ -40,9 +40,35 @@ overstim fastest.) Concrete cadence:
   request. Full subtitles are OFF unless Артур explicitly says «добавь субтитры»
   (then karaoke-green). WHEN: inserts are built in phase ③ VISUAL MONTAGE, together with
   the rest of the motion pass — after the meaning cut locks timing, before color.
-  Build: agent picks beats from the FINAL-cut transcript → card (emoji+phrase+accent) →
-  HTML/HyperFrames render → overlay timed to the anchor word. Never cover the speaker's
+  Build: agent picks beats from the FINAL-cut transcript → writes `inserts.json` → shows
+  the list for APPROVAL → calls the `inserts` capability. Never cover the speaker's
   face/hands or what the viewer must see (face-safe-zone).
+
+### `inserts` — how to drive it
+
+The tool is the hands; YOU choose the beats, condense the thought, pick the emoji and the
+key words. Write `projects/<name>/transcripts/inserts.json`:
+
+```json
+{"inserts": [
+  {"start": 5.5, "end": 8.8, "emoji": "🚫",
+   "text": "ноль программ монтажа", "key": "ноль программ"}
+]}
+```
+
+- `text` — ONE short line, the POINT of what's being said (≤28 chars/line, wraps beyond).
+  Not a transcript quote — the condensed thought.
+- `key` — the substring to accent (optional; must appear in `text` or it's drawn plain).
+- `emoji` — optional; picked for attention, matching the emotion (🚫 danger/negation,
+  ✅ result, ⚠️ warning, 💰 money, 🔥 hot take).
+- Params: `style` = `emoji_top` (LOCKED default) | `sticker` (ONLY when Артур asks),
+  `accent` = `yellow` (default) | `green`.
+- Timing: 2.5–3.5 s per insert, landing ON the anchor word, 3–6 per minute max.
+
+**Colour emoji are PNG overlays, not font glyphs** — libass renders outline glyphs only, so
+a COLR/CBDT emoji comes out grey through `ass=` (verified on a real frame 2026-07-26). The
+tool draws them with Pillow (`pip install chatmonteur[emoji]`); without Pillow the insert
+still burns, just text-only.
 - **SFX:** 1–2 signature sounds reused (a whoosh on every cut is the amateur tell — see sound.md).
 - **Memes/reactions:** only at a real joke, ~1–3 per 10 min; never a default transition.
 - **J/L-cuts** are near-default for B-roll under continuous narration; **speed-ramp** waiting
