@@ -15,6 +15,29 @@ a graphics engine for a lower third.
 - **Zoom classification** (from the transcript): normal statement 1.0x · emphasis 1.15x ·
   critical point 1.3x. Punch-ins land on the emphasized WORD, not vaguely near it.
 
+### `overlays` — B-roll OVER the speaker (how to drive it)
+
+The channel's b-roll style: the speaker stays in frame, the asset rides on top. You source
+the asset (own capture / Playwright screenshot at `device_scale_factor=2` for sharpness /
+CC0 stock), write `projects/<name>/transcripts/overlays.json`, get the storyboard approved,
+then call the `overlays` capability:
+
+```json
+{"overlays": [
+  {"start": 15.0, "end": 20.5, "file": "assets/github.png",
+   "pos": "top_right", "width": 0.46}
+]}
+```
+
+- `pos`: `top_right` / `top_left` / `top_center` / `center_right` / `center_left` — the
+  safe zone is the upper half and sides; the lower center belongs to captions/inserts
+  (the tool refuses anything else). PICK THE SIDE AWAY FROM THE SPEAKER'S FACE — check a
+  frame first; face-safe automation is future work.
+- `width`: fraction of frame width, 0.1–0.7 (default 0.45); bigger would bury the speaker —
+  cut away instead of overlaying.
+- `file`: image (looped) or video clip (played muted from its start). 5–20 s per overlay,
+  in/out on meaning boundaries; J/L-feel comes from the alpha fade built into the tool.
+
 ### `zooms` — how to drive it (Артур 2026-07-26: `punch` is the channel standard)
 
 You pick the emphasis moments from the FINAL-cut transcript, write

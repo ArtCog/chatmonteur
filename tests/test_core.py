@@ -27,6 +27,8 @@ from chatmonteur.tools.zooms import _load_plan as _load_zoom_plan  # noqa: E402
 from chatmonteur.tools.inserts import _filter_graph as _ins_filter_graph  # noqa: E402
 from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
+from chatmonteur.tools.overlays import _filter_graph as _ovl_filter_graph  # noqa: E402
+from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -278,6 +280,36 @@ def test_zoom_plan_defaults_to_punch_at_emphasis_scale(tmp_path):
     assert it["kind"] == "punch" and it["scale"] == 1.15 and it["cy"] == 0.40
 
 
+# --- overlays (pure plan/graph generation, no ffmpeg) --------------------------
+
+def test_overlay_plan_validates_pos_width_and_file(tmp_path):
+    img = tmp_path / "a.png"
+    img.write_bytes(b"x")
+    p = tmp_path / "o.json"
+    p.write_text(json.dumps({"overlays": [
+        {"start": 1, "end": 4, "file": str(img), "pos": "top_right", "width": 0.45}]}))
+    (it,) = _load_ovl_plan(p)
+    assert it["is_image"] and it["pos"] == "top_right"
+    p.write_text(json.dumps({"overlays": [
+        {"start": 1, "end": 4, "file": str(img), "pos": "bottom_center"}]}))
+    with pytest.raises(ToolError):  # lower center belongs to captions/inserts
+        _load_ovl_plan(p)
+    p.write_text(json.dumps({"overlays": [
+        {"start": 1, "end": 4, "file": str(img), "width": 0.9}]}))
+    with pytest.raises(ToolError):  # would bury the speaker
+        _load_ovl_plan(p)
+
+
+def test_overlay_graph_scales_fades_and_gates(tmp_path):
+    items = [{"file": "a.png", "start": 5.5, "end": 9.0, "pos": "top_right",
+              "width": 0.45, "is_image": True}]
+    g = _ovl_filter_graph(items, 1920, 1080)
+    assert "scale=864:-2" in g                       # 45% of 1920, even
+    assert "overlay=W-w-58:58" in g                  # top_right with 3% margin
+    assert "enable='between(t,5.500,9.000)'" in g
+    assert g.endswith("format=yuv420p[v]")
+
+
 def test_pipeline_parse_and_duplicate_id(tmp_path):
     good = tmp_path / "p.yaml"
     good.write_text("name: t\nsteps:\n  - capability: normalize\n  - id: r\n    capability: render\n")
@@ -293,6 +325,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays",
                 "color", "motion", "render"}
     assert expected <= caps
