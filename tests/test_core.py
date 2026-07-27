@@ -18,7 +18,12 @@ from chatmonteur.core.config import Config  # noqa: E402
 from chatmonteur.core.errors import ConfigError  # noqa: E402
 from chatmonteur.core.errors import ToolError  # noqa: E402
 from chatmonteur.tools.cut_edl import _invert, _keep_ranges, _merge  # noqa: E402
+import json  # noqa: E402
+import re as _re  # noqa: E402
+
 from chatmonteur.tools.inserts import _emoji_bottom as _ins_emoji_bottom  # noqa: E402
+from chatmonteur.tools.zooms import _centre_expr, _zoom_expr  # noqa: E402
+from chatmonteur.tools.zooms import _load_plan as _load_zoom_plan  # noqa: E402
 from chatmonteur.tools.inserts import _filter_graph as _ins_filter_graph  # noqa: E402
 from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
@@ -230,6 +235,49 @@ def test_insert_plan_rejects_bad_ranges(tmp_path):
         _load_ins_plan(plan)
 
 
+# --- zooms (pure expression generation, no ffmpeg) -----------------------------
+
+def _zoom_items(*overrides):
+    base = {"start": 3.0, "end": 6.0, "kind": "punch", "scale": 1.15, "cx": 0.5, "cy": 0.40}
+    return [{**base, **o} for o in (overrides or ({},))]
+
+
+def test_zoom_punch_is_a_gated_constant():
+    z = _zoom_expr(_zoom_items())
+    assert z == "1+between(in_time,3.0,6.0)*0.15"
+
+
+def test_zoom_uses_in_time_never_t():
+    # zoompan has no `t` variable — an expression with bare t fails at runtime
+    z = _zoom_expr(_zoom_items({"kind": "ease"}, {"start": 8.0, "end": 10.0, "kind": "drift"}))
+    assert "in_time" in z and not _re.search(r"(?<![a-z_])t(?![a-z_(])", z)
+
+
+def test_zoom_centres_are_time_gated_per_window():
+    items = _zoom_items({}, {"start": 8.0, "end": 10.0, "cy": 0.35})
+    cy = _centre_expr(items, "cy")
+    assert "-0.1*between(in_time,3.0,6.0)" in cy  # 0.40 → offset −0.10 from base
+    assert "-0.15*between(in_time,8.0,10.0)" in cy
+
+
+def test_zoom_plan_rejects_overlap_and_wild_scale(tmp_path):
+    p = tmp_path / "z.json"
+    p.write_text(json.dumps({"zooms": [
+        {"start": 1, "end": 5, "scale": 1.15}, {"start": 4, "end": 8, "scale": 1.15}]}))
+    with pytest.raises(ToolError):
+        _load_zoom_plan(p)
+    p.write_text(json.dumps({"zooms": [{"start": 1, "end": 5, "scale": 2.5}]}))
+    with pytest.raises(ToolError):
+        _load_zoom_plan(p)
+
+
+def test_zoom_plan_defaults_to_punch_at_emphasis_scale(tmp_path):
+    p = tmp_path / "z.json"
+    p.write_text(json.dumps({"zooms": [{"start": 1, "end": 5}]}))
+    (it,) = _load_zoom_plan(p)
+    assert it["kind"] == "punch" and it["scale"] == 1.15 and it["cy"] == 0.40
+
+
 def test_pipeline_parse_and_duplicate_id(tmp_path):
     good = tmp_path / "p.yaml"
     good.write_text("name: t\nsteps:\n  - capability: normalize\n  - id: r\n    capability: render\n")
@@ -245,6 +293,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms",
                 "color", "motion", "render"}
     assert expected <= caps

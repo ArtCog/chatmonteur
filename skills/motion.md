@@ -14,6 +14,28 @@ a graphics engine for a lower third.
   for direct contact on key statements (for voice-over, B-roll IS the visual channel — near-constant).
 - **Zoom classification** (from the transcript): normal statement 1.0x · emphasis 1.15x ·
   critical point 1.3x. Punch-ins land on the emphasized WORD, not vaguely near it.
+
+### `zooms` — how to drive it (Артур 2026-07-26: `punch` is the channel standard)
+
+You pick the emphasis moments from the FINAL-cut transcript, write
+`projects/<name>/transcripts/zooms.json`, show the plan, then call the `zooms` capability:
+
+```json
+{"zooms": [
+  {"start": 34.2, "end": 37.8, "kind": "punch", "scale": 1.15},
+  {"start": 61.0, "end": 66.5, "kind": "push",  "scale": 1.10}
+]}
+```
+
+- Kinds: **`punch`** (instant in/out — reads as an angle change; THE DEFAULT) · `ease`
+  (soft 0.35s) · `push` (slow creep for a long thought) · `drift` (punch + slow +3%).
+- `scale` defaults to 1.15 (emphasis); 1.3 only for a critical point. >1.3 on a 1080p
+  source visibly softens — the honest fix is recording at higher resolution.
+- Centre defaults to (0.5, 0.40) — a talking-head face sits above frame centre. Windows
+  must not overlap (their scales would add; the tool refuses).
+- Engine notes (learned on real footage): zoompan's clock is **`in_time`** (`t` does not
+  exist there), and the chain upscales 2× before zooming — zoompan crops in whole pixels
+  and slow moves stutter at 1× (the documented anti-jitter cure).
 - Graphics illustrate what words can't (numbers, comparisons, structure). If face and voice
   already carry the moment, add NOTHING.
 
