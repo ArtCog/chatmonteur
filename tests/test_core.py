@@ -29,6 +29,8 @@ from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
 from chatmonteur.tools.overlays import _filter_graph as _ovl_filter_graph  # noqa: E402
 from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E402
+from chatmonteur.tools.stock import _match_memes  # noqa: E402
+from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
 from chatmonteur.tools.storyboard import TOOL as _SB_TOOL  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
@@ -307,6 +309,32 @@ def test_storyboard_empty_passes_video_through(tmp_path):
     assert res.artifacts["video"] == "x.mp4" and res.meta["sections"] == []
 
 
+# --- stock resolver (pure logic, no network) ------------------------------------
+
+def test_stock_free_first_and_key_degradation(monkeypatch):
+    monkeypatch.delenv("PEXELS_API_KEY", raising=False)
+    monkeypatch.delenv("PIXABAY_API_KEY", raising=False)
+    assert _stock_providers("image", None) == ["openverse"]  # keyless survives
+    assert _stock_providers("video", None) == []             # video needs a key
+    monkeypatch.setenv("PEXELS_API_KEY", "k")
+    assert _stock_providers("video", None) == ["pexels"]
+    assert _stock_providers("meme", None) == ["imgflip"]
+
+
+def test_stock_forced_provider_must_serve_the_kind():
+    with pytest.raises(ToolError):
+        _stock_providers("video", "openverse")  # openverse has no video
+
+
+def test_meme_matching_ranks_full_query_hits_first():
+    memes = [{"name": "Drake Hotline Bling"}, {"name": "Distracted Boyfriend"},
+             {"name": "Bling Empire"}]
+    ranked = _match_memes(memes, "drake bling")
+    assert ranked[0]["name"] == "Drake Hotline Bling"  # both tokens beat one
+    assert [m["name"] for m in ranked] == ["Drake Hotline Bling", "Bling Empire"]
+    # zero-hit templates are noise, not candidates — excluded entirely
+
+
 # --- overlays (pure plan/graph generation, no ffmpeg) --------------------------
 
 def test_overlay_plan_validates_pos_width_and_file(tmp_path):
@@ -352,6 +380,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock",
                 "color", "motion", "render"}
     assert expected <= caps

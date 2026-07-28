@@ -128,7 +128,8 @@ Priority — own/exact first, stock only for generic. What to use per sentence:
 | code / terminal / output | own screen capture (ffmpeg gdigrab / x11grab / avfoundation) | real, exact, no license |
 | a specific site/product UI | browser-automation capture (Playwright) of the real site | stock never matches a named product |
 | architecture / pipeline / data flow | HyperFrames or Manim diagram | precise, on-brand, anchor-word synced |
-| generic cutaway (hands, server, office) | CC0 stock: Pexels / Pixabay / Coverr / NASA (API, no attribution) | free, safe to bundle in MIT |
+| generic cutaway (hands, server, office) | **`stock` capability**: Openverse (keyless) / Pexels / Pixabay — fetches candidates + license manifest; YOU look at every candidate and score 1–5 (relevance/resolution/style/POV), reject and re-query freely | free; CC-BY needs the credit from `manifest.json` in the description |
+| meme / reaction | **`stock` capability**, `kind="meme"` (Imgflip top-100 templates, keyless) | free |
 | unfilmable abstraction | HyperFrames graphic first; AI-gen video only as last resort, disclosed | AI-slop hurts trust with a tech audience |
 
 CC0-safe to bundle: Pexels, Pixabay, Coverr, NASA. Avoid AI-generated B-roll as a default —
