@@ -214,10 +214,14 @@ _POP = "{\\fad(180,220)\\fscx92\\fscy92\\t(0,150,\\fscx100\\fscy100)}"
 
 # --- emoji as pictures ---------------------------------------------------------
 
-def _emoji_bottom(height: int) -> int:
-    """Distance from the frame bottom to the BOTTOM of the emoji (clears the text line)."""
+def _emoji_bottom(height: int, lines: int = 1) -> int:
+    """Distance from the frame bottom to the BOTTOM of the emoji.
+
+    Clears the WHOLE text block — a two-line insert is twice as tall, and an emoji
+    positioned for one line lands on the first line's words (dogfood v2 find).
+    """
     ts = round(_TEXT_FRAC * height)
-    return round(_BOTTOM_FRAC * height) + round(ts * 1.15) + round(_GAP_FRAC * height)
+    return round(_BOTTOM_FRAC * height) + round(ts * 1.15 * max(1, lines)) + round(_GAP_FRAC * height)
 
 
 def _render_emoji(items: list[dict], es: int, out_dir: pathlib.Path, log) -> list[dict]:
@@ -228,6 +232,8 @@ def _render_emoji(items: list[dict], es: int, out_dir: pathlib.Path, log) -> lis
     so on failure we render at the native 109 px and scale up.
     """
     wanted = [it for it in items if it["emoji"]]
+    for it in wanted:
+        it["lines"] = len(_wrap(it["text"], _MAX_CHARS).split("\n"))
     if not wanted:
         return []
     try:
@@ -247,7 +253,8 @@ def _render_emoji(items: list[dict], es: int, out_dir: pathlib.Path, log) -> lis
             png = out_dir / f"emoji_{i + 1}.png"
             img = _draw_emoji(it["emoji"], es, path, Image, ImageDraw, ImageFont)
             img.save(png)
-            out.append({"png": str(png), "start": it["start"], "end": it["end"]})
+            out.append({"png": str(png), "start": it["start"], "end": it["end"],
+                        "lines": it.get("lines", 1)})
         except Exception as exc:  # noqa: BLE001 — a bad glyph must not kill the render
             log(f"inserts: could not draw emoji {it['emoji']!r} ({exc}); that insert goes text-only")
     return out
@@ -292,10 +299,10 @@ def _emoji_font_file() -> str | None:
 
 def _filter_graph(ass_name: str, fontsdir: str, emoji: list[dict], height: int) -> str:
     """ASS text first, then each emoji PNG overlaid for its own window, alpha-faded."""
-    bottom = _emoji_bottom(height)
     parts = [f"[0:v]ass={ass_name}{fontsdir}[v0]"]
     for i, e in enumerate(emoji):
         dur = e["end"] - e["start"]
+        bottom = _emoji_bottom(height, e.get("lines", 1))  # per-insert: clear ALL its lines
         parts.append(
             f"[{i + 1}:v]format=rgba,fade=in:st=0:d=0.18:alpha=1,"
             f"fade=out:st={max(0.0, dur - 0.22):.3f}:d=0.22:alpha=1,"

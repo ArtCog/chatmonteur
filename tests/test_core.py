@@ -214,6 +214,18 @@ def test_insert_emoji_clears_the_text_line():
     assert _ins_emoji_bottom(1080) > round(0.11 * 1080)
 
 
+def test_insert_emoji_clears_multiline_text():
+    # dogfood v2: a two-line insert put the emoji ON the first line — clearance
+    # must grow with the wrapped line count, per insert
+    assert _ins_emoji_bottom(1080, lines=2) - _ins_emoji_bottom(1080, 1) >= 90
+    graph = _ins_filter_graph("i.ass", "", [
+        {"start": 1.0, "end": 3.0, "lines": 1},
+        {"start": 5.0, "end": 8.0, "lines": 2},
+    ], 1080)
+    bottoms = [int(m) for m in _re.findall(r"H-h-(\d+)", graph)]
+    assert bottoms[1] > bottoms[0]
+
+
 def test_insert_colors_only_the_key_words():
     ass = _ins_ass()
     assert ass.count("\\1c&H00D7FF&") == 1  # juicy yellow, once
