@@ -29,6 +29,15 @@ gates). `skills/INDEX.md` maps the rest: cutting (two-tier), subtitles, motion,
 hook editing, sound, plus `skills/references/` loaded on demand. When the
 skills and this file disagree on editing procedure, the skills win.
 
+## Phase ③ — the visual pass is YOUR plan, one artifact (IMPORTANT)
+
+After the meaning cut locks timing, plan the WHOLE visual pass as
+`projects/<name>/transcripts/storyboard.json` — sections `zooms`, `overlays`,
+`inserts` (formats in `skills/motion.md`). Show the storyboard, STOP for
+approval, then call the `storyboard` capability ONCE — it burns the sections in
+the load-bearing order (zooms → overlays → inserts) and hands one video
+downstream to color/subtitles/render.
+
 ## The intelligent cut is YOUR job, not a script's (IMPORTANT)
 
 Fillers, false starts, retakes: no tool auto-decides these. Per

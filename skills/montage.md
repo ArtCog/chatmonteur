@@ -39,10 +39,12 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
    → cutting.md Tier 2
 
 ③ VISUAL MONTAGE (editorial, approval-gated) — locks the GEOMETRY, before color
-   lay B-roll/screen/graphics under the narration by meaning + zooms/punch-ins +
-   block-transition cards + MEANING-INSERTS (1–2 in the hook MANDATORY; body by
-   meaning — see motion.md) → storyboard → APPROVAL. ALL framing/zoom/placement is
-   fixed here.
+   Plan the whole visual pass as ONE artifact — `transcripts/storyboard.json` with
+   `zooms` + `overlays` + `inserts` sections (formats in motion.md) → show it →
+   APPROVAL → ONE call to the `storyboard` capability, which burns the sections in
+   the load-bearing order: zooms (geometry locks) → overlays (placed on final
+   geometry) → inserts (text on top). 1–2 inserts in the hook MANDATORY; cadence
+   and safe zones per motion.md. ALL framing/zoom/placement is fixed here.
    Why before color: grade must see the final geometry; an overlay in absolute coords
    would drift/clip if a zoom lands after it.
    → motion.md + hook-editing.md

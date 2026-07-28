@@ -29,6 +29,8 @@ from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
 from chatmonteur.tools.overlays import _filter_graph as _ovl_filter_graph  # noqa: E402
 from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E402
+from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
+from chatmonteur.tools.storyboard import TOOL as _SB_TOOL  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -280,6 +282,31 @@ def test_zoom_plan_defaults_to_punch_at_emphasis_scale(tmp_path):
     assert it["kind"] == "punch" and it["scale"] == 1.15 and it["cy"] == 0.40
 
 
+# --- storyboard (composition order, no ffmpeg) ---------------------------------
+
+def test_storyboard_order_is_zooms_overlays_inserts():
+    # geometry first, placement second, text on top — the load-bearing order
+    assert [s for s, _, _ in _SB_SECTIONS] == ["zooms", "overlays", "inserts"]
+
+
+def test_storyboard_rejects_unknown_sections(tmp_path):
+    from chatmonteur.core import RunContext
+    sb = tmp_path / "sb.json"
+    sb.write_text(json.dumps({"zoomz": []}))
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+    with pytest.raises(ToolError):
+        _SB_TOOL.run(ctx, input="x.mp4", storyboard=str(sb))
+
+
+def test_storyboard_empty_passes_video_through(tmp_path):
+    from chatmonteur.core import RunContext
+    sb = tmp_path / "sb.json"
+    sb.write_text(json.dumps({"zooms": [], "inserts": []}))
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+    res = _SB_TOOL.run(ctx, input="x.mp4", storyboard=str(sb))
+    assert res.artifacts["video"] == "x.mp4" and res.meta["sections"] == []
+
+
 # --- overlays (pure plan/graph generation, no ffmpeg) --------------------------
 
 def test_overlay_plan_validates_pos_width_and_file(tmp_path):
@@ -325,6 +352,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard",
                 "color", "motion", "render"}
     assert expected <= caps
