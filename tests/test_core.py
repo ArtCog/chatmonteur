@@ -796,3 +796,54 @@ def test_composition_path_splits_into_project_dir_and_file(tmp_path):
     assert _hf_resolve(str(tmp_path / "lower.html")) == (tmp_path, "lower.html")
     with pytest.raises(ToolError, match="composition not found"):
         _hf_resolve(str(tmp_path / "missing.html"))
+
+
+# --- brand: one source of truth, swappable ------------------------------------
+
+def test_brand_loader_reproduces_every_hardcoded_value():
+    """Wiring the tools to the loader must not change a single pixel.
+
+    These are the exact literals the tools carry today. If tokens.css and the code
+    ever disagree, the captions ship the stale colour and nobody notices until it
+    is on YouTube.
+    """
+    from chatmonteur import brand
+    assert brand.ass("accent") == "&H6AE82B&"          # subtitles _ACCENTS["green"]
+    assert brand.ass("paper") == "&HF7FAFA&"           # subtitles _PAPER_C
+    assert brand.ass("paper", alpha=0) == "&H00F7FAFA"  # subtitles/inserts _PAPER
+    assert brand.ass("ink", alpha=0) == "&H000C0B0B"   # inserts _INK
+    assert brand.font("sans") == "Golos Text"
+    assert brand.font("mono") == "JetBrains Mono"
+    assert brand.font_dir().is_dir()
+
+
+def test_ass_colour_is_byte_reversed():
+    """libass stores colour as BGR. Reversing by hand is how green ships as blue."""
+    from chatmonteur import brand
+    assert brand.colour("accent") == "#2BE86A"
+    assert brand.ass("accent") == "&H6AE82B&"
+
+
+def test_brand_is_swappable_without_touching_code(tmp_path, monkeypatch):
+    """A new brand book = a new folder with a tokens.css. That is the whole contract."""
+    from chatmonteur import brand
+    root = tmp_path / "brands"
+    (root / "newbook").mkdir(parents=True)
+    (root / "newbook" / "tokens.css").write_text(
+        ":root{--accent:#FF0000;--font-sans:'Inter', sans-serif;}", encoding="utf-8")
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+    brand.tokens.cache_clear()
+    assert brand.colour("accent", brand="newbook") == "#FF0000"
+    assert brand.ass("accent", brand="newbook") == "&H0000FF&"
+    assert brand.font("sans", brand="newbook") == "Inter"
+    brand.tokens.cache_clear()
+
+
+def test_unknown_brand_and_token_fail_loudly():
+    from chatmonteur import brand
+    with pytest.raises(ToolError, match="no tokens.css"):
+        brand.tokens("nosuchbrand")
+    with pytest.raises(ToolError, match="no token"):
+        brand.token("nosuchtoken")
+    with pytest.raises(ToolError, match="not a #RRGGBB"):
+        brand.colour("font-sans")
