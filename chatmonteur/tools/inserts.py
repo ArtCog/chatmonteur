@@ -108,8 +108,9 @@ class InsertsTool(Tool):
 # «Эмоджи сверху» is the locked default: attention emoji above ONE short line, bold
 # white, key words in juicy yellow, no plate — just a soft shadow. Sizes are
 # fractions of frame height so they hold at 1080p and 1440p. Mirrors skills/motion.md.
-_EMOJI_FRAC = 0.125    # emoji size = 12.5% of frame height (135px @1080)
-_TEXT_FRAC = 0.089     # text size  = 8.9% of frame height (96px @1080)
+# Артур 2026-07-30: вставку уменьшить, особенно эмоджи сверху — 12.5%/8.9% давили кадр.
+_EMOJI_FRAC = 0.075    # emoji size = 7.5% of frame height (81px @1080)
+_TEXT_FRAC = 0.068     # text size  = 6.8% of frame height (73px @1080)
 _BOTTOM_FRAC = 0.11    # text sits 11% of frame height above the bottom edge
 _GAP_FRAC = 0.012      # gap between the text block and the emoji
 _MAX_CHARS = 28        # inserts are BIG: keep lines short, wrap beyond this

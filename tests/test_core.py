@@ -33,6 +33,7 @@ from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
 from chatmonteur.tools.storyboard import TOOL as _SB_TOOL  # noqa: E402
+from chatmonteur.tools.storyboard import _check_one_text_at_a_time as _sb_check_text  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -217,7 +218,9 @@ def test_insert_emoji_clears_the_text_line():
 def test_insert_emoji_clears_multiline_text():
     # dogfood v2: a two-line insert put the emoji ON the first line — clearance
     # must grow with the wrapped line count, per insert
-    assert _ins_emoji_bottom(1080, lines=2) - _ins_emoji_bottom(1080, 1) >= 90
+    # the extra clearance must be a full extra text line, whatever the font size is
+    from chatmonteur.tools.inserts import _TEXT_FRAC
+    assert _ins_emoji_bottom(1080, lines=2) - _ins_emoji_bottom(1080, 1) >= _TEXT_FRAC * 1080
     graph = _ins_filter_graph("i.ass", "", [
         {"start": 1.0, "end": 3.0, "lines": 1},
         {"start": 5.0, "end": 8.0, "lines": 2},
@@ -293,7 +296,7 @@ def test_zoom_plan_defaults_to_punch_at_emphasis_scale(tmp_path):
     p = tmp_path / "z.json"
     p.write_text(json.dumps({"zooms": [{"start": 1, "end": 5}]}))
     (it,) = _load_zoom_plan(p)
-    assert it["kind"] == "punch" and it["scale"] == 1.15 and it["cy"] == 0.40
+    assert it["kind"] == "punch" and it["scale"] == 1.18 and it["cy"] == 0.40
 
 
 # --- storyboard (composition order, no ffmpeg) ---------------------------------
@@ -301,6 +304,25 @@ def test_zoom_plan_defaults_to_punch_at_emphasis_scale(tmp_path):
 def test_storyboard_order_is_zooms_overlays_inserts():
     # geometry first, placement second, text on top — the load-bearing order
     assert [s for s, _, _ in _SB_SECTIONS] == ["zooms", "overlays", "inserts"]
+
+
+def test_storyboard_refuses_two_texts_at_once(tmp_path):
+    from chatmonteur.core import RunContext
+    sb = tmp_path / "sb.json"
+    sb.write_text(json.dumps({
+        "inserts": [{"start": 24.7, "end": 28.2, "text": "монтаж одним промтом"}],
+        "motion": [{"start": 25.4, "end": 29.7, "name": "callout"}],
+    }, ensure_ascii=False), encoding="utf-8")
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+    with pytest.raises(ToolError, match="text layers overlap"):
+        _SB_TOOL.run(ctx, input="x.mp4", storyboard=str(sb))
+
+
+def test_storyboard_allows_texts_back_to_back():
+    _sb_check_text({  # touching windows are fine — only true overlap is a clash
+        "inserts": [{"start": 20.0, "end": 23.0, "text": "первая"}],
+        "motion": [{"start": 23.0, "end": 27.0, "name": "callout"}],
+    })
 
 
 def test_storyboard_rejects_unknown_sections(tmp_path):

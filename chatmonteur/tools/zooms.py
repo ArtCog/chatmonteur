@@ -39,8 +39,15 @@ from .. import media
 _KINDS = {"punch", "ease", "push", "drift"}
 # Face-safe zoom centre: a talking-head face sits ABOVE frame centre.
 _DEF_CX, _DEF_CY = 0.5, 0.40
-_DEF_SCALE = 1.15          # motion.md: emphasis tier
-_EDGE = 0.35               # ease ramp seconds
+_DEF_SCALE = 1.18          # motion.md emphasis tier (Артур 2026-07-30: «можно побольше»)
+# Ease ramp. 0.35s read as a snap, not a move — Артур: «зум нужно плавнее». Per-zoom
+# override: "ease_seconds". A slow ramp is also where zoompan's quantisation shows, so
+# _UPSCALE carries the smoothness (see below).
+_EDGE = 0.9
+# zoompan crops in WHOLE pixels of its input, so the crop rect jumps 1px at a time and a
+# slow zoom stutters. Upscaling first makes that step fractional in output space: at 3×
+# a 1px input step = 0.33px out. 2× still stuttered on a 4s ease — verified on frames.
+_UPSCALE = 3
 _DRIFT_AMP = 0.03          # drift's extra creep on top of the punch
 
 
@@ -70,7 +77,7 @@ class ZoomsTool(Tool):
         out = ctx.paths.clips / "zoomed.mp4"
         encoder = media.detect_encoder(ctx.config.encode.encoder)
         vf = (
-            f"scale=iw*2:ih*2:flags=lanczos,"
+            f"scale=iw*{_UPSCALE}:ih*{_UPSCALE}:flags=lanczos,"
             f"zoompan=z='{_zoom_expr(items)}'"
             # centres are time-gated too (per-zoom cx/cy); outside every window
             # zoom=1 → (iw-iw/zoom)=0, so the centre value there is irrelevant
@@ -112,6 +119,7 @@ def _load_plan(path: pathlib.Path) -> list[dict]:
         out.append({
             "start": start, "end": end, "kind": kind, "scale": scale,
             "cx": float(it.get("cx", _DEF_CX)), "cy": float(it.get("cy", _DEF_CY)),
+            "edge": float(it.get("ease_seconds", _EDGE)),
         })
     out.sort(key=lambda z: z["start"])
     for a, b in zip(out, out[1:]):
@@ -134,8 +142,9 @@ def _envelope(it: dict) -> str:
     if it["kind"] == "punch":
         return f"{gate}*{amp}"
     if it["kind"] == "ease":
-        rise = f"clip((in_time-{s})/{_EDGE},0,1)"
-        fall = f"clip(({e}-in_time)/{_EDGE},0,1)"
+        edge = it.get("edge", _EDGE)
+        rise = f"clip((in_time-{s})/{edge},0,1)"
+        fall = f"clip(({e}-in_time)/{edge},0,1)"
         return f"{_smooth(rise)}*{_smooth(fall)}*{amp}"
     ramp = f"clip((in_time-{s})/({e}-{s}),0,1)"
     if it["kind"] == "push":

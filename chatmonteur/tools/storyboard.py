@@ -64,9 +64,10 @@ class StoryboardTool(Tool):
         data = json.loads(sb_path.read_text(encoding="utf-8"))
         if not isinstance(data, dict):
             raise ToolError("storyboard must be an object with zooms/overlays/inserts sections")
-        unknown = set(data) - {s for s, _, _ in _SECTIONS}
+        unknown = set(data) - {s for s, _, _ in _SECTIONS} - {"motion"}
         if unknown:
             raise ToolError(f"storyboard has unknown sections: {sorted(unknown)}")
+        _check_one_text_at_a_time(data)
 
         video = str(input)
         done: list[str] = []
@@ -86,6 +87,26 @@ class StoryboardTool(Tool):
         else:
             ctx.log(f"storyboard done ({', '.join(done)})")
         return ToolResult(artifacts={"video": video}, meta={"sections": done})
+
+
+def _check_one_text_at_a_time(data: dict) -> None:
+    """Refuse a plan where two TEXT layers share screen time.
+
+    Артур 2026-07-30: «сейчас на экране был как надпись, так и motion graphic — так не
+    должно быть». A meaning-insert and a motion-graphic scene fight for the same attention;
+    each must earn its own moment. Declare motion-graphic windows in a ``motion`` section
+    (``[{start, end, name}]``) — in VIDEO-LOCAL seconds, the same clock as inserts — and
+    this refuses the clash instead of letting the render prove it.
+    """
+    text_layers = [(s, it) for s in ("inserts", "motion") for it in (data.get(s) or [])]
+    for i, (sec_a, a) in enumerate(text_layers):
+        for sec_b, b in text_layers[i + 1:]:
+            if float(a["start"]) < float(b["end"]) and float(b["start"]) < float(a["end"]):
+                raise ToolError(
+                    f"two text layers overlap: {sec_a} [{a['start']}–{a['end']}] and "
+                    f"{sec_b} [{b['start']}–{b['end']}]. One text at a time — move one, "
+                    "or drop it if it doesn't earn its moment."
+                )
 
 
 TOOL = StoryboardTool()
