@@ -81,7 +81,13 @@ overstim fastest.) Concrete cadence:
   concise line = the POINT of what's said («🚫 ноль программ монтажа»), Golos 800 ~96px
   white, key words in juicy yellow `#FFD700`, no plate, soft shadow, lower-center,
   fade/pop-in ~0.2s, gone in 2.5–3.5s. Alt look «стикер» (white rounded chip, ink text) —
-  ONLY when Артур asks. **The HOOK gets 1–2 inserts MANDATORY**; body — by meaning or on
+  ONLY when Артур asks. **ONE TEXT LAYER AT A TIME** — an insert and a motion-graphic scene
+  must never share screen time (Артур 2026-07-30). Declare motion windows in the storyboard's
+  `motion` section; the `storyboard` tool refuses the clash. Both use VIDEO-LOCAL seconds: if
+  a HyperFrames composition offsets the video (`data-start` > 0) its clock differs, and that
+  timebase mix silently misplaces graphics — keep video at `data-start="0"` and make a title
+  card a SEPARATE clip concatenated in front.
+  **The HOOK gets 1–2 inserts MANDATORY**; body — by meaning or on
   request. Full subtitles are OFF unless Артур explicitly says «добавь субтитры»
   (then karaoke-green). WHEN: inserts are built in phase ③ VISUAL MONTAGE, together with
   the rest of the motion pass — after the meaning cut locks timing, before color.
