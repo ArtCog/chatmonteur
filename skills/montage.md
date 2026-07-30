@@ -7,6 +7,31 @@ it. `production-rules.md` always applies.
 for subtitles, lower-thirds, callouts, infographics, colours and fonts. Every on-screen element
 follows it; don't invent styles.
 
+## Every capability, and when to reach for it
+
+A capability you don't remember exists is a capability the project doesn't have. Only
+`normalize · cut_silence · transcribe · color · subtitles · render · qc` run from the
+`talking_head` pipeline; **everything else you call yourself.** That is by design — those
+steps need your judgement — but it means forgetting this table is exactly how a session ends
+with "he just cut the pauses and added subtitles".
+
+| Capability | Call it when | Phase |
+|---|---|---|
+| `normalize` | always first — VFR/odd input → clean CFR | ① |
+| `cut_silence` | remove pauses by audio level, per scene | ① |
+| `transitions` | joining separate pieces: title card + body, several takes, intro/outro. Three kinds, one primary on ≥60 % of joins or it refuses | ① |
+| `transcribe` | before any editorial decision | ② |
+| `cut_edl` | execute an APPROVED meaning cut | ② |
+| `stock` | source a free, commercially-safe image/clip before storyboarding | ③ |
+| `motion` | render a brand component to transparent ProRes 4444 for compositing | ③ |
+| `storyboard` | ONE call executing the approved visual plan (zooms → overlays → inserts). **Scores the plan and refuses a thin one** | ③ |
+| `zooms` `overlays` `inserts` | individually only when iterating on one layer; normally go through `storyboard` | ③ |
+| `color` | grade before any text layer burns | ④ |
+| `subtitles` | only when the user asks for captions; ASK which variant first | ④ |
+| `sound` | music bed + sidechain ducking + SFX. **The layer that most separates an edit from a cut** — reach for it, it is not optional polish | ④ |
+| `render` | final encode, loudness last | ④ |
+| `qc` | last. Blocks a broken file; never work around it | ④ |
+
 ## Step 0: classify the task — don't grab the first tool
 
 **The boundary question: do you need to understand the CONTENT to decide where to cut?**
@@ -80,13 +105,25 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
 Everything else — executing an approved plan, excluding read-script frames, format
 normalization, verification — is autonomous: do it and mention it.
 
-## Verification (before calling anything done)
+## Two gates that refuse (they are not advisory)
 
-- Duration sanity: final ≈ sum of parts (catches broken concat).
-- Audio by LEVEL, not duration: `volumedetect` mean_volume sane; spot-check joins.
-- Loudness: −14 LUFS ±0.4; true-peak fix applied.
-- Frame check: extract 2–3 frames at overlay/subtitle moments — casing, position, nothing
-  important covered.
+Approval gates ask the user. These two ask the work, and stop the pipeline.
+
+- **`storyboard` scores the plan** before a frame burns: >90 s with no visual event, text on
+  screen >60 % of the runtime, repeated captions, three identical zooms in a row. Fix the plan;
+  `allow_thin=True` only when plain footage is genuinely right.
+- **`qc` scores the file** last: black frames at 10/35/65/90 %, silence, clipping, missing
+  streams, >25 % duration drift. Evidence in `renders/final.qc.json`.
+
+When either fires, **never re-run with the check disabled.** Fix what it names.
+
+## Verification (what qc does NOT cover)
+
+`qc` already checks duration drift, silence, clipping and black frames. What still needs eyes:
+
+- Loudness: −14 LUFS ±0.4 (qc checks for clipping, not for target).
+- Frame check at overlay/subtitle moments — casing, position, nothing important covered.
+- Spot-check the audio at joins after a `transitions` run.
 
 ## Cost honesty
 

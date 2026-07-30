@@ -482,6 +482,20 @@ def test_registry_discovers_all_capabilities():
     assert expected <= caps
 
 
+def test_every_capability_is_routed_in_the_skill():
+    """A capability the agent never reads about is a capability the project doesn't have.
+
+    Only seven steps run from the pipeline; the rest are called by the agent from
+    `skills/montage.md`. When that table went stale, `sound` and `transitions` shipped
+    fully tested and completely unreachable — which is how a session ends with nothing
+    but cut pauses and subtitles. This fails until a new capability is documented.
+    """
+    caps = set(ToolRegistry().discover()._by_capability)
+    doc = (Path(__file__).resolve().parents[1] / "skills" / "montage.md").read_text(encoding="utf-8")
+    named = set(_re.findall(r"`([a-z_]+)`", doc))
+    assert not (caps - named), f"not routed in skills/montage.md: {sorted(caps - named)}"
+
+
 # --- qc: the rule set that blocks a broken render (pure, no ffmpeg) ------------
 
 def _facts(**over) -> dict:

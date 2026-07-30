@@ -5,10 +5,10 @@ loaded on demand.
 
 | Skill | Read when | Status |
 |---|---|---|
-| `montage.md` | Any edit session — the pipeline orchestrator. Routes mechanical vs editorial, phases ①②③ | ✅ ported |
+| `montage.md` | Any edit session — the pipeline orchestrator. **Holds the capability map: what exists and when to call it.** Routes mechanical vs editorial, phases ①②③ | ✅ ported |
 | `cutting.md` | Removing pauses (deterministic branch) or fillers/stumbles/retakes (LLM branch) | ✅ ported |
 | `hook-editing.md` | Voice and visuals recorded separately, matched by meaning (sidecar hook) | ✅ ported |
-| `subtitles.md` | Building/burning captions (Netflix-grade standard, Cyrillic-aware) | ⚠️ DRAFT — the standard is under revision; don't treat as final |
+| `subtitles.md` | Building/burning captions (Netflix-grade standard, Cyrillic-aware) | ✅ standard FIXED 2026-07-26: no plate, no outline, colour accents only, karaoke default. Burn only on explicit request |
 | `motion.md` | Graphics, zooms, b-roll: anchor-word sync, motion philosophy, visual-interest rules | ✅ ported |
 | `sound.md` | Music beds, ducking, SFX placement (decisions; execution in references) | ✅ written |
 | `production-rules.md` | Always — hard correctness rules (CFR, no stream-copy, loudnorm-last) | ✅ exists |
