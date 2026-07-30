@@ -83,6 +83,30 @@ The most valuable idea found. Score the PLAN before rendering and refuse the ren
   explicitly **do not count** as motion.
 - **Source review**: refuse to mark footage "reviewed" without an actual probe having run.
 
+**Built** as `_thin_spots` in `tools/storyboard.py`: dead stretch >90 s (the
+pattern-interrupt ceiling), text share >60 %, unique-caption ratio <60 %, >2 identical
+zooms in a row. Raises unless `allow_thin=True`.
+
+## The file gate — what a broken render actually looks like
+
+`tools/qc.py`, last step of the pipeline. Measuring (`_probe`) and judging (`_judge`)
+are separate so every rule is testable without a media file.
+
+| Check | Value | Why this number |
+|---|---|---|
+| Probe positions | 10 / 35 / 65 / 90 % | Not 0/100 % — a fade-in and an end card are black **by design** |
+| Black frame | mean luma **< 20** | **Not 16.** Video is limited-range, where pure black is Y=16 *exactly*, so `< 16` never fires. Measured: `#000000`→16, brand `#0B0B0C`→26, `#0B0F0E`→28 |
+| Silence | `mean_volume < −60 dBFS` | A full-length track that plays nothing |
+| Clipping | `max_volume > −0.5 dBFS` | Peaks into the ceiling |
+| Duration drift | >25 % vs the render's own input | An encode must not change the runtime it was handed |
+| Partial decode | fewer frames returned than positions probed | Damage mid-file |
+
+Measured on our own bench: black+silent → 5 blocking issues; a 30 dB-hot sine → `clipping: peak 0.0 dBFS`; the real dogfood render → pass.
+
+Deliberately **not** copied from OpenMontage: their file-size proxy (`<2000 bytes` = black)
+is fragile, and their `fail` status comes from grepping issue text for six phrases, so black
+frames and clipping don't actually block. Ours is an explicit boolean checklist.
+
 ## Libraries worth adopting (permissive only)
 
 MediaPipe (Apache-2.0, face/pose → safe zones, reframe) · PySceneDetect (BSD-3) ·

@@ -125,21 +125,34 @@ def source_fps(path: str | Path, default: float = 60.0) -> float:
     return default
 
 
-def mean_volume_db(path: str | Path) -> float | None:
-    """Measured mean volume (dBFS) via ffmpeg volumedetect.
+def volume_stats(path: str | Path) -> dict[str, float]:
+    """Mean and max volume (dBFS) from a single ffmpeg volumedetect pass.
 
-    Used to verify audio by LEVEL, not by track duration — a track of the right
-    length can still be silence.
+    Both numbers come from the same scan because they answer opposite halves of
+    the same question: ``mean`` catches silence (a full-length track that plays
+    nothing), ``max`` catches clipping (a track pushed into the ceiling). Missing
+    keys mean volumedetect said nothing — no audio stream, or an unreadable file.
     """
     require("ffmpeg")
     proc = subprocess.run(
         ["ffmpeg", "-hide_banner", "-i", str(path), "-map", "0:a:0", "-af", "volumedetect", "-f", "null", "-"],
         capture_output=True, text=True, encoding="utf-8", errors="replace",
     )
+    stats: dict[str, float] = {}
     for line in proc.stderr.splitlines():
-        if "mean_volume:" in line:
-            try:
-                return float(line.split("mean_volume:")[1].strip().split()[0])
-            except (IndexError, ValueError):
-                return None
-    return None
+        for key in ("mean_volume", "max_volume"):
+            if f"{key}:" in line:
+                try:
+                    stats[key.split("_")[0]] = float(line.split(f"{key}:")[1].strip().split()[0])
+                except (IndexError, ValueError):
+                    pass
+    return stats
+
+
+def mean_volume_db(path: str | Path) -> float | None:
+    """Measured mean volume (dBFS).
+
+    Used to verify audio by LEVEL, not by track duration — a track of the right
+    length can still be silence.
+    """
+    return volume_stats(path).get("mean")

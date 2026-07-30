@@ -54,6 +54,23 @@ Fillers, false starts, retakes: no tool auto-decides these. Per
 5. Offer a fast preview (`render … preview=True`, 720p) before the full 1440p
    render. Cheap iteration beats re-rendering 20 minutes.
 
+## Two gates decide quality — and both can say NO (IMPORTANT)
+
+Approval gates ask the user; these two ask the work itself, and refuse.
+
+1. **The plan gate** — `storyboard` scores your visual plan before burning a single
+   frame and rejects one that will read as "he just cut the pauses": a stretch over
+   90 s with no visual event, text on screen more than 60 % of the time, repeated
+   captions, three identical zooms in a row. Fix the plan; only pass
+   `allow_thin=True` when plain footage is genuinely the right answer.
+2. **The file gate** — `qc` is the last pipeline step and blocks delivery of a
+   broken render: black frames sampled at 10/35/65/90 %, a silent or clipped audio
+   track, missing streams, or a runtime that drifted more than 25 % from what the
+   encoder was handed. Evidence lands in `renders/final.qc.json`.
+
+When either fires, **never** work around it by re-running with the check disabled.
+Fix what it names. That is the whole point of it existing.
+
 ## Production-correctness rules (never break these)
 
 These are why "one command" doesn't produce a broken video. Full detail in

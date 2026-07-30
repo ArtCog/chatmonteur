@@ -60,3 +60,14 @@ steps:
     capability: render
     params:
       input: "${subtitles.video}"
+
+  # The gate. Nothing is "done" until a stranger could open the file and find it
+  # intact: frames that aren't black, audio that plays and isn't clipped, and the
+  # same runtime the encoder was handed. `expected` points at the render's OWN
+  # input, so drift is measured against the truth rather than a guess. A failure
+  # stops the pipeline and leaves `renders/final.qc.json` as the evidence.
+  - id: qc
+    capability: qc
+    params:
+      input: "${render.video}"
+      expected: "${subtitles.video}"

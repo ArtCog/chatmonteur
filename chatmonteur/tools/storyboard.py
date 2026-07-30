@@ -33,6 +33,7 @@ import pathlib
 from ..core.context import RunContext
 from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
+from .. import media
 from . import inserts as _inserts
 from . import overlays as _overlays
 from . import zooms as _zooms
@@ -55,7 +56,15 @@ class StoryboardTool(Tool):
         cost="free",
     )
 
-    def run(self, ctx: RunContext, *, input: str, storyboard: str, **section_kwargs) -> ToolResult:
+    def run(
+        self,
+        ctx: RunContext,
+        *,
+        input: str,
+        storyboard: str,
+        allow_thin: bool = False,
+        **section_kwargs,
+    ) -> ToolResult:
         sb_path = pathlib.Path(storyboard)
         if not sb_path.is_file():
             raise ToolError(
@@ -68,6 +77,7 @@ class StoryboardTool(Tool):
         if unknown:
             raise ToolError(f"storyboard has unknown sections: {sorted(unknown)}")
         _check_one_text_at_a_time(data)
+        _review_plan(data, _duration_of(input), log=ctx.log, allow_thin=allow_thin)
 
         video = str(input)
         done: list[str] = []
@@ -107,6 +117,132 @@ def _check_one_text_at_a_time(data: dict) -> None:
                     f"{sec_b} [{b['start']}–{b['end']}]. One text at a time — move one, "
                     "or drop it if it doesn't earn its moment."
                 )
+
+
+# --- the boringness review ------------------------------------------------------
+# Cheap to run on a plan, expensive to discover in a finished render. Every
+# threshold is a number from skills/references/engineering-facts.md, not a taste call.
+_MAX_DEAD = 90.0        # seconds without a visual event; the pattern-interrupt ceiling
+_MAX_TEXT_SHARE = 0.60  # more text-on-screen than this and it reads as animated slides
+_MIN_UNIQUE = 0.60      # unique-insert ratio below this = the same card over and over
+_MAX_SAME_ZOOM = 2      # a third identical shot size in a row is a rut
+
+
+def _review_plan(data: dict, duration: float | None, log, allow_thin: bool) -> None:
+    """Refuse to burn a plan that will read as "he just cut the pauses".
+
+    Артур 2026-07-30: «никакого монтажа я там не заметил — просто субтитры, убрал
+    паузы, добавил картинку». That verdict was reachable from the storyboard alone,
+    minutes before the render existed. So it gets reached here instead.
+
+    Needs the runtime to judge coverage; without a readable input file the review
+    is skipped rather than faked. ``allow_thin=True`` is the conscious override for
+    footage that genuinely wants to be left alone.
+    """
+    if duration is None or duration <= 0:
+        return
+    findings = _thin_spots(data, duration)
+    if not findings:
+        return
+    if allow_thin:
+        for f in findings:
+            log(f"storyboard (allowed thin): {f}")
+        return
+    raise ToolError(
+        "storyboard is too thin to read as an edit:\n"
+        + "\n".join(f"  • {f}" for f in findings)
+        + "\n  Add visual events where they are missing, or pass allow_thin=True if "
+        "this footage really should be left plain."
+    )
+
+
+def _thin_spots(data: dict, duration: float) -> list[str]:
+    """Pure scoring — the rule set, testable without a media file."""
+    findings: list[str] = []
+    events = [it for s in ("zooms", "overlays", "inserts", "motion") for it in (data.get(s) or [])]
+
+    if not events:
+        return [f"no visual events at all across {duration:.0f}s — this is a raw talking head"]
+
+    start, end = _longest_gap(events, duration)
+    if end - start > _MAX_DEAD:
+        findings.append(
+            f"{end - start:.0f}s with nothing happening ({start:.0f}s–{end:.0f}s); "
+            f"attention needs an interrupt at least every {_MAX_DEAD:.0f}s"
+        )
+
+    text = [it for s in ("inserts", "motion") for it in (data.get(s) or [])]
+    share = _covered(text) / duration
+    if share > _MAX_TEXT_SHARE:
+        findings.append(
+            f"text is on screen {share:.0%} of the time — above {_MAX_TEXT_SHARE:.0%} "
+            "it stops being a video and becomes animated slides"
+        )
+
+    texts = [str(it.get("text", "")).strip().lower() for it in (data.get("inserts") or [])]
+    texts = [t for t in texts if t]
+    if len(texts) >= 3 and len(set(texts)) / len(texts) < _MIN_UNIQUE:
+        findings.append(
+            f"only {len(set(texts))} distinct captions across {len(texts)} inserts — "
+            "repeating the same words stops registering"
+        )
+
+    run = _longest_identical_zoom_run(data.get("zooms") or [])
+    if run > _MAX_SAME_ZOOM:
+        findings.append(
+            f"{run} identical zooms in a row — vary the shot size, a repeated framing "
+            "reads as a still"
+        )
+    return findings
+
+
+def _longest_gap(events: list[dict], duration: float) -> tuple[float, float]:
+    """The widest window with no event, counting the head and the tail.
+
+    The head matters most: dead air before the first visual event is dead air in
+    the hook, where retention is decided.
+    """
+    spans = sorted((float(e["start"]), float(e["end"])) for e in events)
+    gaps, cursor = [], 0.0
+    for s, e in spans:
+        if s > cursor:
+            gaps.append((cursor, s))
+        cursor = max(cursor, e)
+    if cursor < duration:
+        gaps.append((cursor, duration))
+    return max(gaps, key=lambda g: g[1] - g[0], default=(0.0, 0.0))
+
+
+def _covered(items: list[dict]) -> float:
+    """Total seconds covered by these windows, counting an overlap once."""
+    total, cursor = 0.0, float("-inf")
+    for s, e in sorted((float(i["start"]), float(i["end"])) for i in items):
+        total += max(0.0, e - max(s, cursor))
+        cursor = max(cursor, e)
+    return total
+
+
+def _longest_identical_zoom_run(zooms: list[dict]) -> int:
+    """How many times in a row the camera lands on the exact same framing."""
+    def framing(z: dict) -> tuple:
+        return (z.get("kind", "punch"), round(float(z.get("scale", 0) or 0), 2),
+                round(float(z.get("cx", 0) or 0), 2), round(float(z.get("cy", 0) or 0), 2))
+
+    best = run = 0
+    prev = None
+    for z in sorted(zooms, key=lambda z: float(z["start"])):
+        run = run + 1 if framing(z) == prev else 1
+        prev = framing(z)
+        best = max(best, run)
+    return best
+
+
+def _duration_of(video: str) -> float | None:
+    """Runtime of the video being decorated, or None if it can't be probed."""
+    try:
+        return float(media.ffprobe_json(video)["format"]["duration"])
+    except (ToolError, KeyError, ValueError, TypeError):
+        return None
 
 
 TOOL = StoryboardTool()

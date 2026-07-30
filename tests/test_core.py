@@ -34,9 +34,14 @@ from chatmonteur.tools.sound import _next_input_index as _snd_next_index  # noqa
 from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
 from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
+from chatmonteur.tools.qc import _expected_seconds as _qc_expected  # noqa: E402
+from chatmonteur.tools.qc import _judge as _qc_judge  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
 from chatmonteur.tools.storyboard import TOOL as _SB_TOOL  # noqa: E402
 from chatmonteur.tools.storyboard import _check_one_text_at_a_time as _sb_check_text  # noqa: E402
+from chatmonteur.tools.storyboard import _covered as _sb_covered  # noqa: E402
+from chatmonteur.tools.storyboard import _longest_gap as _sb_longest_gap  # noqa: E402
+from chatmonteur.tools.storyboard import _thin_spots as _sb_thin  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -438,5 +443,115 @@ def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
     expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
-                "color", "motion", "render"}
+                "color", "motion", "render", "qc"}
     assert expected <= caps
+
+
+# --- qc: the rule set that blocks a broken render (pure, no ffmpeg) ------------
+
+def _facts(**over) -> dict:
+    """A file that passes everything, so each test can break exactly one thing."""
+    base = {"readable": True, "duration": 80.0, "width": 1920, "height": 1080,
+            "has_audio": True, "mean_volume_db": -17.2, "max_volume_db": -2.3,
+            "frame_luma": {"10%": 88.0, "35%": 86.8, "65%": 89.4, "90%": 88.0}}
+    return {**base, **over}
+
+
+def _checks(issues) -> set[str]:
+    return {i["check"] for i in issues if i["severity"] == "fail"}
+
+
+def test_qc_passes_a_healthy_render():
+    assert _qc_judge(_facts(), expected=80.0) == []
+
+
+def test_qc_black_frame_threshold_clears_broadcast_black():
+    # limited-range black is Y=16 EXACTLY, so a `< 16` test would never fire;
+    # measured brand background #0B0B0C sits at 26 and must stay legal
+    assert "black_frame" in _checks(_qc_judge(_facts(frame_luma={"10%": 16.0}), 80.0))
+    assert "black_frame" not in _checks(_qc_judge(_facts(frame_luma={"10%": 26.0}), 80.0))
+
+
+def test_qc_blocks_silence_and_clipping():
+    assert "silent" in _checks(_qc_judge(_facts(mean_volume_db=-91.0), 80.0))
+    assert "clipping" in _checks(_qc_judge(_facts(max_volume_db=0.0), 80.0))
+
+
+def test_qc_blocks_missing_audio_and_unreadable_container():
+    assert "no_audio" in _checks(_qc_judge(_facts(has_audio=False), 80.0))
+    assert _checks(_qc_judge({"readable": False}, 80.0)) == {"container"}
+
+
+def test_qc_blocks_partial_decode():
+    # fewer probe frames than positions means the file is damaged mid-way
+    assert "undecodable" in _checks(_qc_judge(_facts(frame_luma={"10%": 88.0}), 80.0))
+
+
+def test_qc_duration_drift_blocks_only_past_the_tolerance():
+    assert _checks(_qc_judge(_facts(duration=90.0), 80.0)) == set()          # +12.5 %
+    assert "duration_drift" in _checks(_qc_judge(_facts(duration=40.0), 80.0))  # −50 %
+
+
+def test_qc_warns_when_runtime_went_unchecked():
+    issues = _qc_judge(_facts(), expected=None)
+    assert _checks(issues) == set()  # a missing reference must not block a good file
+    assert [i["check"] for i in issues] == ["duration_drift"]
+
+
+def test_qc_expected_accepts_seconds_or_a_path():
+    assert _qc_expected(12.5) == 12.5
+    assert _qc_expected("12.5") == 12.5
+    assert _qc_expected(None) is None
+    assert _qc_expected("no/such/file.mp4") is None
+
+
+# --- storyboard: the boringness review (pure, no ffmpeg) ----------------------
+
+def test_thin_plan_with_no_events_is_refused():
+    (found,) = _sb_thin({}, duration=300.0)
+    assert "no visual events" in found
+
+
+def test_thin_plan_flags_a_dead_stretch():
+    # events crowded into the first 20s, then four minutes of nothing
+    plan = {"zooms": [{"start": 2, "end": 6}, {"start": 12, "end": 18}]}
+    (found,) = _sb_thin(plan, duration=260.0)
+    assert "nothing happening" in found and "242s" in found
+
+
+def test_evenly_spread_events_pass_the_review():
+    # scale alternates: bare {start, end} zooms all inherit the SAME default
+    # framing, which the repetition rule correctly reads as a rut
+    plan = {"zooms": [{"start": s, "end": s + 4, "scale": 1.18 + 0.06 * (i % 2)}
+                      for i, s in enumerate(range(5, 300, 60))]}
+    assert _sb_thin(plan, duration=300.0) == []
+
+
+def test_text_heavy_plan_reads_as_animated_slides():
+    plan = {"zooms": [{"start": s, "end": s + 3} for s in range(0, 100, 20)],
+            "inserts": [{"start": s, "end": s + 8, "text": f"строка {s}"} for s in range(0, 100, 10)]}
+    assert any("animated slides" in f for f in _sb_thin(plan, duration=100.0))
+
+
+def test_repeated_captions_are_flagged():
+    plan = {"inserts": [{"start": s, "end": s + 3, "text": "то же самое"} for s in range(0, 80, 20)]}
+    assert any("distinct captions" in f for f in _sb_thin(plan, duration=85.0))
+
+
+def test_three_identical_zooms_in_a_row_are_a_rut():
+    same = {"kind": "punch", "scale": 1.18, "cx": 0.5, "cy": 0.4}
+    plan = {"zooms": [{**same, "start": s, "end": s + 4} for s in (5, 25, 45)]}
+    assert any("identical zooms" in f for f in _sb_thin(plan, duration=60.0))
+    varied = [{**same, "start": 5, "end": 9}, {**same, "scale": 1.3, "start": 25, "end": 29},
+              {**same, "start": 45, "end": 49}]
+    assert not any("identical zooms" in f for f in _sb_thin({"zooms": varied}, duration=60.0))
+
+
+def test_longest_gap_counts_the_head_and_the_tail():
+    # dead air before the first event is dead air in the hook
+    assert _sb_longest_gap([{"start": 40, "end": 45}], 60.0) == (0.0, 40.0)
+    assert _sb_longest_gap([{"start": 2, "end": 5}], 60.0) == (5.0, 60.0)
+
+
+def test_covered_counts_an_overlap_once():
+    assert _sb_covered([{"start": 0, "end": 10}, {"start": 5, "end": 12}]) == 12.0
