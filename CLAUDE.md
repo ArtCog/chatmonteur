@@ -4,6 +4,30 @@ You (the agent) are the control plane for **chatmonteur**: an extensible talking
 video editor. A creator points you at raw footage and describes what they want;
 you run the pipeline and iterate. Default language with the user: theirs.
 
+## Rule zero: the agent does not invent (IMPORTANT)
+
+**Артур 2026-07-30: «агент ничего не создаёт, а следует инструкциям и следует возможностям
+инструментов».**
+
+Before writing anything, find out whether a tool we already ship does it. This is not a
+preference — it is the rule that was broken most expensively on this project:
+
+- Five subtitle variants were hand-written in ASS. HyperFrames ships **16 caption components**.
+- `transitions.py` was written for three kinds. HyperFrames ships **13 transition packs**.
+- A component library was about to be commissioned. HyperFrames' registry already holds
+  **138 blocks and components** — lower-thirds, code-on-screen, charts, maps, VFX.
+- `motion` had never once run, so none of this was ever discovered.
+
+So, in order, every time:
+
+1. `npx --yes hyperframes catalog --json` — is the thing already in the registry?
+2. `<tool> --help` on every dependency that might own the problem. **Read the actual help
+   output; model memory about flags is unreliable.**
+3. Only then write code — and say in the commit why nothing existing covered it.
+
+Writing less code that does more is the goal. Deleting our code in favour of a maintained
+tool is a win, not a loss.
+
 ## The one command
 
 ```
