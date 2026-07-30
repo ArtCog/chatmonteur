@@ -31,6 +31,11 @@ Each entry: the value, why it works, where it lives in our code.
 | Dead air | trim >1.5 s down to ~0.5 s | Below that it reads as natural breathing | agent rule |
 | **Protect breaths** | 0.3–0.8 s pauses are meaning, not dead air | Cutting them is the classic robotic tell | agent rule |
 | Filler removal is **transcript-driven**, not level-driven | word-level timestamps → cut word spans | Amplitude cannot tell "эм" from a word | D11: agent writes `edl.json` |
+| **A `.en` model does not refuse other languages — it TRANSLATES them** | block `*.en` unless `language == "en"` | The failure that looks like success: fluent English captions over Russian audio | `_check_language` |
+| Hallucinations over silence are caught by the **model's own confidence**, not by pattern | drop when `no_speech_prob > 0.6` AND `avg_logprob < -1.0` (Whisper's own decoding thresholds) | "Подписывайтесь на канал" and "СИГНАЛ СМС" are ordinary Russian — no regex finds them. Whisper already knows it heard nothing | `_why_invented` |
+| `♪` / `�` anywhere in a segment | drop the whole segment | Part of it was never decoded, so none of it is trustworthy | `_why_invented` |
+| >20 % of segments junk | **fail the run**, don't filter | A transcript that hallucinated that much hallucinated where nobody is looking too — re-run larger | `_drop_hallucinations` |
+| Brand terms need a **dictionary**, not a bigger model | `assets/brand/asr_fixes.yaml`, phrase-aware, punctuation-preserving | Whisper has never heard "ИИмерсивный". A misspelled brand term in a caption is the loudest amateur signal there is | `_apply_fixes` |
 | Scene detection | PySceneDetect `content` @ 27.0 (talking head 22, screencast 30); ffmpeg fallback `select='gt(scene,0.3)'` — note the different scales | Per-scene processing of long footage | not yet |
 | Speed ramps | `setpts=(1/f)*PTS` + chained `atempo` (valid 0.5–100, chain beyond) | Boilerplate typing 2–3×, installs 2–4× | not yet |
 

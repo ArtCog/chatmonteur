@@ -42,6 +42,10 @@ from chatmonteur.tools.storyboard import _check_one_text_at_a_time as _sb_check_
 from chatmonteur.tools.storyboard import _covered as _sb_covered  # noqa: E402
 from chatmonteur.tools.storyboard import _longest_gap as _sb_longest_gap  # noqa: E402
 from chatmonteur.tools.storyboard import _thin_spots as _sb_thin  # noqa: E402
+from chatmonteur.tools.transcribe_whisper import _apply_fixes as _asr_fix  # noqa: E402
+from chatmonteur.tools.transcribe_whisper import _check_language as _asr_lang  # noqa: E402
+from chatmonteur.tools.transcribe_whisper import _drop_hallucinations as _asr_drop  # noqa: E402
+from chatmonteur.tools.transcribe_whisper import _split_token as _asr_split  # noqa: E402
 from chatmonteur.tools.transitions import _check_discipline as _tr_discipline  # noqa: E402
 from chatmonteur.tools.transitions import _check_room as _tr_room  # noqa: E402
 from chatmonteur.tools.transitions import _default_duration as _tr_default_dur  # noqa: E402
@@ -650,3 +654,94 @@ def test_blended_timeline_chains_xfade_and_acrossfade():
     graph, _ = _tr_graph(info, joins, 1920, 1080, 30.0)
     assert "xfade=transition=fadeblack" in graph and "offset=2.6000" in graph
     assert "acrossfade=d=0.4000" in graph
+
+
+# --- ASR cleanup: what must never reach a caption -----------------------------
+
+_FIXES = {"клод код": "Claude Code", "опен роутер": "OpenRouter", "гермес": "Hermes",
+          "обс": "OBS", "иимерсивный": "ИИмерсивный"}
+
+
+def _spoken(sentence: str) -> list[dict]:
+    words, t = [], 0.0
+    for w in sentence.split(" "):
+        words.append({"start": round(t, 2), "end": round(t + 0.3, 2), "word": " " + w, "prob": 0.9})
+        t += 0.35
+    return words
+
+
+def _seg(text, start=0.0, end=1.0, no_speech=0.02, logprob=-0.3):
+    return {"start": start, "end": end, "text": text, "words": [],
+            "no_speech_prob": no_speech, "avg_logprob": logprob}
+
+
+def test_english_only_model_would_translate_not_transcribe():
+    # the failure that looks like success: fluent English output from Russian audio
+    with pytest.raises(ToolError, match="TRANSLATE"):
+        _asr_lang("large-v3.en", "ru")
+    _asr_lang("medium.en", "en")
+    _asr_lang("large-v3", "ru")
+
+
+def test_plausible_hallucination_over_silence_is_dropped():
+    # "Подписывайтесь на канал" is ordinary Russian — no pattern catches it.
+    # Whisper's own no_speech_prob/avg_logprob do.
+    real = [_seg(f"реплика {i}") for i in range(8)]
+    invented = _seg("Подписывайтесь на канал", no_speech=0.91, logprob=-1.7)
+    kept, dropped = _asr_drop(real + [invented], "large-v3")
+    assert dropped == 1 and all("Подписывайтесь" not in s["text"] for s in kept)
+
+
+def test_undecodable_characters_take_the_whole_segment():
+    # the real dogfood failure: "СИГНАЛ СМС" burned into a caption
+    real = [_seg(f"реплика {i}") for i in range(8)]
+    kept, dropped = _asr_drop(real + [_seg("СИГНАЛ СМС �")], "large-v3")
+    assert dropped == 1 and all("СИГНАЛ" not in s["text"] for s in kept)
+
+
+def test_notes_and_micro_fillers_go_but_real_speech_stays():
+    segs = [_seg("реальная речь"), _seg("♪♪♪"), _seg(""), _seg("эм", 0.0, 0.05)]
+    segs += [_seg(f"ещё {i}") for i in range(6)]
+    kept, dropped = _asr_drop(segs, "large-v3")
+    assert dropped == 3 and kept[0]["text"] == "реальная речь"
+
+
+def test_a_mostly_hallucinated_transcript_fails_instead_of_being_patched():
+    junk = [_seg("♪"), _seg("♪ ♪"), _seg("�"), _seg("реальная речь")]
+    with pytest.raises(ToolError, match="transcription failed"):
+        _asr_drop(junk, "small")
+
+
+def test_brand_fixes_span_words_and_keep_punctuation():
+    line = "Ставим клод код через опен роутер, потом гермес."
+    seg = [{"start": 0, "end": 5, "text": line, "words": _spoken(line)}]
+    fixed, n = _asr_fix(seg, _FIXES)
+    assert fixed[0]["text"] == "Ставим Claude Code через OpenRouter, потом Hermes."
+    assert n == 3
+
+
+def test_a_corrected_phrase_collapses_into_one_timed_token():
+    # "опен роутер" (2 words) -> "OpenRouter" (1): the token must carry the whole span
+    line = "через опен роутер дальше"
+    seg = [{"start": 0, "end": 2, "text": line, "words": _spoken(line)}]
+    fixed, _ = _asr_fix(seg, _FIXES)
+    token = next(w for w in fixed[0]["words"] if "OpenRouter" in w["word"])
+    assert (token["start"], token["end"]) == (0.35, 1.0)
+
+
+def test_a_spelling_the_dictionary_confirms_is_not_counted_as_a_fix():
+    line = "канал ИИмерсивный"
+    seg = [{"start": 0, "end": 1, "text": line, "words": _spoken(line)}]
+    _, n = _asr_fix(seg, _FIXES)
+    assert n == 0
+
+
+def test_fixes_reach_segments_that_have_no_word_timings():
+    seg = [{"start": 0, "end": 1, "text": "запускаю гермес", "words": []}]
+    fixed, n = _asr_fix(seg, _FIXES)
+    assert fixed[0]["text"] == "запускаю Hermes" and n == 1
+
+
+def test_split_token_keeps_the_pieces_apart():
+    assert _asr_split(" «клод»,") == (" ", "«", "клод", "»,")
+    assert _asr_split("обс") == ("", "", "обс", "")
