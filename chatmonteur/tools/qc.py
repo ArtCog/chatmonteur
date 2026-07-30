@@ -47,6 +47,7 @@ _FRAME_POSITIONS = (0.10, 0.35, 0.65, 0.90)
 # brand background #0B0B0C → 26, #0B0F0E → 28. 20 catches black and crushed
 # near-black while leaving a dark brand card six points of headroom.
 _BLACK_YAVG = 20.0
+_CONFIRM_AFTER = 0.5      # a dark frame must still be dark this much later to count
 _SILENT_DBFS = -60.0      # mean volume under this = the track plays nothing
 _CLIP_DBFS = -0.5         # peak above this = clipped samples
 _MAX_DRIFT = 0.25         # 25 % runtime change between what went in and what came out
@@ -198,29 +199,45 @@ def _probe(path: pathlib.Path, log) -> dict:
 def _sample_luma(path: pathlib.Path, duration: float, log) -> dict[str, float]:
     """Mean luma of one frame at each probe position, keyed by position label.
 
-    ``signalstats`` computes it and ``metadata=print`` dumps the tag to stdout;
-    seeking with ``-ss`` *before* ``-i`` keeps each probe near-instant even on a
-    long file. A position that fails to decode is simply absent from the result —
-    the caller reads a short dict as damage, which is the point.
+    A dark reading is CONFIRMED half a second later before it counts. A probe can
+    land inside a fade-through-black — measured at 6.8 on our own transition
+    bench — and a gate that blocks good renders gets switched off, after which it
+    protects nothing. Black for an instant is punctuation; black half a second
+    later is damage.
+
+    A position that fails to decode is simply absent from the result — the caller
+    reads a short dict as damage, which is the point.
     """
     out: dict[str, float] = {}
     for frac in _FRAME_POSITIONS:
         at = duration * frac
-        proc = subprocess.run(
-            ["ffmpeg", "-v", "error", "-ss", f"{at:.3f}", "-i", str(path), "-frames:v", "1",
-             "-vf", "signalstats,metadata=print:file=-", "-f", "null", "-"],
-            capture_output=True, text=True, encoding="utf-8", errors="replace",
-        )
-        for line in (proc.stdout or "").splitlines():
-            if "signalstats.YAVG" in line:
-                try:
-                    out[f"{frac:.0%}"] = float(line.split("=")[1])
-                except (IndexError, ValueError):
-                    pass
-                break
-        else:
+        luma = _luma_at(path, at)
+        if luma is None:
             log(f"qc: no frame decoded at {at:.1f}s")
+            continue
+        if luma < _BLACK_YAVG:
+            confirm = _luma_at(path, min(at + _CONFIRM_AFTER, duration - 0.1))
+            if confirm is not None:
+                luma = max(luma, confirm)
+        out[f"{frac:.0%}"] = luma
     return out
+
+
+def _luma_at(path: pathlib.Path, at: float) -> float | None:
+    """One frame's mean luma. ``-ss`` before ``-i`` keeps this near-instant even
+    on a long file; ``metadata=print`` dumps the signalstats tag to stdout."""
+    proc = subprocess.run(
+        ["ffmpeg", "-v", "error", "-ss", f"{max(0.0, at):.3f}", "-i", str(path), "-frames:v", "1",
+         "-vf", "signalstats,metadata=print:file=-", "-f", "null", "-"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
+    for line in (proc.stdout or "").splitlines():
+        if "signalstats.YAVG" in line:
+            try:
+                return float(line.split("=")[1])
+            except (IndexError, ValueError):
+                return None
+    return None
 
 
 def _expected_seconds(expected: str | float | None) -> float | None:

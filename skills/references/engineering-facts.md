@@ -34,10 +34,27 @@ Each entry: the value, why it works, where it lives in our code.
 | Scene detection | PySceneDetect `content` @ 27.0 (talking head 22, screencast 30); ffmpeg fallback `select='gt(scene,0.3)'` — note the different scales | Per-scene processing of long footage | not yet |
 | Speed ramps | `setpts=(1/f)*PTS` + chained `atempo` (valid 0.5–100, chain beyond) | Boilerplate typing 2–3×, installs 2–4× | not yet |
 
+## Transitions — punctuation, not decoration
+
+Built as `tools/transitions.py` (the clip-assembly capability we previously did by hand).
+
+| Fact | Value | Why |
+|---|---|---|
+| Three kinds only | `cut` / `crossfade` (`xfade=fade`) / `fade` (`xfade=fadeblack`) | A different transition at every join reads as a demo of the software |
+| **Discipline** | one kind on ≥60 % of joins (judged from 3 joins up) | `_check_discipline` refuses a scattered timeline |
+| Length by runtime | <60 s → 0.4 s · 1–10 min → 0.75 s · >10 min → 1.2 s | A short wants a quick dissolve; a long talk can breathe |
+| **Accumulating offset** | `offset_i = (length composed so far) − d_i` | Every transition SHORTENS the timeline. Summing raw durations drifts a little more at every seam |
+| Room | a transition may not exceed **half** the shorter clip | Fitting ≠ working: a dissolve eating most of a shot means the shot was never on screen |
+| Silent clips | force `anullsrc` in | `acrossfade`/`concat` break on a clip with no audio — exactly what a HyperFrames title card is |
+| Hard cut inside a blended chain | one-frame dissolve | A uniform graph is worth the single invisible frame; all-cut timelines use `concat` and stay exact |
+| Anti-pattern | exit and entrance animate at the same instant T | No exit animation before the transition begins (except the last scene) |
+
 ## Rhythm and structure (the craft that reads as "an editor did this")
 
-- **J/L cuts**: offset the picture cut ±0.3–0.8 s from the audio cut. Pure timing maths on data
-  we already have — the cheapest upgrade that most changes the feel. *Not built yet.*
+- **J/L cuts**: our usual case gets them free. A full-frame cutaway is burned by `overlays`,
+  which never touches `0:a` — narration runs straight through while the picture changes. That
+  IS an L-cut. For pieces carrying separate sound, `transitions` takes `audio_duration` longer
+  than the picture's, so the sound arrives first.
 - **Cuts per minute by genre**: educational 3–5, vlog 6–10, comedy/gaming 10–20. The 2026 shift
   is that *varying* the rate matters more than hitting a number — a constant pace fatigues.
 - **Pace follows the arc**: a target CPM per semantic block (hook fast, explanation by meaning),

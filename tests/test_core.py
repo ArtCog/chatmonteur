@@ -42,6 +42,13 @@ from chatmonteur.tools.storyboard import _check_one_text_at_a_time as _sb_check_
 from chatmonteur.tools.storyboard import _covered as _sb_covered  # noqa: E402
 from chatmonteur.tools.storyboard import _longest_gap as _sb_longest_gap  # noqa: E402
 from chatmonteur.tools.storyboard import _thin_spots as _sb_thin  # noqa: E402
+from chatmonteur.tools.transitions import _check_discipline as _tr_discipline  # noqa: E402
+from chatmonteur.tools.transitions import _check_room as _tr_room  # noqa: E402
+from chatmonteur.tools.transitions import _default_duration as _tr_default_dur  # noqa: E402
+from chatmonteur.tools.transitions import _effective as _tr_effective  # noqa: E402
+from chatmonteur.tools.transitions import _graph as _tr_graph  # noqa: E402
+from chatmonteur.tools.transitions import _normalise_joins as _tr_joins  # noqa: E402
+from chatmonteur.tools.transitions import _offsets as _tr_offsets  # noqa: E402
 from chatmonteur.tools.subtitles import (  # noqa: E402
     _break_lines, _build_cues, _fit_timing, _is_orphan, _to_ass,
 )
@@ -443,7 +450,7 @@ def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
     expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
-                "color", "motion", "render", "qc"}
+                "color", "motion", "render", "qc", "transitions"}
     assert expected <= caps
 
 
@@ -555,3 +562,91 @@ def test_longest_gap_counts_the_head_and_the_tail():
 
 def test_covered_counts_an_overlap_once():
     assert _sb_covered([{"start": 0, "end": 10}, {"start": 5, "end": 12}]) == 12.0
+
+
+# --- transitions (pure; the ffmpeg run is verified on the bench) --------------
+
+def test_xfade_offsets_measure_against_the_composed_timeline():
+    # THE bug this guards: every transition SHORTENS the timeline, so offset i is
+    # measured after i-1 joins. Summing raw durations puts join #2 at 12.967 and
+    # drifts a little more at every seam after it.
+    joins = [{"duration": 0.4}, {"duration": 1 / 30}]
+    a, b = _tr_offsets([3.0, 10.0, 5.0], joins)
+    assert a == 2.6
+    assert round(b, 3) == 12.567
+
+
+def test_transition_length_scales_with_runtime():
+    assert _tr_default_dur(40) == 0.4      # a short wants a quick dissolve
+    assert _tr_default_dur(300) == 0.75
+    assert _tr_default_dur(1800) == 1.2    # a long talk can breathe
+
+
+def test_joins_default_to_hard_cuts_and_reject_nonsense():
+    joins = _tr_joins([{"kind": "crossfade"}], count=3, runtime=40.0)
+    assert [j["kind"] for j in joins] == ["crossfade", "cut", "cut"]
+    assert joins[0]["duration"] == 0.4 and joins[1]["duration"] == 0.0
+    with pytest.raises(ToolError, match="unknown kind"):
+        _tr_joins([{"kind": "starwipe"}], 1, 40.0)
+    with pytest.raises(ToolError, match="sane range"):
+        _tr_joins([{"kind": "fade", "duration": 9.0}], 1, 40.0)
+
+
+def test_audio_may_lead_the_picture():
+    (j,) = _tr_joins([{"kind": "crossfade", "duration": 0.4, "audio_duration": 1.0}], 1, 40.0)
+    assert j["duration"] == 0.4 and j["audio_duration"] == 1.0
+
+
+def test_scattered_transitions_are_refused():
+    scattered = [{"kind": k} for k in ("cut", "fade", "crossfade")]
+    with pytest.raises(ToolError, match="scattered"):
+        _tr_discipline(scattered, log=lambda m: None, allow_scattered=False)
+    disciplined = [{"kind": k} for k in ("cut", "cut", "crossfade")]
+    _tr_discipline(disciplined, log=lambda m: None, allow_scattered=False)
+    # under three joins there is no pattern to judge
+    _tr_discipline([{"kind": "fade"}, {"kind": "cut"}], log=lambda m: None, allow_scattered=False)
+
+
+def test_transition_may_not_eat_half_the_shorter_clip():
+    clips = [{"duration": 3.0}, {"duration": 10.0}]
+    _tr_room(clips, [{"duration": 1.5, "audio_duration": 1.5}])
+    with pytest.raises(ToolError, match="too much for clips"):
+        _tr_room(clips, [{"duration": 2.0, "audio_duration": 2.0}])
+    # a long audio lead counts against the same budget
+    with pytest.raises(ToolError, match="too much for clips"):
+        _tr_room(clips, [{"duration": 0.4, "audio_duration": 2.0}])
+
+
+def test_hard_cuts_stay_exact_unless_the_chain_blends():
+    cuts = [{"kind": "cut", "duration": 0.0}] * 2
+    assert _tr_effective(cuts, 30.0) == cuts             # concat path: no frame spent
+    mixed = [{"kind": "fade", "duration": 0.4}, {"kind": "cut", "duration": 0.0}]
+    assert _tr_effective(mixed, 30.0)[1]["duration"] == pytest.approx(1 / 30)
+
+
+def _clip(dur, audio=True):
+    return {"file": "c.mp4", "duration": dur, "width": 1920, "height": 1080,
+            "fps": 30.0, "has_audio": audio}
+
+
+def test_graph_gives_a_silent_clip_a_real_audio_track():
+    # a HyperFrames title card carries no audio, and acrossfade/concat break on it
+    info = [_clip(3.0, audio=False), _clip(10.0)]
+    graph, silent = _tr_graph(info, [{"kind": "cut", "duration": 0.0}], 1920, 1080, 30.0)
+    assert silent == [0]
+    assert "[2:a]aresample=48000" in graph  # input 2 = the anullsrc appended after the clips
+    assert "[1:a]aresample=48000" in graph
+
+
+def test_all_cut_timeline_uses_concat_not_xfade():
+    info = [_clip(3.0), _clip(10.0)]
+    graph, _ = _tr_graph(info, [{"kind": "cut", "duration": 0.0}], 1920, 1080, 30.0)
+    assert "concat=n=2:v=1:a=1[v][a]" in graph and "xfade" not in graph
+
+
+def test_blended_timeline_chains_xfade_and_acrossfade():
+    info = [_clip(3.0), _clip(10.0)]
+    joins = [{"kind": "fade", "duration": 0.4, "audio_duration": 0.4}]
+    graph, _ = _tr_graph(info, joins, 1920, 1080, 30.0)
+    assert "xfade=transition=fadeblack" in graph and "offset=2.6000" in graph
+    assert "acrossfade=d=0.4000" in graph
