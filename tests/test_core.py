@@ -29,6 +29,9 @@ from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
 from chatmonteur.tools.overlays import _filter_graph as _ovl_filter_graph  # noqa: E402
 from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E402
+from chatmonteur.tools.sound import _load_plan as _load_sound_plan  # noqa: E402
+from chatmonteur.tools.sound import _next_input_index as _snd_next_index  # noqa: E402
+from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
 from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
@@ -343,6 +346,26 @@ def test_storyboard_empty_passes_video_through(tmp_path):
     assert res.artifacts["video"] == "x.mp4" and res.meta["sections"] == []
 
 
+# --- sound (pure logic, no ffmpeg) ----------------------------------------------
+
+def test_sfx_lands_before_its_beat():
+    # hearing beats seeing — a hit on the exact frame reads as late
+    assert _sfx_delay_ms(12.0) == 11985
+    assert _sfx_delay_ms(0.0) == 0  # never negative at the head of the file
+
+
+def test_sound_input_indexes_track_the_ffmpeg_order():
+    # music carries its own -ss, so counting -i (not list length) is what maps
+    # a file to its [N:a] label
+    assert _snd_next_index(["video.mp4"]) == 1
+    assert _snd_next_index(["video.mp4", "-ss", "12.0", "-i", "bed.mp3"]) == 2
+
+
+def test_sound_plan_rejects_missing_file(tmp_path):
+    with pytest.raises(ToolError):
+        _load_sound_plan(str(tmp_path / "nope.json"))
+
+
 # --- stock resolver (pure logic, no network) ------------------------------------
 
 def test_stock_free_first_and_key_degradation(monkeypatch):
@@ -414,6 +437,6 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
                 "color", "motion", "render"}
     assert expected <= caps
