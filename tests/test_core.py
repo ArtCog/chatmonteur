@@ -34,6 +34,7 @@ from chatmonteur.tools.sound import _next_input_index as _snd_next_index  # noqa
 from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
 from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
+from chatmonteur.tools.motion_hyperframes import _resolve as _hf_resolve  # noqa: E402
 from chatmonteur.tools.qc import _expected_seconds as _qc_expected  # noqa: E402
 from chatmonteur.tools.qc import _judge as _qc_judge  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
@@ -111,6 +112,29 @@ _SUBS = {
 def test_cue_keeps_its_words():
     cues = _build_cues(_SUBS, 42)
     assert len(cues) == 1 and len(cues[0]["words"]) == 4  # words survive for A/B/D
+
+
+def _breathing(line: str, pause_after: str, pause: float) -> dict:
+    words, t = [], 0.0
+    for tok in line.split():
+        words.append({"start": round(t, 2), "end": round(t + 0.32, 2), "word": " " + tok})
+        t += 0.38 + (pause if tok == pause_after else 0.0)
+    return {"segments": [{"start": 0.0, "end": t, "text": line, "words": words}]}
+
+
+def test_a_cue_breaks_where_the_speaker_breathes():
+    # no punctuation marks this break — only the 0.45s gap does
+    data = _breathing("и вот здесь начинается самое интересное во всей истории", "начинается", 0.45)
+    cues = _build_cues(data, 39)
+    assert [c["text"] for c in cues] == [
+        "и вот здесь начинается", "самое интересное во всей истории"]
+
+
+def test_a_pause_does_not_shred_a_cue_that_has_not_earned_its_time():
+    # the gap lands after 0.7s of speech — below the minimum a cue must hold,
+    # so the phrase stays whole rather than flashing two words on screen
+    data = _breathing("сначала это потом всё остальное по порядку", "это", 0.45)
+    assert len(_build_cues(data, 39)) == 1
 
 
 def _ass(variant, font="Golos Text"):
@@ -745,3 +769,16 @@ def test_fixes_reach_segments_that_have_no_word_timings():
 def test_split_token_keeps_the_pieces_apart():
     assert _asr_split(" «клод»,") == (" ", "«", "клод", "»,")
     assert _asr_split("обс") == ("", "", "обс", "")
+
+
+# --- motion: hyperframes takes a DIRECTORY, not a file ------------------------
+
+def test_composition_path_splits_into_project_dir_and_file(tmp_path):
+    # `hyperframes render <file.html>` fails with "Not a directory"
+    (tmp_path / "index.html").write_text("<div></div>")
+    (tmp_path / "lower.html").write_text("<div></div>")
+    assert _hf_resolve(str(tmp_path)) == (tmp_path, None)
+    assert _hf_resolve(str(tmp_path / "index.html")) == (tmp_path, None)
+    assert _hf_resolve(str(tmp_path / "lower.html")) == (tmp_path, "lower.html")
+    with pytest.raises(ToolError, match="composition not found"):
+        _hf_resolve(str(tmp_path / "missing.html"))

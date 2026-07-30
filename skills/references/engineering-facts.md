@@ -129,6 +129,24 @@ Deliberately **not** copied from OpenMontage: their file-size proxy (`<2000 byte
 is fragile, and their `fail` status comes from grepping issue text for six phrases, so black
 frames and clipping don't actually block. Ours is an explicit boolean checklist.
 
+## HyperFrames — how a graphic reaches our timeline
+
+The design rule first: **the graphic renders WITH ALPHA and WE composite it.** Letting a
+composition embed the speaker video puts the graphics on HyperFrames' clock while every
+burned layer (zooms, inserts, subtitles) runs on the video's own clock. Two timebases in
+one frame is how a caption lands half a second off its word — and it fails silently.
+
+| Fact | Detail |
+|---|---|
+| `render` takes a project **DIRECTORY** | A file path fails with "Not a directory". A specific file goes through `--composition <name>`, relative to the directory. `_resolve` handles both |
+| Alpha needs `--format mov` | ProRes 4444, `yuva444p12le`. Default `mp4` is opaque; `--format webm` came out yuv420p here — also opaque. `png-sequence` writes RGBA |
+| **`npx` is `npx.cmd` on Windows** | `subprocess` without a shell only auto-appends `.exe`, so passing the bare name raises a FileNotFoundError that reads like Node is missing. Use the path `shutil.which` returned. This is why `motion` never once ran |
+| `--strict-variables` always | Without it a misspelled variable name renders a BLANK card instead of failing |
+| Pass variables by **file** | `--variables-file`; inline JSON loses its braces to the Windows shell |
+| Match `--fps` to the footage | A graphic rendered at a different rate judders once composited |
+| Verifying alpha | `alphaextract,signalstats` → 12-bit limited range: **256 = transparent, 3760 = opaque**. Our lower-third measured min 256 / avg 271 / max 3760 (mostly empty, graphic opaque); a full-bleed title card measured a uniform 3760 |
+| NVENC refuses `-g 1` | Use libx264 for all-intra intermediates bound for HyperFrames |
+
 ## Libraries worth adopting (permissive only)
 
 MediaPipe (Apache-2.0, face/pose → safe zones, reframe) · PySceneDetect (BSD-3) ·

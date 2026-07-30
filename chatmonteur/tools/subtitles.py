@@ -369,16 +369,24 @@ def _wrap(text: str, max_chars: int) -> str:
 def _chunk_words(words: list[dict], max_chars: int, max_dur: float = 2.8, max_lines: int = 2):
     """Group word-timestamps into short caption cues (talking-head style).
 
-    Breaks on sentence punctuation, ~max_chars*max_lines length, or max_dur — so
-    captions are short phrases, not one giant block per whisper segment. Each cue
-    keeps its own words (needed by the read_aloud / accent / typewriter renderers).
+    Breaks on sentence punctuation, ~max_chars*max_lines length, max_dur — or on a
+    PAUSE in the speech. The pause rule is what makes captions breathe with the
+    voice instead of snapping at an arbitrary word count: where the speaker took a
+    breath, the line changes. A pause only ends a cue that has already earned its
+    minimum time on screen, so this splits phrases without shredding them.
+
+    Each cue keeps its own words (needed by the read_aloud / accent / typewriter
+    renderers).
     """
     cues, cur = [], []
-    for w in words:
+    for i, w in enumerate(words):
         cur.append(w)
         text = "".join(x.get("word", "") for x in cur).strip()
         dur = float(cur[-1]["end"]) - float(cur[0]["start"])
-        if len(text) >= max_chars * max_lines or dur >= max_dur or text.endswith((".", "!", "?", "…")):
+        gap = float(words[i + 1]["start"]) - float(w["end"]) if i + 1 < len(words) else 0.0
+        if (len(text) >= max_chars * max_lines or dur >= max_dur
+                or text.endswith((".", "!", "?", "…"))
+                or (gap >= _PAUSE_BREAK and dur >= _MIN_DUR)):
             cues.append((float(cur[0]["start"]), float(cur[-1]["end"]), text, list(cur)))
             cur = []
     if cur:
@@ -430,6 +438,7 @@ def _merge_flashes(cues: list[dict], max_chars: int) -> list[dict]:
 
 # Reading-comfort limits (Netflix/BBC). See skills/subtitles.md.
 _MIN_DUR = 0.83   # a cue must hold ≥0.83 s — never flash
+_PAUSE_BREAK = 0.15  # a gap this long is a breath: end the cue there, not mid-phrase
 _MAX_DUR = 7.0    # …and not linger past ~7 s
 _MAX_CPS = 17.0   # ≤17 characters/second reading speed
 _GAP = 0.08       # keep ≥~2 frames between cues when extending
