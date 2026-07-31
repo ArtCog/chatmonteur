@@ -142,14 +142,19 @@ out as amateur:
 that matter most; his ten minutes outrank an hour of guessing. Everything else is sourced by
 the rules above.
 
-### The motion floor — no static second (Артур 2026-07-31)
+### The motion floor — no DEAD static (Артур 2026-07-31; scoped 2026-07-31)
 
 Drama/shorts channels fill every gap with background gameplay; the data behind the trick is
 real even though the form is wrong for us: continuous on-screen motion holds **1.5–2× the
 engagement time** of static holds (edX study, p ≪ 0.001, in
-`references/engineering-facts.md`). So the rule is:
+`references/engineering-facts.md`). **The same study's second finding scopes the rule**:
+on slides/code, learners deliberately PAUSE on static holds to read — a hold on content the
+viewer must study is a feature, not dead air. So:
 
-- **No stretch of the video may be a static frame.** Every connective gap gets motion.
+- **STORY sections (hook, narrative, connectives): no static second.** Every gap gets motion.
+- **TEACH sections (code, a diagram, a config the viewer reads): a deliberate static hold is
+  legitimate** — and per Артур's standing rule, no decoration on top of what must be read.
+  Dead static = a frozen frame nobody is supposed to be studying. THAT is banned everywhere.
 - **Our filler is THEMATIC, never gameplay**: a running terminal, an agent typing, a build
   timelapse, the discussed tool's UI in motion. It carries meaning while it moves — gameplay
   on an educational tech channel reads as disrespect.
@@ -164,7 +169,9 @@ engagement time** of static holds (edX study, p ≪ 0.001, in
 ### Breathing, cards and the dark discipline (reference: «вайбкодер», ×37 reach)
 
 Full breakdown: `Research/youtube-craft/05-video-editing/ai-montage-landscape-2026-07-31.md`.
-The three transferable patterns:
+⚠️ **Status: hypotheses from ONE reference video** (n=1, entertainment format, not our
+genre). Consistent with the pacing research, but each pattern must survive a dogfood run
+on Артур's own footage before it hardens into canon. The three candidates:
 
 - **Breathing, not a constant rate.** On PROOF sections (screens, chats, UI) the picture
   changes every 5–10 s; on pure storytelling the editor deliberately lays ONE unbroken
