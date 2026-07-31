@@ -24,4 +24,5 @@ loaded on demand.
 | `multiscene-pipeline.md` | Multi-scene assembly + LOCKED YouTube final render + concat-filter lesson | ✅ ported |
 | `final-render-and-audio.md` | ONE-PASS final render, EQ-pocket + gentle duck canon, mixing levels | ✅ ported |
 | `edit-sequence.md` | Why the 4-phase order is load-bearing (lock cut → geometry → color → top layers → sound → encode) | ✅ written |
+| `hyperframes-registry.md` | **Read before building any graphic.** The 138-item registry, block vs component, wiring, pointing the registry at our own brand items, and the determinism/caption rules that are not optional | ✅ written 2026-07-31 |
 | `engineering-facts.md` | **The numbers that make an edit read as professional** — ducking/mix/SFX values, cutting thresholds, rhythm & B-roll doctrine, screencast zoom table, the quality-gate scoring that blocks a boring edit, vetted libraries, interchange truths. Mined 2026-07-30 | ✅ written |
