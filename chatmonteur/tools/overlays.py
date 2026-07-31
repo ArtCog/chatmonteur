@@ -32,12 +32,15 @@ from .. import media
 
 _IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp"}
 # Safe-zone position presets (x, y as ffmpeg overlay expressions; m = margin px).
+# "center" is for evidence cards over a blurred backdrop — everywhere else the
+# lower center belongs to captions/inserts and the face must stay visible.
 _POSITIONS = {
     "top_right": ("W-w-{m}", "{m}"),
     "top_left": ("{m}", "{m}"),
     "top_center": ("(W-w)/2", "{m}"),
     "center_right": ("W-w-{m}", "(H-h)/2"),
     "center_left": ("{m}", "(H-h)/2"),
+    "center": ("(W-w)/2", "(H-h)/2"),
 }
 _DEF_WIDTH = 0.45      # fraction of frame width
 _MARGIN_FRAC = 0.03    # margin from frame edges
@@ -104,9 +107,12 @@ def _load_plan(path: pathlib.Path) -> list[dict]:
         if not 0.1 <= width <= 0.7:
             raise ToolError(f"overlay #{i + 1}: width {width} outside sane range [0.1, 0.7] "
                             "(bigger would bury the speaker — cut away instead)")
+        backdrop = it.get("backdrop")
+        if backdrop not in (None, "blur"):
+            raise ToolError(f"overlay #{i + 1}: unknown backdrop {backdrop!r}; only 'blur'")
         out.append({
             "file": str(f), "start": start, "end": end, "pos": pos, "width": width,
-            "is_image": f.suffix.lower() in _IMAGE_EXT,
+            "is_image": f.suffix.lower() in _IMAGE_EXT, "backdrop": backdrop,
         })
     return out
 
@@ -130,6 +136,16 @@ def _filter_graph(items: list[dict], width: int, height: int) -> str:
         target_w = round(width * it["width"] / 2) * 2  # encoder needs even dims
         xe, ye = _POSITIONS[it["pos"]]
         x, y = xe.format(m=m), ye.format(m=m)
+        if it.get("backdrop") == "blur":
+            # The motion floor holds while the viewer reads: the card sits on a
+            # blurred copy of the LIVE frame, never a flat colour (skills/motion.md).
+            parts.append(f"[{prev}]split[base{i}][tob{i}]")
+            parts.append(f"[tob{i}]boxblur=20:2[bl{i}]")
+            parts.append(
+                f"[base{i}][bl{i}]overlay=0:0:"
+                f"enable='between(t,{it['start']:.3f},{it['end']:.3f})'[bg{i}]"
+            )
+            prev = f"bg{i}"
         parts.append(
             f"[{i + 1}:v]scale={target_w}:-2,format=rgba,"
             f"fade=in:st=0:d={fade:.3f}:alpha=1,"

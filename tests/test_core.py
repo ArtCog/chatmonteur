@@ -860,3 +860,14 @@ def test_sfx_gain_outside_sane_range_is_refused(tmp_path):
     ctx = RunContext.for_project(load_config(tmp_path), "t")
     with pytest.raises(ToolError, match="sane range"):
         _SND_TOOL.run(ctx, input="x.mp4", sfx=[{"at": 1.0, "file": str(wav), "gain_db": 6}])
+
+
+def test_overlay_blur_backdrop_wraps_the_window():
+    # evidence card: blurred LIVE base under the card, only inside the window
+    g = _ovl_filter_graph([{"file": "x.png", "start": 2.0, "end": 5.0, "pos": "center",
+                            "width": 0.6, "is_image": True, "backdrop": "blur"}], 1920, 1080)
+    assert "boxblur" in g and "(W-w)/2" in g and "(H-h)/2" in g
+    assert "enable='between(t,2.000,5.000)'" in g
+    plain = _ovl_filter_graph([{"file": "x.png", "start": 2.0, "end": 5.0, "pos": "top_right",
+                                "width": 0.4, "is_image": True, "backdrop": None}], 1920, 1080)
+    assert "boxblur" not in plain  # blur is opt-in, never a side effect
