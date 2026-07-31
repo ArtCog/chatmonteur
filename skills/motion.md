@@ -127,12 +127,27 @@ still burns, just text-only.
 
 ## Visual sources (voice-over: the screen must be filled continuously)
 
+**Classify BEFORE you source.** For every meaning-bit of the transcript, first decide what
+KIND of statement it is — only then pick the source row below. Skipping this step degrades
+every resolver into "insert something by keyword", which is exactly the visual Артур called
+out as amateur:
+
+1. **Named entity** (a product, a model, someone's post) → the REAL thing: live screenshot.
+2. **Abstraction** (how it works, comparison, numbers) → OUR graphic (HyperFrames, on-brand).
+3. **Demonstration** (I did X, it looked like this) → the actual screencast footage.
+4. **Connective / emotion** (transitions, jokes, asides) → cutaway or meme, sparingly.
+5. **None of the above fits** → AI-gen, last resort, disclosed.
+
+**Артур's anchors beat inference.** Before planning, ask him what to show at the 3–5 moments
+that matter most; his ten minutes outrank an hour of guessing. Everything else is sourced by
+the rules above.
+
 Priority — own/exact first, stock only for generic. What to use per sentence:
 
 | Narration references… | Visual | Why |
 |---|---|---|
 | code / terminal / output | own screen capture (ffmpeg gdigrab / x11grab / avfoundation) | real, exact, no license |
-| a specific site/product UI | browser-automation capture (Playwright) of the real site | stock never matches a named product |
+| a specific site/product UI | browser-automation capture (Playwright) of the real site — on this machine Playwright lives in `C:/Users/magme/AppData/Local/Programs/Python/Python313/python.exe`, NOT the PATH python | stock never matches a named product |
 | architecture / pipeline / data flow | HyperFrames or Manim diagram | precise, on-brand, anchor-word synced |
 | generic cutaway (hands, server, office) | **`stock` capability**: Openverse (keyless) / Pexels / Pixabay — fetches candidates + license manifest; YOU look at every candidate and score 1–5 (relevance/resolution/style/POV), reject and re-query freely | free; CC-BY needs the credit from `manifest.json` in the description |
 | meme / reaction | **`stock` capability**, `kind="meme"` (Imgflip top-100 templates, keyless) | free |
