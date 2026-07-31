@@ -142,6 +142,25 @@ out as amateur:
 that matter most; his ten minutes outrank an hour of guessing. Everything else is sourced by
 the rules above.
 
+### The motion floor — no static second (Артур 2026-07-31)
+
+Drama/shorts channels fill every gap with background gameplay; the data behind the trick is
+real even though the form is wrong for us: continuous on-screen motion holds **1.5–2× the
+engagement time** of static holds (edX study, p ≪ 0.001, in
+`references/engineering-facts.md`). So the rule is:
+
+- **No stretch of the video may be a static frame.** Every connective gap gets motion.
+- **Our filler is THEMATIC, never gameplay**: a running terminal, an agent typing, a build
+  timelapse, the discussed tool's UI in motion. It carries meaning while it moves — gameplay
+  on an educational tech channel reads as disrespect.
+- **Evidence cards sit on a blurred, LIVE backdrop**: when showing a screenshot/chat/post,
+  the background is the blurred moving video (or thematic filler), never a flat colour. The
+  motion floor holds even while the viewer reads.
+- Static images that must appear get Ken Burns (`zooms`/`overlays`) — minimum drift, never
+  a frozen frame.
+- The `storyboard` gate already refuses >90 s without a visual event; this rule is stricter:
+  the GAPS between events must themselves move.
+
 Priority — own/exact first, stock only for generic. What to use per sentence:
 
 | Narration references… | Visual | Why |
