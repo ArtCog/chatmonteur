@@ -155,9 +155,12 @@ viewer must study is a feature, not dead air. So:
 - **TEACH sections (code, a diagram, a config the viewer reads): a deliberate static hold is
   legitimate** — and per Артур's standing rule, no decoration on top of what must be read.
   Dead static = a frozen frame nobody is supposed to be studying. THAT is banned everywhere.
-- **Our filler is THEMATIC, never gameplay**: a running terminal, an agent typing, a build
-  timelapse, the discussed tool's UI in motion. It carries meaning while it moves — gameplay
-  on an educational tech channel reads as disrespect.
+- **Filler priority: thematic first, gameplay allowed** (Артур 2026-07-31: «будем, как в
+  том референсе, использовать где-то видеоигру на фоне»). Thematic motion — a running
+  terminal, an agent typing, the discussed tool's UI — carries meaning while it moves, so
+  it is the default. Background gameplay is a legitimate deliberate choice for story
+  sections; which one a given stretch gets is Артур's call at the storyboard gate. Both
+  live in the asset bank.
 - **Evidence cards sit on a blurred, LIVE backdrop**: when showing a screenshot/chat/post,
   the background is the blurred moving video (or thematic filler), never a flat colour. The
   motion floor holds even while the viewer reads.
@@ -190,6 +193,15 @@ on Артур's own footage before it hardens into canon. The three candidates:
 Frame device worth keeping: full-screen film-style plates (black, centered white text)
 as intro/outro — «основано на реальных событиях» → «продолжение следует». We have the
 title-card composition for this; it is a brand-book component candidate.
+
+### The asset bank
+
+Channel-wide reusable material lives in `C:\Projects\Video\_assets\bank\` — spec in its
+`BANK.md`: gameplay / thematic / illustrations / screenshots / music, each file registered
+in `ledger.jsonl` (what, source, license, `used_in`). Before picking an asset, CHECK
+`used_in` — similar shots must not repeat across videos (Артур's standing rule). After
+burning an asset into a video, append the video slug to its `used_in`. Per-video assets
+stay in `Video/<slug>/assets/`, not in the bank.
 
 Priority — own/exact first, stock only for generic. What to use per sentence:
 
