@@ -196,12 +196,13 @@ title-card composition for this; it is a brand-book component candidate.
 
 ### The asset bank
 
-Channel-wide reusable material lives in `C:\Projects\Video\_assets\bank\` — spec in its
-`BANK.md`: gameplay / thematic / illustrations / screenshots / music, each file registered
-in `ledger.jsonl` (what, source, license, `used_in`). Before picking an asset, CHECK
-`used_in` — similar shots must not repeat across videos (Артур's standing rule). After
-burning an asset into a video, append the video slug to its `used_in`. Per-video assets
-stay in `Video/<slug>/assets/`, not in the bank.
+Channel-wide reusable material lives in `bank/` at the repo root (contents gitignored —
+weight + third-party licences; only the spec `bank/BANK.md` is committed): gameplay /
+thematic / illustrations / screenshots / music, each file registered in `ledger.jsonl`
+(what, source, license, `used_in`). Before picking an asset, CHECK `used_in` — similar
+shots must not repeat across videos (Артур's standing rule). After burning an asset into
+a video, append the video slug to its `used_in`. Per-video assets stay in the project's
+`assets/`, not in the bank.
 
 Priority — own/exact first, stock only for generic. What to use per sentence:
 

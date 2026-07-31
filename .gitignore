@@ -48,3 +48,5 @@ Thumbs.db
 .vscode/
 черновик/
 _audit/
+bank/*
+!bank/BANK.md
