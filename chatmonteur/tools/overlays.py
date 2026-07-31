@@ -69,6 +69,12 @@ class OverlaysTool(Tool):
             ctx.log("overlays: plan is empty, passing the video through")
             return ToolResult(artifacts={"video": str(input)}, meta={"overlays": 0})
 
+        for i, it in enumerate(items):
+            if it.get("card"):
+                styled = ctx.paths.assets / f"card_{i + 1}.png"
+                _make_card(it["file"], styled)
+                it["file"] = str(styled)
+
         w, h = _video_wh(input)
         out = ctx.paths.clips / "overlaid.mp4"
         encoder = media.detect_encoder(ctx.config.encode.encoder)
@@ -110,11 +116,46 @@ def _load_plan(path: pathlib.Path) -> list[dict]:
         backdrop = it.get("backdrop")
         if backdrop not in (None, "blur"):
             raise ToolError(f"overlay #{i + 1}: unknown backdrop {backdrop!r}; only 'blur'")
+        card = bool(it.get("card", False))
+        is_image = f.suffix.lower() in _IMAGE_EXT
+        if card and not is_image:
+            raise ToolError(f"overlay #{i + 1}: card styling works on images (screenshots), "
+                            "not video files")
         out.append({
             "file": str(f), "start": start, "end": end, "pos": pos, "width": width,
-            "is_image": f.suffix.lower() in _IMAGE_EXT, "backdrop": backdrop,
+            "is_image": is_image, "backdrop": backdrop, "card": card,
         })
     return out
+
+
+def _make_card(src: str, dst: pathlib.Path) -> None:
+    """Restyle a raw screenshot as an evidence card: rounded corners + soft shadow.
+
+    The reference technique (skills/motion.md, «вайбкодер» breakdown): ONE card
+    style for every screenshot — Telegram, Finder, a tweet — so heterogeneous
+    material reads as a designed video, not pasted windows. Pillow does it once
+    per asset at plan time; ffmpeg then treats the result as any other overlay.
+    """
+    from PIL import Image, ImageDraw, ImageFilter
+
+    img = Image.open(src).convert("RGBA")
+    radius = max(12, round(min(img.size) * 0.045))
+    mask = Image.new("L", img.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, *img.size), radius=radius, fill=255)
+    img.putalpha(mask)
+
+    pad = max(24, round(min(img.size) * 0.06))  # room for the shadow to breathe
+    canvas = Image.new("RGBA", (img.width + pad * 2, img.height + pad * 2), (0, 0, 0, 0))
+    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle(
+        (pad, pad + round(pad * 0.25), pad + img.width, pad + img.height + round(pad * 0.25)),
+        radius=radius, fill=(8, 9, 10, 115),
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(pad * 0.45))
+    canvas.alpha_composite(shadow)
+    canvas.alpha_composite(img, (pad, pad))
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(dst)
 
 
 def _video_wh(path: str) -> tuple[int, int]:

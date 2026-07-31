@@ -161,6 +161,29 @@ engagement time** of static holds (edX study, p ≪ 0.001, in
 - The `storyboard` gate already refuses >90 s without a visual event; this rule is stricter:
   the GAPS between events must themselves move.
 
+### Breathing, cards and the dark discipline (reference: «вайбкодер», ×37 reach)
+
+Full breakdown: `Research/youtube-craft/05-video-editing/ai-montage-landscape-2026-07-31.md`.
+The three transferable patterns:
+
+- **Breathing, not a constant rate.** On PROOF sections (screens, chats, UI) the picture
+  changes every 5–10 s; on pure storytelling the editor deliberately lays ONE unbroken
+  filler stretch of 30–60 s with zero cuts. Do not chop filler to hit a cuts-per-minute
+  number — the alternation IS the rhythm.
+- **Evidence card** (`overlays`: `card: true` + `backdrop: "blur"` + `pos: "center"`):
+  every screenshot — Telegram, Finder, a tweet — becomes the SAME rounded-shadowed card
+  over the blurred live layer. One style for all sources is what makes pasted material
+  read as a designed video. The reference spends 4–6 manual hours on ~15–20 such cards;
+  ours is one plan line each.
+- **«Затемни то, что не главное» beats a LUT.** Their colour unity: dark theme in every
+  app shown + the filler layer dimmed and blurred whenever it is background, full
+  contrast only when it IS the shot. Source discipline, not grading — matches our
+  ungraded default and completes it.
+
+Frame device worth keeping: full-screen film-style plates (black, centered white text)
+as intro/outro — «основано на реальных событиях» → «продолжение следует». We have the
+title-card composition for this; it is a brand-book component candidate.
+
 Priority — own/exact first, stock only for generic. What to use per sentence:
 
 | Narration references… | Visual | Why |

@@ -871,3 +871,31 @@ def test_overlay_blur_backdrop_wraps_the_window():
     plain = _ovl_filter_graph([{"file": "x.png", "start": 2.0, "end": 5.0, "pos": "top_right",
                                 "width": 0.4, "is_image": True, "backdrop": None}], 1920, 1080)
     assert "boxblur" not in plain  # blur is opt-in, never a side effect
+
+
+def test_card_mockup_rounds_and_shadows(tmp_path):
+    # the reference technique: ONE card style for every screenshot
+    from PIL import Image
+    from chatmonteur.tools.overlays import _make_card
+    src = tmp_path / "shot.png"
+    Image.new("RGB", (400, 300), (200, 60, 60)).save(src)
+    dst = tmp_path / "card.png"
+    _make_card(str(src), dst)
+    out = Image.open(dst)
+    assert out.size[0] > 400 and out.size[1] > 300          # shadow margin added
+    assert out.getpixel((0, 0))[3] == 0                     # corner is transparent
+    cx, cy = out.size[0] // 2, out.size[1] // 2
+    assert out.getpixel((cx, cy))[3] == 255                 # content fully opaque
+
+
+def test_card_on_video_is_refused(tmp_path):
+    clip = tmp_path / "b.mp4"; clip.write_bytes(b"x")
+    with pytest.raises(ToolError, match="card"):
+        _load_ovl_plan(_write_plan(tmp_path, {"overlays": [
+            {"start": 0, "end": 2, "file": str(clip), "card": True}]}))
+
+
+def _write_plan(tmp_path, data):
+    p = tmp_path / "plan.json"
+    p.write_text(json.dumps(data), encoding="utf-8")
+    return p
