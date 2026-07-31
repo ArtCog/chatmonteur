@@ -216,9 +216,17 @@ def _sample_luma(path: pathlib.Path, duration: float, log) -> dict[str, float]:
             log(f"qc: no frame decoded at {at:.1f}s")
             continue
         if luma < _BLACK_YAVG:
-            confirm = _luma_at(path, min(at + _CONFIRM_AFTER, duration - 0.1))
-            if confirm is not None:
-                luma = max(luma, confirm)
+            # Confirm on BOTH sides: on a short clip the after-probe clamps back
+            # into the same end-of-clip fade and would confirm punctuation as
+            # damage. A fade is bright on one side; a truly black video is black
+            # on both.
+            for confirm_at in (min(at + _CONFIRM_AFTER, duration - 0.1),
+                               max(0.0, at - _CONFIRM_AFTER)):
+                confirm = _luma_at(path, confirm_at)
+                if confirm is not None:
+                    luma = max(luma, confirm)
+                if luma >= _BLACK_YAVG:
+                    break
         out[f"{frac:.0%}"] = luma
     return out
 

@@ -9,7 +9,7 @@ runs it, and checkpoints the result. Params may reference upstream artifacts wit
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -102,7 +102,11 @@ class PipelineRunner:
 
             artifacts_so_far = {sid: r.artifacts for sid, r in results.items()}
             params = _resolve(step.params, artifacts_so_far)
-            input_hash = Checkpoint.hash_inputs({"params": params, "cap": step.capability})
+            # Config is part of a step's identity: a changed model/encoder/loudness
+            # must invalidate the checkpoint, or --model quietly replays stale output.
+            input_hash = Checkpoint.hash_inputs(
+                {"params": params, "cap": step.capability, "config": asdict(ctx.config)}
+            )
 
             if resume and checkpoint.is_done(step.id, input_hash):
                 ctx.log(f"✓ '{step.id}' cached")

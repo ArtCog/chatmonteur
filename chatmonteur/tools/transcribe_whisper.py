@@ -129,10 +129,13 @@ def _check_language(model_name: str, lang: str | None) -> None:
     This is the failure that looks like success: a fluent English transcript of
     Russian audio, discovered only once it is on screen.
     """
-    if model_name.endswith(".en") and (lang or "en") != "en":
+    # lang=None means autodetect — which cannot promise English, so it does NOT
+    # get a pass: the config default (autodetect) was silently bypassing this guard.
+    if model_name.endswith(".en") and lang != "en":
         raise ToolError(
             f"model '{model_name}' is English-only and would silently TRANSLATE "
-            f"{lang!r} audio instead of transcribing it. Use '{model_name[:-3]}'."
+            f"{lang!r} audio instead of transcribing it. Use '{model_name[:-3]}', "
+            "or set language='en' explicitly if the audio really is English."
         )
 
 

@@ -34,6 +34,13 @@ class ColorTool(Tool):
             return ToolResult(artifacts={"video": str(input)}, meta={"lut": None})
         media.require("ffmpeg")
         lut_path = self._resolve_lut(lut)
+        # The filename goes INTO a filtergraph, where , : ; ' [ ] = are syntax.
+        # Escaping every variant is fragile; renaming a LUT file is trivial.
+        if any(ch in lut_path.name for ch in ",;:'[]="):
+            raise ToolError(
+                f"LUT filename {lut_path.name!r} contains filtergraph syntax "
+                "characters — rename the file (letters, digits, - _ . are safe)"
+            )
         encoder = media.detect_encoder(ctx.config.encode.encoder)
         out = ctx.paths.clips / "graded.mp4"
         # Run from the LUT's folder, reference by bare name (dodge drive colon).

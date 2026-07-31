@@ -104,24 +104,31 @@ def filter_path(path: str | Path) -> str:
 
 
 def ffprobe_json(path: str | Path) -> dict:
+    # -v error, not quiet: run() reports the stderr tail on failure, and with
+    # quiet every broken file surfaced as an empty, useless ToolError.
     require("ffprobe")
-    proc = run(["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", "-show_format", str(path)])
+    proc = run(["ffprobe", "-v", "error", "-print_format", "json", "-show_streams", "-show_format", str(path)])
     return json.loads(proc.stdout or "{}")
 
 
 def source_fps(path: str | Path, default: float = 60.0) -> float:
-    """Average frame rate of the first video stream, as a float."""
+    """Average frame rate of the first video stream, as a float.
+
+    Tries ``avg_frame_rate`` then ``r_frame_rate`` — separately, because a
+    container can report the literal string ``"0/0"`` for the first, which is
+    truthy and used to stop the fallback from ever being consulted.
+    """
     info = ffprobe_json(path)
     for stream in info.get("streams", []):
         if stream.get("codec_type") == "video":
-            rate = stream.get("avg_frame_rate") or stream.get("r_frame_rate") or "0/0"
-            num, _, den = rate.partition("/")
-            try:
-                n, d = float(num), float(den or 1)
+            for rate in (stream.get("avg_frame_rate"), stream.get("r_frame_rate")):
+                num, _, den = (rate or "0/0").partition("/")
+                try:
+                    n, d = float(num), float(den or 1)
+                except ValueError:
+                    continue
                 if d and n:
                     return round(n / d, 3)
-            except ValueError:
-                pass
     return default
 
 

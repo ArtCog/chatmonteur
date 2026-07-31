@@ -307,8 +307,10 @@ def _zoom_items(*overrides):
 
 
 def test_zoom_punch_is_a_gated_constant():
+    # half-open gate [s, e): between() includes both ends, so back-to-back
+    # windows would ADD their scales for one frame right on the cut
     z = _zoom_expr(_zoom_items())
-    assert z == "1+between(in_time,3.0,6.0)*0.15"
+    assert z == "1+(gte(in_time,3.0)*lt(in_time,6.0))*0.15"
 
 
 def test_zoom_uses_in_time_never_t():

@@ -96,7 +96,9 @@ class SoundTool(Tool):
                     "an effect must stay at least 6 dB under dialogue"
                 )
 
-        duration = float(media.ffprobe_json(input)["format"]["duration"])
+        duration = float(media.ffprobe_json(input).get("format", {}).get("duration") or 0)
+        if duration <= 0:
+            raise ToolError(f"cannot read duration of {input} — is it a valid video?")
         inputs: list[str] = [str(input)]
         graph: list[str] = []
         mix_labels: list[str] = []
@@ -120,14 +122,17 @@ class SoundTool(Tool):
             if offset is None:
                 offset = _best_segment(mfile, duration, log=ctx.log)
             inputs += ["-ss", f"{offset:.2f}", "-i", str(mfile)]
-            fade_out_at = max(0.0, duration - _FADE)
+            # In+out fades must fit inside the clip, or they overlap and the bed
+            # never reaches its level.
+            fade = min(_FADE, duration / 2)
+            fade_out_at = max(0.0, duration - fade)
             graph.append(
                 f"[1:a]atrim=duration={duration:.3f},asetpts=N/SR/TB,"
                 # notch the speech band, then set level, then fade (fading before any
                 # delay/trim would otherwise fade silence rather than audio)
                 f"equalizer=f={_SPEECH_BAND_HZ}:width_type=o:width={_SPEECH_BAND_OCT}:g={_SPEECH_NOTCH_DB},"
                 f"volume={gain}dB,"
-                f"afade=t=in:d={_FADE},afade=t=out:st={fade_out_at:.3f}:d={_FADE}[music]"
+                f"afade=t=in:d={fade:.3f},afade=t=out:st={fade_out_at:.3f}:d={fade:.3f}[music]"
             )
             if duck:
                 graph.append(

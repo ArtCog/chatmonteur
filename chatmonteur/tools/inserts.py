@@ -262,7 +262,17 @@ def _render_emoji(items: list[dict], es: int, out_dir: pathlib.Path, log) -> lis
 
 
 def _draw_emoji(char: str, size: int, font_path: str, Image, ImageDraw, ImageFont):
-    """Render one emoji glyph, trimmed to its ink, at ``size`` px tall."""
+    """Render one emoji glyph, trimmed to its ink, at ``size`` px tall.
+
+    Multi-codepoint sequences (ZWJ families, flags, skin tones) need a text
+    shaper this Pillow build doesn't have (raqm=False) — measured: a flag comes
+    out as two letter glyphs. Refusing sends the insert text-only, which beats
+    burning a broken glyph into the video.
+    """
+    if ("‍" in char  # ZWJ join
+            or sum("\U0001F1E6" <= c <= "\U0001F1FF" for c in char) >= 2  # flag pair
+            or any("\U0001F3FB" <= c <= "\U0001F3FF" for c in char)):  # skin tone
+        raise ValueError("multi-codepoint emoji needs a text shaper (raqm) — not available")
     try:
         font = ImageFont.truetype(font_path, size)
         native = size

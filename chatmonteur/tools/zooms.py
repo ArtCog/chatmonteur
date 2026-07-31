@@ -136,9 +136,14 @@ def _smooth(x: str) -> str:
 
 
 def _envelope(it: dict) -> str:
-    """This zoom's contribution to the z expression (0 outside its window)."""
+    """This zoom's contribution to the z expression (0 outside its window).
+
+    The gate is HALF-OPEN [s, e): ``between()`` includes both ends, so two
+    back-to-back windows (a.end == b.start) would both fire on the boundary
+    frame and their scales would add — a one-frame pop right on the cut.
+    """
     s, e, amp = it["start"], it["end"], round(it["scale"] - 1, 4)
-    gate = f"between(in_time,{s},{e})"
+    gate = f"(gte(in_time,{s})*lt(in_time,{e}))"
     if it["kind"] == "punch":
         return f"{gate}*{amp}"
     if it["kind"] == "ease":

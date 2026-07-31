@@ -16,6 +16,7 @@ from __future__ import annotations
 import importlib
 import pkgutil
 import shutil
+import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
@@ -103,7 +104,12 @@ class ToolRegistry:
         for info in pkgutil.iter_modules(pkg.__path__):
             try:
                 module = importlib.import_module(f"{package}.{info.name}")
-            except Exception:  # noqa: BLE001 - skip broken/optional tools at discovery
+            except Exception as exc:  # noqa: BLE001 - optional deps may be absent
+                # Skipping is right for a missing optional dep — but silently
+                # hiding a SyntaxError turns a broken tool into a tool that
+                # "doesn't exist". Say what was skipped and why.
+                print(f"[chatmonteur] tool '{info.name}' not loaded: {type(exc).__name__}: {exc}",
+                      file=sys.stderr)
                 continue
             tool = getattr(module, "TOOL", None)
             if isinstance(tool, Tool):

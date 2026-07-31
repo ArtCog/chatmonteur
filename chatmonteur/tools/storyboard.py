@@ -31,7 +31,7 @@ import json
 import pathlib
 
 from ..core.context import RunContext
-from ..core.errors import ToolError
+from ..core.errors import MissingDependencyError, ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
 from .. import media
 from . import inserts as _inserts
@@ -238,9 +238,15 @@ def _longest_identical_zoom_run(zooms: list[dict]) -> int:
 
 
 def _duration_of(video: str) -> float | None:
-    """Runtime of the video being decorated, or None if it can't be probed."""
+    """Runtime of the video being decorated, or None if it can't be probed.
+
+    A missing ffprobe is NOT a probe failure — swallowing it here would silently
+    switch off the whole boringness gate, which then protects nothing.
+    """
     try:
         return float(media.ffprobe_json(video)["format"]["duration"])
+    except MissingDependencyError:
+        raise
     except (ToolError, KeyError, ValueError, TypeError):
         return None
 

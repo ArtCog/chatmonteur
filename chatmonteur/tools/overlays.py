@@ -124,13 +124,16 @@ def _filter_graph(items: list[dict], width: int, height: int) -> str:
     prev = "0:v"
     for i, it in enumerate(items):
         dur = it["end"] - it["start"]
+        # On a short window the full fades would overlap and the asset never
+        # reaches opacity — scale them down so in+out always fit inside.
+        fade = min(_FADE, dur / 2.5)
         target_w = round(width * it["width"] / 2) * 2  # encoder needs even dims
         xe, ye = _POSITIONS[it["pos"]]
         x, y = xe.format(m=m), ye.format(m=m)
         parts.append(
             f"[{i + 1}:v]scale={target_w}:-2,format=rgba,"
-            f"fade=in:st=0:d={_FADE}:alpha=1,"
-            f"fade=out:st={max(0.0, dur - _FADE - 0.04):.3f}:d={_FADE}:alpha=1,"
+            f"fade=in:st=0:d={fade:.3f}:alpha=1,"
+            f"fade=out:st={max(0.0, dur - fade - 0.04):.3f}:d={fade:.3f}:alpha=1,"
             f"setpts=PTS+{it['start']:.3f}/TB[o{i}]"
         )
         parts.append(

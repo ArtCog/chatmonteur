@@ -40,7 +40,10 @@ class NormalizeTool(Tool):
         media.run(
             [
                 "ffmpeg", "-y", "-fflags", "+genpts", "-i", src,
-                "-map", "0:v:0", "-map", "0:a:0",
+                # ALL audio tracks, not just the first: OBS records the mix on track 1
+                # and the bare mic on track 2, and Branch B pause-cutting needs that
+                # second track alive. '0:a?' keeps every one (and tolerates none).
+                "-map", "0:v:0", "-map", "0:a?",
                 "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p",
                 "-r", str(target_fps), "-fps_mode", "cfr",
                 *af,

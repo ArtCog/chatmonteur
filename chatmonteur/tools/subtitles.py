@@ -345,17 +345,21 @@ def _layout(tokens: list[dict], max_chars: int, render) -> str:
 # --- timing / text helpers -----------------------------------------------------
 
 def _ass_time(t: float) -> str:
-    t = max(t, 0.0)
-    h, rem = divmod(t, 3600)
-    m, s = divmod(rem, 60)
-    return f"{int(h):d}:{int(m):02d}:{s:05.2f}"
+    # Quantise BEFORE splitting into fields: 59.997 formatted per-field yields
+    # the invalid "0:00:60.00" — the carry must reach the minutes.
+    cs = round(max(t, 0.0) * 100)
+    h, rem = divmod(cs, 360000)
+    m, rem = divmod(rem, 6000)
+    s, cs = divmod(rem, 100)
+    return f"{h:d}:{m:02d}:{s:02d}.{cs:02d}"
 
 
 def _fmt(t: float) -> str:
-    h, rem = divmod(max(t, 0.0), 3600)
-    m, s = divmod(rem, 60)
-    ms = int(round((s - int(s)) * 1000))
-    return f"{int(h):02d}:{int(m):02d}:{int(s):02d},{ms:03d}"
+    ms = round(max(t, 0.0) * 1000)
+    h, rem = divmod(ms, 3600000)
+    m, rem = divmod(rem, 60000)
+    s, ms = divmod(rem, 1000)
+    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 
 def _wrap(text: str, max_chars: int) -> str:
@@ -430,7 +434,12 @@ def _merge_flashes(cues: list[dict], max_chars: int) -> list[dict]:
                 and len(prev["text"]) + 1 + len(c["text"]) <= max_chars * 2):
             prev["end"] = c["end"]
             prev["text"] += " " + c["text"]
-            prev["words"] += c["words"]
+            if prev["words"] and c["words"]:
+                prev["words"] += c["words"]
+            else:
+                # Half-timed words make a karaoke cue DISPLAY only the timed half.
+                # No timings at all falls back to the clean render — text intact.
+                prev["words"] = []
         else:
             out.append(c)
     return out
