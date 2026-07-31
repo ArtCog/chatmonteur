@@ -32,6 +32,25 @@ with "he just cut the pauses and added subtitles".
 | `render` | final encode, loudness last | ④ |
 | `qc` | last. Blocks a broken file; never work around it | ④ |
 
+## External skills — which one to OPEN at each step
+
+Our capabilities execute; these skills carry the knowledge of the engines underneath. The
+lesson behind this table: 8 HyperFrames skills sat installed on this machine while graphics
+were being hand-written from memory. If a step below names a skill, open it BEFORE working —
+that is what "the agent follows instructions, not invention" means in practice.
+
+| When | Open (Skill tool / `~/.claude/skills/`) | It owns |
+|---|---|---|
+| Any graphics work at all | `hyperframes` | the entry point: project state, routing to the right workflow |
+| Writing/editing a composition | `hyperframes-core` | the composition contract: `data-*` timing, clips, variables, determinism |
+| Installing/wiring brand components | `hyperframes-registry` (+ our `references/hyperframes-registry.md`) | catalog, add, block vs component, pointing the registry at our items |
+| Choosing motion for a graphic | `hyperframes-animation` | motion rules, blueprints, GSAP/keyframe adapters |
+| Brand/style decisions in a composition | `hyperframes-creative` | palettes, typography, design-spec handling |
+| Rendering, validating, snapshots, beats | `hyperframes-cli` | every command: check, lint, snapshot, compare, beats, batch |
+| Sourcing music / SFX / images / LUTs | `media-use` | one `resolve` verb → frozen local file + licence ledger; TTS, captions, background removal |
+| OBS / recording questions | `obs-studio` (user skill) | Arthur's recording setup |
+| Mechanical ffmpeg outside our tools | `video-montage` (user skill) | the C:\MONTAGE workspace canon |
+
 ## Step 0: classify the task — don't grab the first tool
 
 **The boundary question: do you need to understand the CONTENT to decide where to cut?**
