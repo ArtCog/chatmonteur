@@ -68,8 +68,12 @@ class MotionHyperframesTool(Tool):
 
         fmt = _ALPHA_FORMAT if alpha else _OPAQUE_FORMAT
         out = ctx.paths.compositions / (name or f"motion.{fmt}")
+        # --strict-variables is UNCONDITIONAL: a composition can declare variables the
+        # caller forgot to pass, and without the flag that renders a blank card that
+        # still writes a file — the out.exists() guard below never notices.
         cmd = [npx, "--yes", "hyperframes", "render", str(project),
-               "--output", str(out), "--format", fmt, "--quality", quality]
+               "--output", str(out), "--format", fmt, "--quality", quality,
+               "--strict-variables"]
         if comp_file:
             cmd += ["--composition", comp_file]
         if fps:

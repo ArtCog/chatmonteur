@@ -84,6 +84,18 @@ class SoundTool(Tool):
             ctx.log("sound: nothing to mix, passing the video through")
             return ToolResult(artifacts={"video": str(input)}, meta={"music": False, "sfx": 0})
 
+        # Validate the whole plan BEFORE any probing/rendering — same guard pattern as
+        # zooms/overlays/transitions. An agent-authored plan must not break the "SFX
+        # stays under dialogue" invariant silently: louder than −12 dB competes with
+        # the voice, below −30 dB it was a mistake.
+        for i, hit in enumerate(sfx_list):
+            g = float(hit.get("gain_db", _SFX_GAIN_DB))
+            if not -30.0 <= g <= -12.0:
+                raise ToolError(
+                    f"sfx #{i + 1}: gain {g} dB outside the sane range [-30, -12] — "
+                    "an effect must stay at least 6 dB under dialogue"
+                )
+
         duration = float(media.ffprobe_json(input)["format"]["duration"])
         inputs: list[str] = [str(input)]
         graph: list[str] = []
@@ -135,7 +147,7 @@ class SoundTool(Tool):
             idx = _next_input_index(inputs)
             inputs += ["-i", str(f)]
             at_ms = _sfx_delay_ms(float(hit["at"]))
-            g = float(hit.get("gain_db", _SFX_GAIN_DB))
+            g = float(hit.get("gain_db", _SFX_GAIN_DB))  # range-checked upfront
             graph.append(
                 f"[{idx}:a]volume={g}dB,adelay={at_ms}|{at_ms}[sfx{i}]"
             )

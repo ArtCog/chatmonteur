@@ -847,3 +847,14 @@ def test_unknown_brand_and_token_fail_loudly():
         brand.token("nosuchtoken")
     with pytest.raises(ToolError, match="not a #RRGGBB"):
         brand.colour("font-sans")
+
+
+def test_sfx_gain_outside_sane_range_is_refused(tmp_path):
+    # an agent plan with SFX louder than dialogue must fail, not mix silently
+    from chatmonteur.core import RunContext
+    from chatmonteur.tools.sound import TOOL as _SND_TOOL
+    wav = tmp_path / "hit.wav"
+    wav.write_bytes(b"RIFF")  # existence is all the guard needs before it validates gain
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+    with pytest.raises(ToolError, match="sane range"):
+        _SND_TOOL.run(ctx, input="x.mp4", sfx=[{"at": 1.0, "file": str(wav), "gain_db": 6}])
