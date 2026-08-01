@@ -1,0 +1,68 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"pre","type":"string","label":"Words before","default":"это абсолютно"},
+  {"id":"word","type":"string","label":"Highlighted word","default":"бесплатно"},
+  {"id":"post","type":"string","label":"Words after","default":""}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element B «заливка слова» (sweep highlight) — ported 1:1 from the designer's
+     source (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. CSS @keyframes re-expressed as a
+     GSAP timeline because CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-b" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- plate bottom edge = 145px (source 56px × 2.595) → sits in the accent band
+       768–934, clear of the player zone per brand-manifest safeZones -->
+  <div id="ab-wrap" style="position:absolute;left:0;right:0;bottom:145px;
+       display:flex;justify-content:center">
+    <div id="ab-plate" style="background:rgba(8,9,10,.6);padding:36px 57px;
+         display:flex;align-items:center;gap:31px">
+      <span id="ab-pre" data-var-text="pre" style="font-family:'Golos Text',sans-serif;
+            font-weight:700;font-size:88px;line-height:1;color:#FAFAF7">это абсолютно</span>
+      <span style="position:relative;padding:5px 26px;display:inline-block">
+        <span id="ab-fill" style="position:absolute;left:0;right:0;top:0;bottom:0;
+              background:#FAFAF7;transform-origin:left center"></span>
+        <span id="ab-word" data-var-text="word" style="position:relative;
+              font-family:'Golos Text',sans-serif;font-weight:900;font-size:88px;
+              line-height:1;color:#FAFAF7">бесплатно</span>
+      </span>
+      <span id="ab-post" data-var-text="post" style="font-family:'Golos Text',sans-serif;
+            font-weight:700;font-size:88px;line-height:1;color:#FAFAF7"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  // Manifest eases mapped to GSAP built-ins (no CustomEase in the renderer):
+  // easeEnter cubic-bezier(.33,1,.68,1) ≈ circ.out; easeTransition (.45,0,.2,1) ≈ power2.inOut
+  const tl = gsap.timeline({ paused: true });
+
+  // read once at init — an empty pre/post must not leave a stray flex gap
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  if (!String(vars.post ?? "").trim()) document.getElementById("ab-post").style.display = "none";
+  if (!String(vars.pre ?? "это абсолютно").trim()) document.getElementById("ab-pre").style.display = "none";
+
+  // enter: riseIn (26px × 2.595 = 67px), 0.55s within the manifest 0.4–0.7 window
+  tl.fromTo("#ab-wrap", { y: 67, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "circ.out" }, 0.05);
+  // fill: sweep left→right in 0.45s (the designer's stated «заливка 0.45с»)
+  tl.fromTo("#ab-fill", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.inOut" }, 0.90);
+  // the word INVERTS as the fill passes (spec: «текст в этот момент инвертируется»)
+  tl.set("#ab-word", { color: "#0B0B0C" }, 1.12);
+  // hold ~2.0s (manifest holdSec 1.6–2.4), then exit 0.35s
+  tl.to("#ab-wrap", { y: 67, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-b"] = tl;
+</script>
+</body>
+</html>
