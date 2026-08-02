@@ -6,7 +6,7 @@ if (-not (Test-Path -LiteralPath $initializer -PathType Leaf)) {
   throw 'Project initializer is missing'
 }
 
-$sandbox = Join-Path ([System.IO.Path]::GetTempPath()) ("youtube-editorial-" + [guid]::NewGuid().ToString('N'))
+$sandbox = Join-Path (Join-Path $PSScriptRoot 'fixtures') (".tmp-youtube-editorial-" + [guid]::NewGuid().ToString('N'))
 try {
   & $initializer -ProjectRoot $sandbox -ProjectTitle 'Test video' -LegacySourceRoot 'C:\legacy\test-video'
 
@@ -40,6 +40,12 @@ try {
   }
   if (Test-Path -LiteralPath (Join-Path $sandbox 'canvas.json')) {
     throw 'canvas.json must remain optional'
+  }
+
+  $validator = Join-Path $root 'scripts\validate-script.ps1'
+  $validationOutput = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $validator -ProjectPath $sandbox -ExpectedStatus draft 2>&1
+  if ($LASTEXITCODE -ne 0) {
+    throw "Initialized project failed script validation: $($validationOutput -join '; ')"
   }
 
   Set-Content -LiteralPath $planPath -Encoding UTF8 -NoNewline -Value 'SENTINEL'
