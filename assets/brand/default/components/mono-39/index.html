@@ -1,0 +1,88 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"beatA","type":"string","label":"Beat 1 — the problem (| for a line break)","default":"Монтаж —|шесть часов?"},
+  {"id":"beatB","type":"string","label":"Beat 2 — the promise (| for a line break)","default":"Агент делает|за"},
+  {"id":"highlight","type":"string","label":"Beat 2 — the inverted word","default":"12 минут"},
+  {"id":"beatC","type":"string","label":"Beat 3 — the hook","default":"Покажу как"},
+  {"id":"stamp","type":"string","label":"Corner stamp","default":"0:00 — 0:03 · ТРИ БИТА"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 39 «холодный старт» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card, so it is opaque.
+
+     Three beats of ~1s each, cut hard: the outline→fill→antiqua sequence is
+     what reads as «problem → answer → promise», so the beats overlap by 0.05s
+     and never dissolve through one another. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  .m39-beat { position: absolute; inset: 0; display: flex; align-items: center;
+              justify-content: center; text-align: center; padding: 0 182px; opacity: 0 }
+  .m39-head { font-family: 'Golos Text', sans-serif; font-weight: 900; font-size: 135px;
+              line-height: 1.08 }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-39" data-start="0" data-duration="3.5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div data-var-text="stamp" style="position:absolute;left:83px;top:73px;
+       font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.24em;
+       color:#8A8A85">0:00 — 0:03 · ТРИ БИТА</div>
+
+  <!-- the outline weight is the designer's 2px at frame scale, not a hairline:
+       thinner than this and the question stops reading at watch size -->
+  <div class="m39-beat" id="m39-a"><div class="m39-head" id="m39-a-text"
+       style="color:transparent;-webkit-text-stroke:5px #FAFAF7"></div></div>
+
+  <div class="m39-beat" id="m39-b"><div class="m39-head" id="m39-b-text"
+       style="color:#FAFAF7"></div></div>
+
+  <div class="m39-beat" id="m39-c"><div id="m39-c-text"
+       style="font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
+       font-size:145px;line-height:1.2;color:#FAFAF7"></div></div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const lines = s => String(s).split("|").map(esc);
+
+  document.getElementById("m39-a-text").innerHTML =
+    lines(vars.beatA ?? "Монтаж —|шесть часов?").join("<br>");
+  document.getElementById("m39-c-text").innerHTML = esc(vars.beatC ?? "Покажу как");
+
+  // the inverted word belongs to the last line of beat 2, the way the card draws it
+  const b = lines(vars.beatB ?? "Агент делает|за");
+  const hl = esc(vars.highlight ?? "12 минут");
+  b[b.length - 1] += ` <span style="background:#FAFAF7;color:#0B0B0C;padding:0 31px">${hl}</span>`;
+  document.getElementById("m39-b-text").innerHTML = b.join("<br>");
+
+  const tl = gsap.timeline({ paused: true });
+  // the beats never overlap: all three sit in the same place, so a cross-fade
+  // reads as two headlines printed on top of each other, not as a cut
+  const beat = (sel, at, out) => {
+    tl.fromTo(sel, { opacity: 0, scale: 1.05 },
+              { opacity: 1, scale: 1, duration: 0.35, ease: "circ.out" }, at);
+    tl.to(sel, { opacity: 0, scale: 0.98, duration: 0.25, ease: "power2.in" }, out);
+  };
+  beat("#m39-a", 0.00, 0.78);
+  beat("#m39-b", 1.05, 1.83);
+  beat("#m39-c", 2.10, 3.20);
+
+  window.__timelines["mono-39"] = tl;
+</script>
+</body>
+</html>

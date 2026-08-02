@@ -1,0 +1,41 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-39",
+  "type": "hyperframes:block",
+  "title": "39 ХОЛОДНЫЙ СТАРТ",
+  "description": "первые 3 секунды до заставки · три бита по ≈1с: вопрос контуром (обводка 2px = 5px в 1920) → обещание залитое с инверсией → крюк антиквой · контур→заливка читается как «проблема → ответ»",
+  "tags": [
+    "cold",
+    "immersive",
+    "mono",
+    "opaque",
+    "open"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 3.5,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-39.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

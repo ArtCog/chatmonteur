@@ -23,9 +23,10 @@
 <body>
 <div id="root" data-composition-id="mono-20" data-start="0" data-duration="5"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
-  <!-- 135px, not the designer's 130: element 03 sits at 135 and these two are the
-       same lower third — 5px of difference is a defect, not a decision -->
-  <div id="m20-wrap" style="position:absolute;left:130px;bottom:135px;display:flex;align-items:stretch">
+  <!-- 146px, not the designer's 130: 03, 20 and 43 are all the same lower third,
+       and 146 is the lowest baseline that clears the manifest's playerZone (y≥934,
+       where YouTube draws its controls). The card's own value overlapped it. -->
+  <div id="m20-wrap" style="position:absolute;left:130px;bottom:146px;display:flex;align-items:stretch">
     <div style="width:13px;background:#FAFAF7"></div>
     <div style="background:#0B0B0C;padding:34px 52px">
       <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:26px;

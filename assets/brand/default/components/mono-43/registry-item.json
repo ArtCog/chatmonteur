@@ -1,0 +1,39 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-43",
+  "type": "hyperframes:block",
+  "title": "43 ТГ · ТИХИЙ ТИКЕР",
+  "description": "право-низ над зоной плеера · без плашки: только линия, глиф и текст с тенью · заезжает справа за 0.5с, висит 10–15с · 1–2 раза за ролик",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 12.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-43.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

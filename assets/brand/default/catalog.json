@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 45,
-    "todo": 18,
+    "ready": 52,
+    "todo": 11,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -430,8 +430,24 @@
       "hint": "to be continued",
       "spec": "чистый ink-кадр без слотов видео · антиква italic 56px = 145px в 1920 · штрих прочерчивается на 0.3с позже · держать 3–4с в самом конце, когда следующий выпуск уже анонсирован",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-10b",
+      "compositionId": "mono-10b",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "text",
+          "label": "The line",
+          "default": "Продолжение следует"
+        },
+        {
+          "id": "handle",
+          "label": "Handle",
+          "default": "@art.immersive"
+        }
+      ]
     },
     {
       "id": "11",
@@ -496,8 +512,19 @@
       "hint": "только QR",
       "spec": "минимал · только QR + слово · по центру",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-13a",
+      "compositionId": "mono-13a",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "title",
+          "label": "Word over the code",
+          "default": "Telegram"
+        }
+      ]
     },
     {
       "id": "13·B",
@@ -578,8 +605,24 @@
       "hint": "pipeline",
       "spec": "блок-схема пайплайна · узлы + стрелки · ключевой узел залит · reveal-up",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-16",
+      "compositionId": "mono-16",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "как работает агент"
+        },
+        {
+          "id": "nodes",
+          "label": "One node per line, * marks the key node",
+          "default": "Запрос\n*LLM\nИнструменты\nРезультат"
+        }
+      ]
     },
     {
       "id": "17",
@@ -1208,8 +1251,39 @@
       "hint": "cold open · 0:00–0:03",
       "spec": "первые 3 секунды до заставки · три бита по ≈1с: вопрос контуром (обводка 2px = 5px в 1920) → обещание залитое с инверсией → крюк антиквой · контур→заливка читается как «проблема → ответ»",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-39",
+      "compositionId": "mono-39",
+      "durationSec": 3.5,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "beatA",
+          "label": "Beat 1 — the problem (| for a line break)",
+          "default": "Монтаж —|шесть часов?"
+        },
+        {
+          "id": "beatB",
+          "label": "Beat 2 — the promise (| for a line break)",
+          "default": "Агент делает|за"
+        },
+        {
+          "id": "highlight",
+          "label": "Beat 2 — the inverted word",
+          "default": "12 минут"
+        },
+        {
+          "id": "beatC",
+          "label": "Beat 3 — the hook",
+          "default": "Покажу как"
+        },
+        {
+          "id": "stamp",
+          "label": "Corner stamp",
+          "default": "0:00 — 0:03 · ТРИ БИТА"
+        }
+      ]
     },
     {
       "id": "40",
@@ -1218,8 +1292,24 @@
       "hint": "kinetic stack",
       "spec": "перечисление контурным начертанием стеком (шаг 0.55с), вывод — залитой плашкой · для интро-битов и перечислений без голоса",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-40",
+      "compositionId": "mono-40",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "items",
+          "label": "One item per line",
+          "default": "СЦЕНАРИЙ\nОЗВУЧКА\nМОНТАЖ\nОБЛОЖКА"
+        },
+        {
+          "id": "payoff",
+          "label": "The payoff plate",
+          "default": "ВСЁ ДЕЛАЕТ АГЕНТ"
+        }
+      ]
     },
     {
       "id": "41",
@@ -1250,8 +1340,24 @@
       "hint": "10–15с · фон",
       "spec": "право-низ над зоной плеера · без плашки: только линия, глиф и текст с тенью · заезжает справа за 0.5с, висит 10–15с · 1–2 раза за ролик",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-43",
+      "compositionId": "mono-43",
+      "durationSec": 12.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "line",
+          "label": "What is waiting there",
+          "default": "ФАЙЛ ИЗ ЭТОГО ВИДЕО"
+        },
+        {
+          "id": "handle",
+          "label": "Handle",
+          "default": "@art.immersive"
+        }
+      ]
     },
     {
       "id": "44",
@@ -1260,8 +1366,29 @@
       "hint": "6–8с · основная",
       "spec": "центр-низ, clip-reveal снизу · одна ink-плашка, глиф внутри — без отдельной белой панели · два уровня: что лежит → где и ник в одной строке · 6–8с, 1 раз за ролик",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-44",
+      "compositionId": "mono-44",
+      "durationSec": 7.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "What is waiting there",
+          "default": "ПРОМПТ И КОНФИГ АГЕНТА"
+        },
+        {
+          "id": "text",
+          "label": "Where",
+          "default": "в телеграме"
+        },
+        {
+          "id": "handle",
+          "label": "Handle",
+          "default": "@art.immersive"
+        }
+      ]
     },
     {
       "id": "A",

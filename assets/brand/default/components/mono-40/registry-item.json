@@ -1,0 +1,41 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-40",
+  "type": "hyperframes:block",
+  "title": "40 КИНЕТИЧЕСКИЙ СТЕК",
+  "description": "перечисление контурным начертанием стеком (шаг 0.55с), вывод — залитой плашкой · для интро-битов и перечислений без голоса",
+  "tags": [
+    "immersive",
+    "kinetic",
+    "mono",
+    "opaque",
+    "stack"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 6.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-40.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

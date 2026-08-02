@@ -1,0 +1,63 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"What is waiting there","default":"ПРОМПТ И КОНФИГ АГЕНТА"},
+  {"id":"text","type":"string","label":"Where","default":"в телеграме"},
+  {"id":"handle","type":"string","label":"Handle","default":"@art.immersive"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 44 «ТГ · полная плашка» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Alpha overlay: one ink plate, the glyph
+     inside it — deliberately no separate paper panel behind the icon.
+
+     The glyph's tilt is a bounded yoyo, not a CSS loop: the renderer seeks
+     arbitrary frames and an infinite animation has no value at a given time. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-44" data-start="0" data-duration="7"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div style="position:absolute;left:0;right:0;bottom:140px;display:flex;justify-content:center">
+    <div id="m44-plate" style="background:#0B0B0C;padding:39px 67px;display:flex;
+         align-items:center;gap:47px;box-shadow:0 52px 130px -47px rgba(0,0,0,.7)">
+      <span id="m44-glyph" style="display:flex;color:#FAFAF7">
+        <svg viewBox="0 0 24 24" width="78" height="78" style="display:block"><path fill="currentColor"
+          d="M22 3 1.8 11.2c-.8.3-.8 1 0 1.3l4.9 1.6 1.9 5.9c.2.6.6.7 1 .3l2.7-2.3 4.9 3.6c.5.4 1 .2 1.2-.5L22.9 4c.2-.8-.3-1.2-.9-1Z"/></svg>
+      </span>
+      <div>
+        <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+             letter-spacing:.26em;color:#B7B7B2">ПРОМПТ И КОНФИГ АГЕНТА</div>
+        <div style="display:flex;align-items:baseline;gap:31px;margin-top:13px">
+          <span data-var-text="text" style="font-family:'Golos Text',sans-serif;font-weight:900;
+                font-size:78px;line-height:1.15;color:#FAFAF7">в телеграме</span>
+          <span data-var-text="handle" style="font-family:'JetBrains Mono',monospace;font-weight:700;
+                font-size:42px;letter-spacing:.06em;color:#B7B7B2">@art.immersive</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m44-plate", { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+            { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.fromTo("#m44-glyph", { y: 0, rotate: 0 },
+            { y: -8, rotate: -4, duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0.7);
+  tl.to("#m44-plate", { clipPath: "inset(0 0 100% 0)", opacity: 0,
+                        duration: 0.4, ease: "power2.in" }, 6.6);
+
+  window.__timelines["mono-44"] = tl;
+</script>
+</body>
+</html>

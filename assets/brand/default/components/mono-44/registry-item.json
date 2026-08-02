@@ -1,0 +1,39 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-44",
+  "type": "hyperframes:block",
+  "title": "44 ТГ · ПОЛНАЯ ПЛАШКА",
+  "description": "центр-низ, clip-reveal снизу · одна ink-плашка, глиф внутри — без отдельной белой панели · два уровня: что лежит → где и ник в одной строке · 6–8с, 1 раз за ролик",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 7.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-44.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

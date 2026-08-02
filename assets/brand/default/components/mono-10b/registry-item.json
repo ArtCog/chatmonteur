@@ -1,0 +1,42 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-10b",
+  "type": "hyperframes:block",
+  "title": "10·B ЭНДКАРД · ПРОДОЛЖЕНИЕ",
+  "description": "чистый ink-кадр без слотов видео · антиква italic 56px = 145px в 1920 · штрих прочерчивается на 0.3с позже · держать 3–4с в самом конце, когда следующий выпуск уже анонсирован",
+  "tags": [
+    "be",
+    "continued",
+    "immersive",
+    "mono",
+    "opaque",
+    "to"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-10b.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"line","type":"string","label":"What is waiting there","default":"ФАЙЛ ИЗ ЭТОГО ВИДЕО"},
+  {"id":"handle","type":"string","label":"Handle","default":"@art.immersive"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 43 «ТГ · тихий тикер» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Alpha overlay: no plate at all, only the
+     rule, the glyph and shadowed type — it has to survive over any footage.
+
+     bottom 146 is the shared lower-third baseline (03, 20) — the lowest one that
+     clears the manifest's playerZone; right 104 is the manifest's side margin.
+     It hangs 10–15s, so duration is 12. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-43" data-start="0" data-duration="12"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m43-wrap" style="position:absolute;right:104px;bottom:146px;display:flex;
+       flex-direction:column;align-items:flex-end;gap:23px">
+    <div data-var-text="line" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+         letter-spacing:.24em;color:#FAFAF7;text-shadow:0 3px 26px rgba(0,0,0,.95)">ФАЙЛ ИЗ ЭТОГО ВИДЕО</div>
+    <div style="width:100%;height:3px;background:#FAFAF7"></div>
+    <div style="display:flex;align-items:center;gap:26px;
+         filter:drop-shadow(0 3px 26px rgba(0,0,0,.95))">
+      <span style="display:flex;color:#FAFAF7">
+        <svg viewBox="0 0 24 24" width="55" height="55" style="display:block"><path fill="currentColor"
+          d="M22 3 1.8 11.2c-.8.3-.8 1 0 1.3l4.9 1.6 1.9 5.9c.2.6.6.7 1 .3l2.7-2.3 4.9 3.6c.5.4 1 .2 1.2-.5L22.9 4c.2-.8-.3-1.2-.9-1Z"/></svg>
+      </span>
+      <span data-var-text="handle" style="font-family:'Golos Text',sans-serif;font-weight:800;
+            font-size:52px;line-height:1;color:#FAFAF7">@art.immersive</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m43-wrap", { x: 88, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  tl.to("#m43-wrap", { x: 88, opacity: 0, duration: 0.4, ease: "power2.in" }, 11.6);
+
+  window.__timelines["mono-43"] = tl;
+</script>
+</body>
+</html>

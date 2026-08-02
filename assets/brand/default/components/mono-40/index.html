@@ -1,0 +1,68 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"items","type":"string","label":"One item per line","default":"СЦЕНАРИЙ\nОЗВУЧКА\nМОНТАЖ\nОБЛОЖКА"},
+  {"id":"payoff","type":"string","label":"The payoff plate","default":"ВСЁ ДЕЛАЕТ АГЕНТ"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 40 «кинетический стек» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card, so it is opaque.
+
+     0.55s between items is the card's own rhythm, wide enough to read each word
+     without voice-over. The payoff waits 0.75s after the last one: the pause is
+     what makes it an answer rather than a fifth item. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-40" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;left:166px;top:0;bottom:0;display:flex;flex-direction:column;
+       justify-content:center;gap:16px">
+    <div id="m40-items" style="display:flex;flex-direction:column;gap:16px"></div>
+    <div id="m40-payoff" style="margin-top:36px">
+      <span data-var-text="payoff" style="background:#FAFAF7;color:#0B0B0C;
+            font-family:'Golos Text',sans-serif;font-weight:900;font-size:88px;line-height:1;
+            padding:26px 47px;display:inline-block">ВСЁ ДЕЛАЕТ АГЕНТ</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const items = String(vars.items ?? "СЦЕНАРИЙ\nОЗВУЧКА\nМОНТАЖ\nОБЛОЖКА")
+    .split("\n").map(s => s.trim()).filter(Boolean);
+
+  document.getElementById("m40-items").innerHTML = items.map(t => `
+    <div class="m40-item" style="font-family:'Golos Text',sans-serif;font-weight:900;
+         font-size:119px;line-height:1.06;color:transparent;
+         -webkit-text-stroke:4px #8A8A85">${esc(t)}</div>`).join("");
+
+  const STEP = 0.55;
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m40-item", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out", stagger: STEP }, 0.1);
+  tl.fromTo("#m40-payoff", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" },
+            0.1 + (items.length - 1) * STEP + 0.75);
+
+  window.__timelines["mono-40"] = tl;
+</script>
+</body>
+</html>

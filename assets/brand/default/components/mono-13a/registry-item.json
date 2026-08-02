@@ -1,0 +1,45 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-13a",
+  "type": "hyperframes:block",
+  "title": "13·A ПОДПИСКА · A",
+  "description": "минимал · только QR + слово · по центру",
+  "tags": [
+    "immersive",
+    "mono",
+    "opaque",
+    "qr"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-13a.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "assets/tg-qr.png",
+      "target": "compositions/assets/tg-qr.png",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

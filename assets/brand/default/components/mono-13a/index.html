@@ -1,0 +1,58 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"title","type":"string","label":"Word over the code","default":"Telegram"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 13·A «подписка · A» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card, so it is opaque.
+
+     The minimal half of the pair: one word and a big code, nothing to read.
+     13·B is the one with the hint text — use that when the code needs explaining.
+
+     assets/tg-qr.png encodes https://t.me/Art_Cog (see _channel/CHANNEL.md).
+     Regenerate it rather than editing the image if the channel ever moves. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-13a" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div id="m13a-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:62px">
+    <div data-var-text="title" style="font-family:'Playfair Display',serif;font-weight:600;
+         font-size:88px;line-height:1.2;color:#FAFAF7">Telegram</div>
+    <!-- the code sits on paper with padding: rendered straight onto ink it loses
+         its quiet zone and phones stop reading it -->
+    <div style="width:477px;height:477px;background:#FAFAF7;padding:29px;
+         box-shadow:0 62px 156px -62px rgba(0,0,0,.6)">
+      <img src="assets/tg-qr.png" alt="Telegram QR"
+           style="width:100%;height:100%;object-fit:contain;display:block">
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m13a-body", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-13a"] = tl;
+</script>
+</body>
+</html>

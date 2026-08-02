@@ -1,0 +1,72 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"как работает агент"},
+  {"id":"nodes","type":"string","label":"One node per line, * marks the key node","default":"Запрос\n*LLM\nИнструменты\nРезультат"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 16 «схема агента» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     One reveal for the whole row, not a per-node stagger: the card is a diagram,
+     and drawing it left to right would suggest the pipeline runs while you watch.
+     The arrows carry that reading already.
+
+     Exactly one node is filled — mark it with a leading *. If nothing is marked
+     the schema has no subject, so the second node is filled by default. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-16" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div data-var-text="kicker" style="position:absolute;left:0;right:0;top:104px;text-align:center;
+       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:#8A8A85;
+       text-transform:uppercase">как работает агент</div>
+
+  <div id="m16-row" style="position:absolute;inset:0;display:flex;align-items:center;
+       justify-content:center;gap:21px;padding:0 73px"></div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const raw = String(vars.nodes ?? "Запрос\n*LLM\nИнструменты\nРезультат")
+    .split("\n").map(s => s.trim()).filter(Boolean);
+  let nodes = raw.map(s => ({ key: s.startsWith("*"), label: s.replace(/^\*\s*/, "") }));
+  if (!nodes.some(n => n.key) && nodes.length > 1) nodes[1].key = true;
+
+  const node = n => `
+    <div style="font-family:'Golos Text',sans-serif;font-weight:800;font-size:47px;
+         padding:36px 47px;border:5px solid #0B0B0C;white-space:nowrap;
+         background:${n.key ? "#0B0B0C" : "#FAFAF7"};color:${n.key ? "#FAFAF7" : "#0B0B0C"}
+         ">${esc(n.label)}</div>`;
+  const arrow = `
+    <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:57px;
+         color:#8A8A85;padding:0 5px">→</div>`;
+
+  document.getElementById("m16-row").innerHTML = nodes.map(node).join(arrow);
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m16-row", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+
+  window.__timelines["mono-16"] = tl;
+</script>
+</body>
+</html>

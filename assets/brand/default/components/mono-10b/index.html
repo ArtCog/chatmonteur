@@ -1,0 +1,54 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"text","type":"string","label":"The line","default":"Продолжение следует"},
+  {"id":"handle","type":"string","label":"Handle","default":"@art.immersive"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 10·B «эндкард · продолжение» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card, so it is opaque.
+
+     No video slots, unlike 10·A: this one plays after the next episode is already
+     announced, so nothing competes with the line.
+
+     line-height 1.2, not the card's 1: «Продолжение следует» carries descenders
+     that a 1.0 box clips at 145px. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-10b" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div id="m10b-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:52px">
+    <div data-var-text="text" style="font-family:'Playfair Display',serif;font-style:italic;
+         font-weight:600;font-size:145px;line-height:1.2;color:#FAFAF7">Продолжение следует</div>
+    <div id="m10b-rule" style="width:202px;height:5px;background:#FAFAF7;
+         transform-origin:center"></div>
+    <div data-var-text="handle" style="font-family:'JetBrains Mono',monospace;font-size:34px;
+         letter-spacing:.32em;color:#8A8A85;text-transform:uppercase">@art.immersive</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m10b-body", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  // the rule draws 0.3s late, as the card specifies — it signs the line off
+  tl.fromTo("#m10b-rule", { scaleX: 0 },
+            { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 0.35);
+  tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-10b"] = tl;
+</script>
+</body>
+</html>
