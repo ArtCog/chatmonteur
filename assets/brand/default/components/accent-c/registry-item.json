@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-c",
+  "type": "hyperframes:block",
+  "title": "C ЗАЧЁРК ЦЕНЫ",
+  "description": "старая цена антиквой серым → зачёркивается → новая появляется на 0.35с позже · порядок обязателен, иначе приём не читается",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "reveal",
+    "strike"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-c.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

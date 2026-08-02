@@ -1,0 +1,1088 @@
+{
+  "$comment": "Инвентарь бренда: каждая карточка, которую нарисовал дизайнер, зачем она и — если уже собрана — какая композиция HyperFrames её рендерит. Генерируется build_catalog.py из source/*.dc.html; руками не править.",
+  "brand": "ИИмерсивный",
+  "manifest": "brand-manifest.json",
+  "counts": {
+    "ready": 23,
+    "todo": 40,
+    "deferred": 1,
+    "routed-ffmpeg": 2,
+    "archived": 2,
+    "total": 68
+  },
+  "notDrawn": [
+    "22 таймлайн",
+    "30 шаг N из M"
+  ],
+  "cards": [
+    {
+      "id": "01",
+      "kind": "mono",
+      "name": "ЗАСТАВКА",
+      "hint": "intro",
+      "spec": "логотип reveal-up · линия прочерчивается · курсивный подзаголовок",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-01",
+      "compositionId": "mono-01",
+      "durationSec": 3.5,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "tagline",
+          "label": "Tagline (italic)",
+          "default": "погружение в искусственный интеллект"
+        },
+        {
+          "id": "handle",
+          "label": "Handle",
+          "default": "@art.immersive"
+        }
+      ]
+    },
+    {
+      "id": "02·A",
+      "kind": "mono",
+      "name": "ТИТУЛЬНАЯ · A",
+      "hint": "с номером",
+      "spec": "киккер в чипе · контурный номер · reveal-up",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "02·B",
+      "kind": "mono",
+      "name": "ТИТУЛЬНАЯ · B",
+      "hint": "тема, без номера",
+      "spec": "призрак-слово · слова плавно по очереди · без номера",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-02b",
+      "compositionId": "mono-02b",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "тема выпуска"
+        },
+        {
+          "id": "title",
+          "label": "Title (words animate in turn)",
+          "default": "Автоматизация монтажа"
+        },
+        {
+          "id": "ghost",
+          "label": "Ghost word behind",
+          "default": "ТЕМА"
+        }
+      ]
+    },
+    {
+      "id": "02·C",
+      "kind": "mono",
+      "name": "ТИТУЛЬНАЯ · C",
+      "hint": "тезис / цитата",
+      "spec": "крупная антиква italic · плавное появление · для сильных тезисов",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-02c",
+      "compositionId": "mono-02c",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "quote",
+          "label": "Quote",
+          "default": "ИИ не заменит монтажёра — заменит того, кто им не пользуется"
+        },
+        {
+          "id": "attribution",
+          "label": "Attribution",
+          "default": "тема выпуска"
+        }
+      ]
+    },
+    {
+      "id": "02·D",
+      "kind": "mono",
+      "name": "ТИТУЛЬНАЯ · D",
+      "hint": "заголовок + киккер",
+      "spec": "слева + курсив-подзаголовок · верхний штрих · clip-reveal",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-02d",
+      "compositionId": "mono-02d",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "episode",
+          "label": "Episode marker",
+          "default": "ВЫПУСК 03"
+        },
+        {
+          "id": "title",
+          "label": "Title (use | for a line break)",
+          "default": "Claude Code|с нуля"
+        },
+        {
+          "id": "subtitle",
+          "label": "Subtitle (italic)",
+          "default": "от установки до первого агента"
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "kind": "mono",
+      "name": "ПЛАШКА",
+      "hint": "lower third",
+      "spec": "низ-лево · светлый тик · плашка · плавный clip-reveal",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-03",
+      "compositionId": "mono-03",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "name",
+          "label": "Name",
+          "default": "Джулиан Иванов"
+        },
+        {
+          "id": "role",
+          "label": "Role",
+          "default": "AI Automation · автор"
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "kind": "mono",
+      "name": "СУБТИТРЫ · 4 стиля",
+      "hint": "captions",
+      "spec": "все — мягкий soft-in · A читаем вслух · B акцент · C чисто · D печатная машинка · плашка-подложка",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "05",
+      "kind": "mono",
+      "name": "ВЫНОСКА / АКЦЕНТ",
+      "hint": "callout",
+      "spec": "скобки + коннектор + плашка-ярлык · инверсная подсказка · плавный scale",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "06·A",
+      "kind": "mono",
+      "name": "ИНФОГРАФИКА · A",
+      "hint": "сравнение",
+      "spec": "названия моделей — в инверсном чипе · числа крупно · VS по центру",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "06·B",
+      "kind": "mono",
+      "name": "ИНФОГРАФИКА · B",
+      "hint": "цифра / список",
+      "spec": "крупная цифра + метрики на хайрлайнах · название модели в чипе",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "07·A",
+      "kind": "mono",
+      "name": "ПЕРЕХОД · A",
+      "hint": "заголовок след. блока",
+      "spec": "плавная шторка · заголовок следующего блока",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component",
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+    },
+    {
+      "id": "07·B",
+      "kind": "mono",
+      "name": "ПЕРЕХОД · B",
+      "hint": "без текста",
+      "spec": "без текста · полосы по очереди (blinds) · плавно",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component",
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+    },
+    {
+      "id": "07·C",
+      "kind": "mono",
+      "name": "ПЕРЕХОД · C",
+      "hint": "слэб с номером",
+      "spec": "минимальный · слэб снизу, только номер блока",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "07·D",
+      "kind": "mono",
+      "name": "ПЕРЕХОД · D — сборка",
+      "hint": "robot assemble",
+      "spec": "оригинальный · буквы слетаются и защёлкиваются в заголовок (как сборка роботом)",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "08",
+      "kind": "mono",
+      "name": "ЛОГОБАР / ВОТЕРМАРК",
+      "hint": "logo bug",
+      "spec": "постоянный вотермарк · лок-ап на плашке · компактный знак [ИИ]",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-08",
+      "compositionId": "mono-08",
+      "durationSec": 1.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "handle",
+          "label": "Handle",
+          "default": "@art.immersive"
+        }
+      ]
+    },
+    {
+      "id": "09",
+      "kind": "mono",
+      "name": "ПРОГРЕСС-БАР · опционально",
+      "hint": "chapter progress",
+      "spec": "опционально · подпись главы + счётчик",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "deferred",
+      "route": "deferred",
+      "routeNote": "прогресс-бар опционален, длинный слой — до догфуда"
+    },
+    {
+      "id": "10",
+      "kind": "mono",
+      "name": "ЭНДКАРД",
+      "hint": "end screen",
+      "spec": "CTA слева · 2 слота видео справа · reveal-up",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-10",
+      "compositionId": "mono-10",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "title",
+          "label": "CTA title (use | for a line break)",
+          "default": "Смотри|дальше"
+        },
+        {
+          "id": "button",
+          "label": "Button label",
+          "default": "Подписаться"
+        }
+      ]
+    },
+    {
+      "id": "10·B",
+      "kind": "mono",
+      "name": "ЭНДКАРД · ПРОДОЛЖЕНИЕ",
+      "hint": "to be continued",
+      "spec": "чистый ink-кадр без слотов видео · антиква italic 56px = 145px в 1920 · штрих прочерчивается на 0.3с позже · держать 3–4с в самом конце, когда следующий выпуск уже анонсирован",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "11",
+      "kind": "mono",
+      "name": "ПЛАШКА КОДА / ТЕРМИНАЛ",
+      "hint": "code · terminal",
+      "spec": "кодовая плашка · моно · результат инверсией · курсор",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "12·A",
+      "kind": "mono",
+      "name": "СПИСОК ТЕЗИСОВ · A",
+      "hint": "по одному",
+      "spec": "пункты появляются по одному — агент раскрывает по реплике",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "12·B",
+      "kind": "mono",
+      "name": "СПИСОК ТЕЗИСОВ · B",
+      "hint": "чек-лист",
+      "spec": "чек-лист · пункт отмечается галочкой по мере разбора",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "12·C",
+      "kind": "mono",
+      "name": "СПИСОК ТЕЗИСОВ · C",
+      "hint": "по одному крупно",
+      "spec": "по одному пункту КРУПНО, сменяется под реплику",
+      "source": "Бренд-система ИИмерсивный.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "13·A",
+      "kind": "mono",
+      "name": "ПОДПИСКА · A",
+      "hint": "только QR",
+      "spec": "минимал · только QR + слово · по центру",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "13·B",
+      "kind": "mono",
+      "name": "ПОДПИСКА · B",
+      "hint": "минимал",
+      "spec": "минимал · «Подпишись» + компактный QR (меньше, чем в 13·A) · по центру",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-13b",
+      "compositionId": "mono-13b",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "title",
+          "label": "Title",
+          "default": "Подпишись"
+        },
+        {
+          "id": "network",
+          "label": "Network",
+          "default": "Telegram"
+        },
+        {
+          "id": "hint",
+          "label": "Hint (use | for a line break)",
+          "default": "наведи камеру|на код"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "kind": "mono",
+      "name": "БАННЕР КАНАЛА",
+      "hint": "2048 × 1152",
+      "spec": "матрица/Neo · зелёный акцент #2BE86A на тёмном · скачивается отдельно (2048×1152)",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "15",
+      "kind": "mono",
+      "name": "ОПРЕДЕЛЕНИЕ ТЕРМИНА",
+      "hint": "glossary",
+      "spec": "карточка термина · для объяснения AI-жаргона · крупное слово + определение",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "16",
+      "kind": "mono",
+      "name": "СХЕМА АГЕНТА",
+      "hint": "pipeline",
+      "spec": "блок-схема пайплайна · узлы + стрелки · ключевой узел залит · reveal-up",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "17",
+      "kind": "mono",
+      "name": "ПРОМПТ-ПЛАШКА",
+      "hint": "prompt",
+      "spec": "плашка промпта · показать, что просят у модели · моно-лейбл + курсор",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "18",
+      "kind": "mono",
+      "name": "БЕНЧМАРК",
+      "hint": "bar chart",
+      "spec": "горизонтальные бары · сравнение моделей · лидер залит · рост draw-line",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "19",
+      "kind": "mono",
+      "name": "ШАГИ ПРОЦЕССА",
+      "hint": "steps · контурные номера",
+      "spec": "номера контурным начертанием (обводка 1.5px = 4px в 1920), текущий шаг залитый и крупнее · рельс прочерчивается сверху вниз · шаги по очереди, шаг 0.45с · максимум 5 шагов",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "20",
+      "kind": "mono",
+      "name": "ПЛАШКА ИСТОЧНИКА",
+      "hint": "citation",
+      "spec": "нижняя плашка источника · для ссылок на статьи и arXiv · clip-reveal",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "21",
+      "kind": "mono",
+      "name": "ТОСТ-УВЕДОМЛЕНИЕ",
+      "hint": "toast",
+      "spec": "всплывающее уведомление (угол) · статус агента · pop-in",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "23",
+      "kind": "mono",
+      "name": "СРАВНИТЕЛЬНАЯ ТАБЛИЦА",
+      "hint": "matrix",
+      "spec": "матрица сравнения · хайрлайны · модели в чипах · значения крупной антиквой",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "24",
+      "kind": "mono",
+      "name": "ДО / ПОСЛЕ",
+      "hint": "before / after",
+      "spec": "сплит «до/после» · слева сырой кадр, справа наш бренд-результат · разделитель с хэндлом",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "25",
+      "kind": "mono",
+      "name": "МАРКЕР ГЛАВЫ",
+      "hint": "corner tag",
+      "spec": "держится всю главу · крупный вариант (лево-верх) или компактный (право-низ) · вход corner-in, линия прочерчивается сверху вниз",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-25",
+      "compositionId": "mono-25",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "number",
+          "label": "Chapter number",
+          "default": "01"
+        },
+        {
+          "id": "title",
+          "label": "Chapter title",
+          "default": "Монтаж"
+        },
+        {
+          "id": "total",
+          "label": "Total chapters (compact variant)",
+          "default": "05"
+        },
+        {
+          "id": "variant",
+          "label": "large | compact",
+          "default": "large"
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "kind": "mono",
+      "name": "КАРТОЧКА ЧИСЛА",
+      "hint": "KPI · digit roll",
+      "spec": "цифры «прокручиваются» до значения (digit-roll, разряды с задержкой 0.07с) · дельта появляется после числа · Playfair 118px в кадре 740 = 306px в 1920",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "27",
+      "kind": "mono",
+      "name": "ЦИТАТА НА КАДРЕ",
+      "hint": "pull quote",
+      "spec": "затемнение слева (кадр читается справа) · антиква italic 36px · reveal-up · автор через штрих · не длиннее 9 слов",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "28",
+      "kind": "mono",
+      "name": "КЛАВИШИ / КОМАНДА",
+      "hint": "keycap",
+      "spec": "кейкапы с тенью-подошвой 5px · нажатие: сдвиг вниз 5px, вторая клавиша с задержкой 0.12с · подпись команды под клавишами",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "29",
+      "kind": "mono",
+      "name": "СПОТЛАЙТ / ЗУМ-АКЦЕНТ",
+      "hint": "spotlight",
+      "spec": "кадр гасится до 78% · окно-вырез через box-shadow spread · вход zoom-out 1.07→1 · лейбл сверху, подпись снизу",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "routed-ffmpeg",
+      "route": "ffmpeg",
+      "routeNote": "спотлайт/зум — расширение zooms.py, не компонент"
+    },
+    {
+      "id": "31",
+      "kind": "mono",
+      "name": "МАТРИЦА 2×2",
+      "hint": "positioning",
+      "spec": "поле обводится, оси серые · точки появляются по очереди (pin-in, шаг 0.12с) · заливка = «наш выбор», контур = остальные · максимум 4 точки",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "32",
+      "kind": "mono",
+      "name": "ДОЛЯ / ДОНАТ",
+      "hint": "share",
+      "spec": "кольцо прочерчивается от 12 часов по часовой (stroke-dashoffset) · всегда только две доли · легенда справа, не внутри",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "33",
+      "kind": "mono",
+      "name": "ТАЙМКОДЫ ГЛАВ",
+      "hint": "chapters",
+      "spec": "строки появляются по очереди (шаг 0.5с) · таймкод mono фикс-ширины 56px · те же тексты копируются в описание видео",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-33",
+      "compositionId": "mono-33",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "содержание выпуска"
+        },
+        {
+          "id": "items",
+          "label": "Chapters: one per line, \"тайминг|название\"",
+          "default": "00:00|Зачем вообще агент\n02:14|Ставим окружение\n07:38|Подключаем инструменты\n14:05|Первый рабочий прогон\n21:40|Где агент ломается"
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "kind": "mono",
+      "name": "ПРЕДУПРЕЖДЕНИЕ",
+      "hint": "warning",
+      "spec": "инверсный блок «!» слева · без красного — акцент строится на инверсии · clip-reveal снизу · одна мысль, максимум две строки",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "35",
+      "kind": "mono",
+      "name": "ДИАЛОГ С МОДЕЛЬЮ",
+      "hint": "chat",
+      "spec": "вы — ink-плашка справа, модель — контурная слева · реплики с задержкой 0.75с · курсор в последней реплике · максимум 2 реплики на кадр",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "36",
+      "kind": "mono",
+      "name": "АГЕНТ ДУМАЕТ",
+      "hint": "thinking",
+      "spec": "три точки пульсируют бесконечно (шаг 0.16с) · выполненные шаги серые с ✓, текущий белый со стрелкой · закрывать элементом 21 (тост)",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "37",
+      "kind": "mono",
+      "name": "ПАРТНЁР ВЫПУСКА",
+      "hint": "sponsor",
+      "spec": "право-низ, не перекрывает субтитры · слот под лого 96×42 (в 1920 — 250×110) · метка «реклама» обязательна · держать 5–7с",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "38",
+      "kind": "mono",
+      "name": "ТЕМА СЕГМЕНТА",
+      "hint": "topic bar",
+      "spec": "верхняя треть, плашка от левого края · закрывающий тик 6px справа · clip-reveal · показать 3с в начале сегмента и убрать",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "39",
+      "kind": "mono",
+      "name": "ХОЛОДНЫЙ СТАРТ",
+      "hint": "cold open · 0:00–0:03",
+      "spec": "первые 3 секунды до заставки · три бита по ≈1с: вопрос контуром (обводка 2px = 5px в 1920) → обещание залитое с инверсией → крюк антиквой · контур→заливка читается как «проблема → ответ»",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "40",
+      "kind": "mono",
+      "name": "КИНЕТИЧЕСКИЙ СТЕК",
+      "hint": "kinetic stack",
+      "spec": "перечисление контурным начертанием стеком (шаг 0.55с), вывод — залитой плашкой · для интро-битов и перечислений без голоса",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "41",
+      "kind": "mono",
+      "name": "ГЛИТЧ · СБОЙ",
+      "hint": "glitch",
+      "spec": "для моментов ошибок и фейлов · два призрака со сдвигом ±6px и разрезом пополам, вспыхивают раз в цикл на 0.3с · без цвета — глитч остаётся чёрно-белым",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "routed-ffmpeg",
+      "route": "ffmpeg",
+      "routeNote": "глитч рвёт сам кадр, alpha-оверлеем не сделать"
+    },
+    {
+      "id": "42",
+      "kind": "mono",
+      "name": "ТИКЕР-ПЕРЕХОД",
+      "hint": "marquee",
+      "spec": "переход-альтернатива 07 · контурная бегущая строка 96px, линейно, бесшовный цикл · показывать 1.5–2с поверх смены кадра",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component",
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+    },
+    {
+      "id": "43",
+      "kind": "mono",
+      "name": "ТГ · ТИХИЙ ТИКЕР",
+      "hint": "10–15с · фон",
+      "spec": "право-низ над зоной плеера · без плашки: только линия, глиф и текст с тенью · заезжает справа за 0.5с, висит 10–15с · 1–2 раза за ролик",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "44",
+      "kind": "mono",
+      "name": "ТГ · ПОЛНАЯ ПЛАШКА",
+      "hint": "6–8с · основная",
+      "spec": "центр-низ, clip-reveal снизу · одна ink-плашка, глиф внутри — без отдельной белой панели · два уровня: что лежит → где и ник в одной строке · 6–8с, 1 раз за ролик",
+      "source": "ИИмерсивный - Mono.dc.html",
+      "status": "todo",
+      "route": "component"
+    },
+    {
+      "id": "A",
+      "kind": "accent",
+      "name": "СЛОВО-УДАР",
+      "hint": "punch word",
+      "spec": "одно слово · Golos 900, 52px в кадре = 135px в 1920 · вход scale .84→1 за 0.5с · держать 2с · отбивка 4px — общий признак всех хуков",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-a",
+      "compositionId": "accent-a",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "word",
+          "label": "Punch word",
+          "default": "БЕСПЛАТНО"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "kind": "accent",
+      "name": "ЗАЛИВКА СЛОВА",
+      "hint": "sweep highlight",
+      "spec": "фраза целиком, ключевое слово заливается плашкой слева-направо · текст в этот момент инвертируется · заливка 0.45с",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-b",
+      "compositionId": "accent-b",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "pre",
+          "label": "Words before",
+          "default": "это абсолютно"
+        },
+        {
+          "id": "word",
+          "label": "Highlighted word",
+          "default": "бесплатно"
+        },
+        {
+          "id": "post",
+          "label": "Words after",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "kind": "accent",
+      "name": "ЗАЧЁРК ЦЕНЫ",
+      "hint": "strike + reveal",
+      "spec": "старая цена антиквой серым → зачёркивается → новая появляется на 0.35с позже · порядок обязателен, иначе приём не читается",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-c",
+      "compositionId": "accent-c",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "old",
+          "label": "Old price (struck)",
+          "default": "$200"
+        },
+        {
+          "id": "new",
+          "label": "New price (revealed)",
+          "default": "0 ₽"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "kind": "accent",
+      "name": "ТРЕВОГА · моно-глиф",
+      "hint": "alert",
+      "spec": "вместо эмодзи — моно-глиф «!» в инверсном квадрате, он пульсирует · вход с отдачей влево-вправо · брендово чище эмодзи",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "archived",
+      "route": "component"
+    },
+    {
+      "id": "E",
+      "kind": "accent",
+      "name": "ХАЙП · с эмодзи",
+      "hint": "emoji hook",
+      "spec": "единственное место, где допустимы эмодзи и акцентный цвет #FF5B2E · не чаще 2 раз за ролик, иначе канал теряет строгость",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-e",
+      "compositionId": "accent-e",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "emoji",
+          "label": "Emoji glyph",
+          "default": "🔥"
+        },
+        {
+          "id": "text",
+          "label": "Hype text",
+          "default": "это меняет всё"
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "kind": "accent",
+      "name": "ЦИФРА-ХУК",
+      "hint": "number punch",
+      "spec": "цифра антиквой на светлой плашке, слово — на полупрозрачной · слово с задержкой 0.35с · для сравнений и результатов",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-f",
+      "compositionId": "accent-f",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "number",
+          "label": "Number",
+          "default": "×5"
+        },
+        {
+          "id": "word",
+          "label": "Word after the number",
+          "default": "быстрее"
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "kind": "accent",
+      "name": "ШТАМП",
+      "hint": "stamp",
+      "spec": "впечатывается сверху с наклоном −7° · упругий easing, единственный в системе · для предупреждений и выводов",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "archived",
+      "route": "component"
+    },
+    {
+      "id": "H",
+      "kind": "accent",
+      "name": "ДВЕ СТРОКИ",
+      "hint": "setup + payoff",
+      "spec": "первая строка — было (серым, зачёркнуто), вторая — стало (инверсно, +0.35с) · подписи в сетке выравнены по левому краю — без этого приём выглядит криво",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-h",
+      "compositionId": "accent-h",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "before",
+          "label": "Before (struck)",
+          "default": "три часа работы"
+        },
+        {
+          "id": "after",
+          "label": "After (inverted)",
+          "default": "четыре минуты"
+        }
+      ]
+    },
+    {
+      "id": "I",
+      "kind": "accent",
+      "name": "ЗАМЕНА СЛОВА",
+      "hint": "word swap",
+      "spec": "начало фразы стоит серым и мелким, меняется только белое слово — глаз цепляется точно за замену · ширина слота фиксирована 252px, иначе фраза дёргается",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-i",
+      "compositionId": "accent-i",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "prefix",
+          "label": "Phrase start (grey)",
+          "default": "это не"
+        },
+        {
+          "id": "word1",
+          "label": "Word before the swap",
+          "default": "сложно"
+        },
+        {
+          "id": "word2",
+          "label": "Word after the swap",
+          "default": "долго"
+        }
+      ]
+    },
+    {
+      "id": "J",
+      "kind": "accent",
+      "name": "ПОДЧЁРК ЛИНИЕЙ",
+      "hint": "underline",
+      "spec": "без плашки — антиква italic прямо на кадре + тень для читаемости · линия прочерчивается под текстом · самый спокойный приём",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-j",
+      "compositionId": "accent-j",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "text",
+          "label": "Line",
+          "default": "запомни это место"
+        }
+      ]
+    },
+    {
+      "id": "K",
+      "kind": "accent",
+      "name": "ВОПРОС-ХУК",
+      "hint": "question",
+      "spec": "киккер моно + вопрос антиквой · ставить прямо перед ответом, держать до начала ответа · открывает петлю внимания",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-k",
+      "compositionId": "accent-k",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker (mono)",
+          "default": "А ЕСЛИ"
+        },
+        {
+          "id": "question",
+          "label": "Question",
+          "default": "агент ошибётся?"
+        }
+      ]
+    },
+    {
+      "id": "L",
+      "kind": "accent",
+      "name": "СНОСКА",
+      "hint": "aside",
+      "spec": "тихая уточняющая ремарка справа · моно 17px = 44px в 1920 · заезжает справа · не конкурирует с речью",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-l",
+      "compositionId": "accent-l",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "text",
+          "label": "Aside",
+          "default": "версия 2.1 и выше"
+        }
+      ]
+    },
+    {
+      "id": "M",
+      "kind": "accent",
+      "name": "АБЗАЦ",
+      "hint": "несколько предложений",
+      "spec": "для 2–3 предложений · 22px = 57px в 1920, интерлиньяж 1.42 · максимум 4 строки и 32 слова · держать 5–7с · только когда речь паузится или идёт закадровый текст",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-m",
+      "compositionId": "accent-m",
+      "durationSec": 7.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker (mono)",
+          "default": "КОНТЕКСТ"
+        },
+        {
+          "id": "text",
+          "label": "Paragraph (max 4 lines / 32 words)",
+          "default": "Агент не умеет читать мысли. Вся его точность держится на том, насколько внятно вы описали результат. Плохой промпт — плохой код."
+        }
+      ]
+    },
+    {
+      "id": "N",
+      "kind": "accent",
+      "name": "ОПАСНОСТЬ · эмодзи сверху",
+      "hint": "warning stack",
+      "spec": "эмодзи ⚠️ сверху центрировано, пульсирует · отбивка внизу #FFC53D под цвет знака · широкая и низкая: каждое предложение в одну строку, второе с задержкой 0.35с · 25px = 65px в 1920 · вся композиция ≈ 32% высоты кадра · держать 3–4с",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-n",
+      "compositionId": "accent-n",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "emoji",
+          "label": "Warning glyph",
+          "default": "⚠️"
+        },
+        {
+          "id": "line1",
+          "label": "First sentence",
+          "default": "Не давай агенту права на запись."
+        },
+        {
+          "id": "line2",
+          "label": "Second sentence (≤41 chars, must fit one line)",
+          "default": "Один промпт — и репозиторий переписан."
+        }
+      ]
+    },
+    {
+      "id": "O",
+      "kind": "accent",
+      "name": "ИНСАЙТ · эмодзи слева",
+      "hint": "insight",
+      "spec": "самая компактная из эмодзи-плашек — одна строка, 15% высоты кадра · отбивка #5BD1FF · для момента «вот главное» посередине объяснения",
+      "source": "ИИмерсивный - Акцентные плашки.dc.html",
+      "status": "ready",
+      "route": "component",
+      "component": "components/accent-o",
+      "compositionId": "accent-o",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "text",
+          "label": "Insight",
+          "default": "вот в чём фокус"
+        }
+      ]
+    }
+  ]
+}

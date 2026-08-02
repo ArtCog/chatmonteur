@@ -1,0 +1,30 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-l",
+  "type": "hyperframes:block",
+  "title": "L СНОСКА",
+  "description": "тихая уточняющая ремарка справа · моно 17px = 44px в 1920 · заезжает справа · не конкурирует с речью",
+  "tags": [
+    "accent",
+    "alpha",
+    "aside",
+    "immersive"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-l.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-33",
+  "type": "hyperframes:block",
+  "title": "33 ТАЙМКОДЫ ГЛАВ",
+  "description": "строки появляются по очереди (шаг 0.5с) · таймкод mono фикс-ширины 56px · те же тексты копируются в описание видео",
+  "tags": [
+    "chapters",
+    "immersive",
+    "mono",
+    "opaque"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 6.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-33.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

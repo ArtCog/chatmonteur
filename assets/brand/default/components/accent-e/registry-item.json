@@ -1,0 +1,31 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-e",
+  "type": "hyperframes:block",
+  "title": "E ХАЙП · с эмодзи",
+  "description": "единственное место, где допустимы эмодзи и акцентный цвет #FF5B2E · не чаще 2 раз за ролик, иначе канал теряет строгость",
+  "tags": [
+    "accent",
+    "alpha",
+    "emoji",
+    "hook",
+    "immersive"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-e.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

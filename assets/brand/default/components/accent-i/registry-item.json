@@ -1,0 +1,31 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-i",
+  "type": "hyperframes:block",
+  "title": "I ЗАМЕНА СЛОВА",
+  "description": "начало фразы стоит серым и мелким, меняется только белое слово — глаз цепляется точно за замену · ширина слота фиксирована 252px, иначе фраза дёргается",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "swap",
+    "word"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-i.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-o",
+  "type": "hyperframes:block",
+  "title": "O ИНСАЙТ · эмодзи слева",
+  "description": "самая компактная из эмодзи-плашек — одна строка, 15% высоты кадра · отбивка #5BD1FF · для момента «вот главное» посередине объяснения",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "insight"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-o.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

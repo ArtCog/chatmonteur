@@ -1,0 +1,34 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-m",
+  "type": "hyperframes:block",
+  "title": "M АБЗАЦ",
+  "description": "для 2–3 предложений · 22px = 57px в 1920, интерлиньяж 1.42 · максимум 4 строки и 32 слова · держать 5–7с · только когда речь паузится или идёт закадровый текст",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 7.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-m.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

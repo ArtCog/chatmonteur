@@ -148,6 +148,12 @@ projects/<name>/
 ```
 Never write to `raw/` or the repo root. Finals go only to `renders/`.
 
+The brand lives in `assets/brand/default/`: **`catalog.json` is the inventory** — every
+card the designer drew, what it is for, and which component renders it (with its variables
+and duration). `brand-manifest.json` holds the rules on top of it (safe zones, budgets,
+motion timings). Look in the catalog before building any on-screen graphic; rule zero
+applies to our own library too.
+
 ## Free by default
 
 Default transcription is local `faster-whisper` (no API key). Paid backends

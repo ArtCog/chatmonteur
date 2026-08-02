@@ -1,0 +1,31 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-a",
+  "type": "hyperframes:block",
+  "title": "A СЛОВО-УДАР",
+  "description": "одно слово · Golos 900, 52px в кадре = 135px в 1920 · вход scale .84→1 за 0.5с · держать 2с · отбивка 4px — общий признак всех хуков",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "punch",
+    "word"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-a.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

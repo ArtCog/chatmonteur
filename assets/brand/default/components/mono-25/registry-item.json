@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-25",
+  "type": "hyperframes:block",
+  "title": "25 МАРКЕР ГЛАВЫ",
+  "description": "держится всю главу · крупный вариант (лево-верх) или компактный (право-низ) · вход corner-in, линия прочерчивается сверху вниз",
+  "tags": [
+    "alpha",
+    "corner",
+    "immersive",
+    "mono",
+    "tag"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-25.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

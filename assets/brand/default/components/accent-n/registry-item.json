@@ -1,0 +1,31 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-n",
+  "type": "hyperframes:block",
+  "title": "N ОПАСНОСТЬ · эмодзи сверху",
+  "description": "эмодзи ⚠️ сверху центрировано, пульсирует · отбивка внизу #FFC53D под цвет знака · широкая и низкая: каждое предложение в одну строку, второе с задержкой 0.35с · 25px = 65px в 1920 · вся композиция ≈ 32% высоты кадра · держать 3–4с",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "stack",
+    "warning"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-n.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

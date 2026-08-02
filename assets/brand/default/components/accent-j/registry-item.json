@@ -1,0 +1,30 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-j",
+  "type": "hyperframes:block",
+  "title": "J ПОДЧЁРК ЛИНИЕЙ",
+  "description": "без плашки — антиква italic прямо на кадре + тень для читаемости · линия прочерчивается под текстом · самый спокойный приём",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "underline"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-j.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

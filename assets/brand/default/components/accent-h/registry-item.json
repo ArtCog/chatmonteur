@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-h",
+  "type": "hyperframes:block",
+  "title": "H ДВЕ СТРОКИ",
+  "description": "первая строка — было (серым, зачёркнуто), вторая — стало (инверсно, +0.35с) · подписи в сетке выравнены по левому краю — без этого приём выглядит криво",
+  "tags": [
+    "accent",
+    "alpha",
+    "immersive",
+    "payoff",
+    "setup"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-h.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

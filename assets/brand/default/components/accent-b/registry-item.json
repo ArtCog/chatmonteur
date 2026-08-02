@@ -1,0 +1,31 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "accent-b",
+  "type": "hyperframes:block",
+  "title": "B ЗАЛИВКА СЛОВА",
+  "description": "фраза целиком, ключевое слово заливается плашкой слева-направо · текст в этот момент инвертируется · заливка 0.45с",
+  "tags": [
+    "accent",
+    "alpha",
+    "highlight",
+    "immersive",
+    "sweep"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/accent-b.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}
