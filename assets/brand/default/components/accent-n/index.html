@@ -1,0 +1,67 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"emoji","type":"string","label":"Warning glyph","default":"⚠️"},
+  {"id":"line1","type":"string","label":"First sentence","default":"Не давай агенту права на запись."},
+  {"id":"line2","type":"string","label":"Second sentence (≤41 chars, must fit one line)","default":"Один промпт — и репозиторий переписан."}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element N «опасность · эмодзи сверху» (warning stack) — ported 1:1 from the
+     designer's source (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416
+     frame) at the manifest's scaleToRender 2.595 → 1920×1080. CSS popIn /
+     fadeLate / glyphPulse become one GSAP timeline; CSS is not seekable, and the
+     infinite pulse becomes a bounded yoyo so any frame can be rendered directly.
+     Held 3–4s per the designer's note, hence data-duration 5 rather than 4. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-n" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="an-wrap" style="position:absolute;left:0;right:0;bottom:125px;display:flex;
+       flex-direction:column;align-items:center;gap:21px">
+    <span id="an-emoji" data-var-text="emoji" style="font-size:93px;line-height:1;
+          filter:drop-shadow(0 10px 36px rgba(0,0,0,.7))">⚠️</span>
+    <!-- wide and low, one sentence per line: the danger plate carries more words
+         than any other loud element, so it must never stack into a paragraph -->
+    <!-- 1712px = 1920 minus the manifest's 104px side margins. The designer's card
+         runs nearly edge to edge, which at render size would breach that margin;
+         the safe zone wins. Inside it a sentence fits ~41 characters at 65px —
+         longer text wraps, and a wrapped sentence breaks this element's rule. -->
+    <div style="background:#0B0B0C;padding:34px 73px 39px;border-bottom:10px solid #FFC53D;max-width:1712px">
+      <!-- 65px, the size the designer's spec states (25px × 2.595) rather than the
+           70px the showcase card happens to use: at 70 a full second sentence
+           wraps to a third line, and the note is explicit that each sentence
+           must occupy exactly one line -->
+      <div style="font-family:'Golos Text',sans-serif;font-weight:700;font-size:65px;
+           line-height:1.34;color:#FAFAF7;text-align:center;text-wrap:pretty">
+        <span data-var-text="line1">Не давай агенту права на запись.</span><br>
+        <span id="an-line2" data-var-text="line2" style="display:inline-block">Один неверный промпт — и репозиторий переписан.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#an-wrap", { scale: 0.84, opacity: 0, transformOrigin: "50% 100%" },
+            { scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  // second sentence 0.35s behind the first — the beat is what makes it a warning
+  // and its consequence, rather than one long line of text
+  tl.fromTo("#an-line2", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" }, 0.40);
+  // glyphPulse 1.5s infinite → bounded yoyo covering the hold, landing back at 1
+  tl.to("#an-emoji", { scale: 1.16, duration: 0.75, ease: "sine.inOut",
+                       yoyo: true, repeat: 4, transformOrigin: "50% 50%" }, 0.6);
+  tl.to("#an-wrap", { scale: 0.84, opacity: 0, duration: 0.35, ease: "power2.in" }, 4.55);
+
+  window.__timelines["accent-n"] = tl;
+</script>
+</body>
+</html>

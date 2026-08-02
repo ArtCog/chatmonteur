@@ -1,0 +1,53 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"number","type":"string","label":"Number","default":"×5"},
+  {"id":"word","type":"string","label":"Word after the number","default":"быстрее"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element F «цифра-хук» (number punch) — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. CSS popIn/fadeLate become one
+     GSAP timeline; CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-f" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="af-wrap" style="position:absolute;left:0;right:0;bottom:145px;
+       display:flex;justify-content:center;align-items:stretch;gap:36px">
+    <!-- the number is the loud half: antiqua on paper; the word stays quiet on
+         the translucent plate so the eye lands on the figure first -->
+    <div id="af-num" style="background:#FAFAF7;padding:31px 52px;display:flex;align-items:center">
+      <span data-var-text="number" style="font-family:'Playfair Display',serif;font-weight:600;
+            font-size:145px;line-height:1;color:#0B0B0C">×5</span>
+    </div>
+    <div id="af-word" style="background:rgba(8,9,10,.6);padding:36px 52px;display:flex;align-items:center">
+      <span data-var-text="word" style="font-family:'Golos Text',sans-serif;font-weight:800;
+            font-size:78px;line-height:1;color:#FAFAF7">быстрее</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // number first, word 0.35s behind it (the designer's stated delay) — the pause
+  // is what makes it read as a claim rather than a caption
+  tl.fromTo("#af-num", { scale: 0.84, opacity: 0, transformOrigin: "50% 100%" },
+            { scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  tl.fromTo("#af-word", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" }, 0.40);
+  tl.to("#af-wrap", { y: 67, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-f"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"before","type":"string","label":"Before (struck)","default":"три часа работы"},
+  {"id":"after","type":"string","label":"After (inverted)","default":"четыре минуты"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element H «две строки» (setup + payoff) — ported 1:1 from the designer's
+     source (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. CSS riseIn/strikeOut/fadeLate
+     become one GSAP timeline; CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-h" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="ah-wrap" style="position:absolute;left:0;right:0;bottom:135px;display:flex;justify-content:center">
+    <!-- grid, not two flex rows: the designer's note says the labels must align
+         on one right edge or the whole device looks crooked -->
+    <div style="display:grid;grid-template-columns:auto auto;gap:21px 36px;align-items:center">
+      <div class="ah-row1" style="font-family:'JetBrains Mono',monospace;font-size:34px;
+           letter-spacing:.24em;color:#8A8A85;text-align:right">БЫЛО</div>
+      <div class="ah-row1" style="background:rgba(8,9,10,.62);padding:23px 47px">
+        <!-- the rule is anchored to the TEXT, not to the plate: the grid stretches
+             this cell to the width of the wider payoff row below, and a strike
+             pinned to the plate would run on past the words into empty box -->
+        <span style="position:relative;display:inline-block">
+          <span data-var-text="before" style="display:block;font-family:'Golos Text',sans-serif;
+                font-weight:600;font-size:67px;line-height:1;color:#B7B7B2">три часа работы</span>
+          <span id="ah-strike" style="position:absolute;left:-10px;right:-10px;top:50%;height:8px;
+                background:#B7B7B2;transform-origin:left center"></span>
+        </span>
+      </div>
+      <div class="ah-row2" style="font-family:'JetBrains Mono',monospace;font-size:34px;
+           letter-spacing:.24em;color:#FAFAF7;text-align:right">СТАЛО</div>
+      <div class="ah-row2" style="background:#FAFAF7;padding:31px 47px">
+        <span data-var-text="after" style="display:block;font-family:'Golos Text',sans-serif;
+              font-weight:900;font-size:93px;line-height:1;color:#0B0B0C">четыре минуты</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // same three-beat order as C — the "было" row must stand and be struck before
+  // the payoff lands, otherwise the comparison has no before to compare against
+  tl.fromTo(".ah-row1", { y: 67, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "circ.out" }, 0.05);
+  tl.fromTo("#ah-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.40, ease: "power2.inOut" }, 0.75);
+  tl.fromTo(".ah-row2", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" }, 1.10);
+  tl.to("#ah-wrap", { y: 67, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-h"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"prefix","type":"string","label":"Phrase start (grey)","default":"это не"},
+  {"id":"word1","type":"string","label":"Word before the swap","default":"сложно"},
+  {"id":"word2","type":"string","label":"Word after the swap","default":"долго"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element I «замена слова» (word swap) — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. CSS swapOne/swapTwo become one
+     GSAP timeline; CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-i" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="ai-wrap" style="position:absolute;left:0;right:0;bottom:145px;display:flex;justify-content:center">
+    <div style="background:rgba(8,9,10,.6);padding:31px 57px;display:flex;align-items:center;gap:29px">
+      <span data-var-text="prefix" style="font-family:'Golos Text',sans-serif;font-weight:500;
+            font-size:67px;line-height:1;color:#8A8A85">это не</span>
+      <!-- the slot is a FIXED 654px box (designer: 252px × 2.595): both words are
+           absolutely positioned inside it, so the grey prefix never shifts when
+           the white word is replaced — a re-flow would kill the whole effect -->
+      <span style="position:relative;display:block;width:654px;height:99px">
+        <span id="ai-w1" data-var-text="word1" style="position:absolute;left:0;top:0;
+              font-family:'Golos Text',sans-serif;font-weight:900;font-size:83px;
+              line-height:99px;color:#FAFAF7;white-space:nowrap">сложно</span>
+        <span id="ai-w2" data-var-text="word2" style="position:absolute;left:0;top:0;
+              font-family:'Golos Text',sans-serif;font-weight:900;font-size:83px;
+              line-height:99px;color:#FAFAF7;white-space:nowrap">это работа</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // word 1 rises in, holds, leaves UPWARD; word 2 arrives from below into the same
+  // slot — one direction of travel, so it reads as a replacement, not two labels
+  tl.fromTo("#ai-wrap", { y: 67, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "circ.out" }, 0.05);
+  tl.fromTo("#ai-w1", { y: 42, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" }, 0.20);
+  tl.to("#ai-w1", { y: -42, opacity: 0, duration: 0.30, ease: "power2.in" }, 1.75);
+  tl.fromTo("#ai-w2", { y: 42, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" }, 1.95);
+  tl.to("#ai-wrap", { y: 67, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-i"] = tl;
+</script>
+</body>
+</html>
