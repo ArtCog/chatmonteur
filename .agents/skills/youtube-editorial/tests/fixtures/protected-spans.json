@@ -1,0 +1,11 @@
+{
+  "spans": [
+    {"type":"quote","value":"Точная цитата — без изменений."},
+    {"type":"url","value":"https://example.com/source"},
+    {"type":"number","value":"17,4%"},
+    {"type":"product","value":"Claude Code"},
+    {"type":"stage_direction","value":"[показываю результат слева]"},
+    {"type":"experience","value":"Я проверил это на своём проекте."}
+  ]
+}
+

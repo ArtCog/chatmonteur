@@ -24,11 +24,12 @@ idea/research
 
 ```text
 C:\Projects\chatcut\.agents\skills\youtube-editorial  # only physical package
+C:\Projects\chatcut\.claude\skills\youtube-editorial  # Claude junction inside chatcut
 C:\Projects\.agents\skills\youtube-editorial          # Codex junction
 C:\Projects\.claude\skills\youtube-editorial          # Claude Code junction
 ```
 
-The old `Video` paths remain untouched until a separate migration is designed and approved. No duplicate skill copy is allowed.
+The old `Video` project tree remains untouched until a separate migration is designed and approved. The standalone V1 skill repository under `Video/.agents` is a frozen migration source, not an active global installation; all new discovery junctions resolve to the canonical package in `chatcut`.
 
 ## Per-video contract
 
@@ -36,27 +37,33 @@ Every future video lives under `C:\Projects\chatcut\projects\<yyyy-slug>\`. Pre-
 
 ```text
 projects/<yyyy-slug>/
-  canvas.json               # optional planning UI state
-  SCRIPT.md                 # clean spoken text + editorial status
-  SCRIPT-NOTES.md           # beats, sources, visuals, timing
-  SCRIPT-AUDIT.md           # findings and Artur feedback
-  REFERENCES.md             # claim-level evidence ledger
-  VISUAL-PACK.md             # post-approval capture/create checklist
-  DESIGN.md                  # per-video direction; links shared brand system
+  PLAN.md                    # authoritative entry point, status and decisions
+  canvas.json               # optional planning UI state; create only when used
+  preproduction/
+    SCRIPT.md               # clean spoken text + editorial status
+    REFERENCES.md           # claim-level evidence ledger
+    VISUAL-PACK.md           # acquisition intent: what to obtain and why
+    DESIGN.md                # video-specific exceptions; brand defaults elsewhere
+    research/                # source notes and captured metadata
   raw/                       # immutable source recordings
+  assets/                    # project-local screenshots, screencasts and media
   clips/                     # montage intermediates
-  transcripts/              # ASR, EDL, storyboard
+  transcripts/              # ASR, EDL and final-timing storyboard
   previews/                  # review renders
   renders/                   # final outputs and QC evidence
+  youtube/                   # publication package
 ```
 
-Canvas is optional. Files are authoritative; chat history is not. Existing ChatMonteur folder conventions remain valid.
+The initializer creates `PLAN.md`, all four `preproduction` documents, and the directories immediately, so agents never guess whether a file is needed. `VISUAL-PACK.md` is the first-pass acquisition brief; it does not contain final timestamps. Actual project assets and their manifest live under `assets/`. Exact placement is authored in `transcripts/storyboard.json` only after the meaning cut locks timing. Reusable promoted media belongs in `bank/`, never in the project template.
+
+Canvas is optional. Files are authoritative; chat history is not. `SCRIPT-NOTES.md` and `SCRIPT-AUDIT.md` are folded into `PLAN.md` rather than becoming extra root documents.
 
 ## Agent routing
 
 - Root `AGENTS.md` and `CLAUDE.md` route any video idea, structure, script, or script review to `youtube-editorial`.
 - Chatcut `AGENTS.md` and `CLAUDE.md` define it as Phase 0 before recording and montage.
 - Both agents use the same physical skill and project files.
+- `PLAN.md` is the deterministic first read for every agent entering a video project.
 - Only Artur may set `approved_by_artur`.
 - Montage cannot start from an unapproved script unless Artur explicitly chooses an exploratory recording workflow.
 
@@ -71,6 +78,7 @@ This integration moves only the reusable skill package and adds routing document
 3. Confirm Codex and Claude routing documents name the same lifecycle and approval gate.
 4. Run the deterministic package/router/script tests.
 5. Apply the system to `2026-grill-me-top-5-skills` without moving that project yet; compare produced artifacts and collect Artur's cold-read feedback.
+6. Continue the same pilot from Claude Code and confirm it reads the same state without creating duplicate files.
 
 ## Non-goals for this integration
 
