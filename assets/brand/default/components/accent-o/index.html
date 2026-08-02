@@ -1,0 +1,49 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"text","type":"string","label":"Insight","default":"вот в чём фокус"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element O «инсайт» — the most compact emoji plate: solid-ink plate,
+     💡 left, the ONLY colour is the #5BD1FF underline (manifest: accents live
+     exclusively in the 4px plate underline). Ported 1:1 at ×2.595.
+     Emoji renders from the system set (Segoe on Windows); the manifest asks
+     for a single render source — pin Noto/PNG here if it ever varies. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-o" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="ao-wrap" style="position:absolute;left:0;right:0;bottom:145px;
+       display:flex;justify-content:center">
+    <div id="ao-plate" style="display:flex;align-items:center;gap:39px;background:#0B0B0C;
+         padding:34px 67px;border-bottom:10px solid #5BD1FF">
+      <span id="ao-emoji" style="font-size:88px;line-height:1;display:inline-block">💡</span>
+      <span id="ao-text" data-var-text="text" style="font-family:'Golos Text',sans-serif;
+            font-weight:800;font-size:83px;line-height:1;letter-spacing:-.01em;
+            color:#FAFAF7">вот в чём фокус</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  // enter: popIn (scale .84 → 1)
+  tl.fromTo("#ao-wrap", { scale: 0.84, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.45, ease: "circ.out" }, 0.05);
+  // glyphPulse: two gentle pulses DURING the hold — deterministic tween with a
+  // fixed repeat count, never an infinite CSS animation (not seekable)
+  tl.to("#ao-emoji", { scale: 1.16, duration: 0.75, ease: "sine.inOut",
+                       yoyo: true, repeat: 3 }, 0.60);
+  // hold, then exit the way it came
+  tl.to("#ao-wrap", { scale: 0.84, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+  window.__timelines["accent-o"] = tl;
+</script>
+</body>
+</html>

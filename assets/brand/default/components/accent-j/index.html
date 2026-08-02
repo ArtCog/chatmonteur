@@ -1,0 +1,44 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"text","type":"string","label":"Line","default":"запомни это место"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element J «подчёрк линией» (underline) — the quietest accent: NO plate,
+     Playfair italic straight on the footage + shadow for legibility, a paper
+     line drawn underneath. Ported 1:1 from the designer's source at ×2.595. */
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-j" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- left 145px = source 56 × 2.595; bottom 145px puts it in the accent band -->
+  <div id="aj-wrap" style="position:absolute;left:145px;bottom:145px">
+    <div id="aj-text" data-var-text="text" style="font-family:'Playfair Display',serif;
+         font-style:italic;font-weight:600;font-size:104px;line-height:1.1;color:#FAFAF7;
+         text-shadow:0 5px 36px rgba(0,0,0,.8)">запомни это место</div>
+    <div id="aj-line" style="height:10px;background:#FAFAF7;margin-top:23px;
+         transform-origin:left center"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  // enter: clipIn — the text is revealed top-to-bottom (source clip-path inset)
+  tl.fromTo("#aj-wrap", { opacity: 0 }, { opacity: 1, duration: 0.30, ease: "power1.out" }, 0.05);
+  tl.fromTo("#aj-text", { clipPath: "inset(0 0 100% 0)" },
+            { clipPath: "inset(0 0 0% 0)", duration: 0.50, ease: "circ.out" }, 0.05);
+  // the line draws under the text after it settles (source drawUnder, ease .45,0,.2,1)
+  tl.fromTo("#aj-line", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.inOut" }, 0.55);
+  // hold, then the quietest exit: fade
+  tl.to("#aj-wrap", { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+  window.__timelines["accent-j"] = tl;
+</script>
+</body>
+</html>
