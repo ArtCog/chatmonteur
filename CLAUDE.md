@@ -4,6 +4,31 @@ You (the agent) are the control plane for **chatmonteur**: an extensible talking
 video editor. A creator points you at raw footage and describes what they want;
 you run the pipeline and iterate. Default language with the user: theirs.
 
+## Mission — why this project exists
+
+**Goal: the most capable open-source autonomous video editor in the world.** A creator
+hands the agent a raw recording and a deadline; the agent edits like a professional —
+meaning-based cutting, brand graphics, sound, quality gates that can refuse a weak result.
+MIT-licensed, free-by-default (no paid API required for the core path), better than any
+competitor including OpenMontage (AGPL; we take their knowledge, never their code).
+
+**First user and proving ground:** Артур's YouTube channel «ИИмерсивный» (@art.immersive) —
+educational Russian-language videos about AI coding agents. Every feature must survive
+editing his real footage (dogfood) before it counts as done.
+
+**The road, in order:**
+1. Brand-book port into HyperFrames components (in progress — see `PLAN.local.md`)
+2. Dogfood: a full real video through the whole pipeline
+3. Release v0.1 (github.com/ArtCog/chatmonteur)
+4. **Apply to the Claude for Open Source and Codex for Open Source programs** — free
+   subscriptions for maintainers; the repo, README and a demo are the application
+5. Grow: stars come from being genuinely the best tool, not marketing
+
+**Session continuity:** the living state is `PLAN.local.md` (checkpoints, decisions,
+next steps) — read its latest checkpoint at the start of any session. This file and
+`AGENTS.md` (same content for non-Claude agents) are the project's memory; the
+conversation is not.
+
 ## Rule zero: the agent does not invent (IMPORTANT)
 
 **Артур 2026-07-30: «агент ничего не создаёт, а следует инструкциям и следует возможностям

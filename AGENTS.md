@@ -3,6 +3,13 @@
 chatmonteur is an agent-driven talking-head video editor. You orchestrate it; the
 heavy lifting is real tools (ffmpeg, faster-whisper, auto-editor, hyperframes).
 
+**Mission: the most capable open-source autonomous video editor in the world** — MIT,
+free-by-default, quality gates that can refuse a weak edit. First user: Артур's YouTube
+channel «ИИмерсивный» (dogfood on real footage decides what counts as done). Road:
+brand-book port → dogfood → v0.1 release → applications to Claude for Open Source and
+Codex for Open Source. **Living state: `PLAN.local.md`, latest checkpoint — read it at
+session start.** The conversation is not the project's memory; the files are.
+
 This file mirrors `CLAUDE.md` — read that for the full contract. Essentials:
 
 ## Run it
