@@ -1,0 +1,50 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker over the title","default":"Следующий блок · 02"},
+  {"id":"title","type":"string","label":"What the next block is about","default":"Настройка агента"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 07·A «переход · A» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080.
+
+     An alpha block laid OVER the cut, not a transition filter: transitions.py
+     stays untouched. Lay it so the cut lands inside the hold — the panel covers
+     the frame completely from 0.55s to 1.35s, and nothing of either shot shows
+     through while the footage changes underneath.
+
+     101%, not 100%: a panel parked at exactly 100% leaves a subpixel seam of
+     itself at the frame edge on some scales. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-07a" data-start="0" data-duration="2"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m7a-panel" style="position:absolute;inset:0;background:#0B0B0C;display:flex;
+       flex-direction:column;align-items:center;justify-content:center;gap:42px">
+    <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:36px;
+         letter-spacing:.34em;color:#8A8A85;text-transform:uppercase">Следующий блок · 02</div>
+    <div data-var-text="title" style="font-family:'Playfair Display',serif;font-weight:600;
+         font-size:145px;line-height:1.2;color:#FAFAF7">Настройка агента</div>
+    <div style="width:197px;height:8px;background:#FAFAF7"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m7a-panel", { xPercent: -101 },
+            { xPercent: 0, duration: 0.55, ease: "power2.inOut" }, 0);
+  tl.to("#m7a-panel", { xPercent: 101, duration: 0.55, ease: "power2.inOut" }, 1.35);
+  window.__timelines["mono-07a"] = tl;
+</script>
+</body>
+</html>

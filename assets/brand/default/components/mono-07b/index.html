@@ -1,0 +1,52 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"columns","type":"number","label":"How many blinds","default":6}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 07·B «переход · B» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame). No type at all: this is
+     the transition to reach for when the next block needs no announcement.
+
+     An alpha block laid OVER the cut, not a transition filter: transitions.py
+     stays untouched. The cut belongs in the hold (0.9s–1.1s), when all six
+     blinds are closed and neither shot is visible.
+
+     Both the grow and the shrink run from the bottom edge, as the card draws it:
+     the blinds retract the way they came rather than sweeping past.
+
+     The columns overlap by a pixel — six exact sixths of 1920 leave hairlines of
+     footage between them at some scales, and a transition that flickers is worse
+     than one that is a pixel wide. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-07b" data-start="0" data-duration="2"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m7b-row" style="position:absolute;inset:0"></div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const n = Math.max(2, Math.min(24, Math.round(Number(vars.columns ?? 6))));
+
+  const w = 1920 / n;
+  document.getElementById("m7b-row").innerHTML = Array.from({ length: n }, (_, i) => `
+    <div class="m7b-col" style="position:absolute;top:0;bottom:0;left:${i * w}px;
+         width:${w + 1}px;background:#0B0B0C;transform-origin:bottom"></div>`).join("");
+
+  const STEP = 0.08;
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m7b-col", { scaleY: 0 },
+            { scaleY: 1, duration: 0.45, ease: "circ.out", stagger: STEP }, 0);
+  tl.to(".m7b-col", { scaleY: 0, duration: 0.45, ease: "circ.in", stagger: STEP }, 1.1);
+
+  window.__timelines["mono-07b"] = tl;
+</script>
+</body>
+</html>

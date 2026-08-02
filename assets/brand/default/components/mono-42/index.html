@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"text","type":"string","label":"The running line","default":"НАСТРОЙКА АГЕНТА · БЛОК 02 ·"},
+  {"id":"label","type":"string","label":"Label under the line","default":"СЛЕДУЮЩИЙ БЛОК"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 42 «тикер-переход» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. The alternative to 07 when the next block
+     has a name worth reading rather than just announcing.
+
+     An alpha block laid OVER the cut, not a transition filter: transitions.py
+     stays untouched. It shows for 2s, per the card, and the cut belongs in the
+     middle where the panel is fully opaque.
+
+     The strip is the line three times over, so one third of its width is exactly
+     one seamless period whatever the line says — no measuring, no reflow.
+
+     It travels 4.76% in 2s, which is the designer's own speed: his marquee takes
+     14s to cross one copy, and 2/14 of a third is 4.76. Filling the 2s with a
+     whole period instead would make the type fly past too fast to read, which
+     defeats a ticker that exists to name the next block. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-42" data-start="0" data-duration="2"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m42-panel" style="position:absolute;inset:0;background:#0B0B0C;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:
+         linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+         linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+         background-size:114px 114px"></div>
+
+    <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%)">
+      <div id="m42-strip" style="display:flex;white-space:nowrap;width:max-content"></div>
+    </div>
+
+    <div data-var-text="label" style="position:absolute;left:0;right:0;bottom:202px;
+         text-align:center;font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.32em;color:#8A8A85">СЛЕДУЮЩИЙ БЛОК</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  const text = esc(vars.text ?? "НАСТРОЙКА АГЕНТА · БЛОК 02 ·");
+
+  document.getElementById("m42-strip").innerHTML = Array.from({ length: 3 }, () => `
+    <span style="font-family:'Golos Text',sans-serif;font-weight:900;font-size:249px;
+          line-height:1.1;color:transparent;-webkit-text-stroke:5px #FAFAF7;
+          padding-right:104px">${text}&nbsp;</span>`).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m42-strip", { xPercent: 0 },
+            { xPercent: -4.76, duration: 2, ease: "none" }, 0);
+  tl.fromTo("#m42-panel", { opacity: 0 },
+            { opacity: 1, duration: 0.25, ease: "power2.out" }, 0);
+  tl.to("#m42-panel", { opacity: 0, duration: 0.25, ease: "power2.in" }, 1.75);
+
+  window.__timelines["mono-42"] = tl;
+</script>
+</body>
+</html>
