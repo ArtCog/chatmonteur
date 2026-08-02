@@ -10,6 +10,14 @@ $voiceSourcesPath = Join-Path $root 'profiles\artur-voice-sources.md'
 $validVoiceFixturePath = Join-Path $PSScriptRoot 'fixtures\voice-profile-valid.md'
 $invalidVoiceFixturePath = Join-Path $PSScriptRoot 'fixtures\voice-profile-invalid.md'
 
+$skillContent = Get-Content -Raw -Encoding UTF8 $skillPath
+if ($skillContent -notmatch 'explicitly authorizes.*legacy.*pilot') {
+  throw 'SKILL.md must allow an explicitly authorized legacy-project pilot'
+}
+if ($skillContent -notmatch 'PLAN\.md.*deterministic.*first read') {
+  throw 'SKILL.md must define PLAN.md as the deterministic first read'
+}
+
 function Get-YamlPayload {
   param([Parameter(Mandatory = $true)][string]$Content)
 

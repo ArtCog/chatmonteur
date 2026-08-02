@@ -9,8 +9,8 @@ Use for structure, spoken-script drafting, evidence review, voice revision, and 
 
 ## Route
 
-1. Identify the active `Video/<yyyy-slug>/` project. If none exists, work in chat and propose that canonical path before writing files.
-2. Canonical discovery order: current_request > project_identity > canvas > approved_state > existing_script > sources. Apply the six definitions in `references/01-intake.md`. Canvas is optional.
+1. Identify the active `projects/<yyyy-slug>/` project. When Artur explicitly authorizes a legacy-project pilot, use that existing project in place without moving it. If no project exists, work in chat and propose a canonical path before writing files.
+2. Read `PLAN.md` as the deterministic first read. Canonical discovery order: current_request > project_identity > canvas > approved_state > existing_script > sources. Apply the six definitions in `references/01-intake.md`. Canvas is optional.
 3. Select the smallest stage sequence that produces the requested result. Structure precedes full prose when structure is absent or materially changing. A targeted audit or revision may start at its corresponding stage.
 4. Before work, report `stages: [...]` and `loaded_modules: [...]`. Read only the listed module files; add a module only when its stage becomes necessary.
 
@@ -43,4 +43,4 @@ Surface an unresolved higher-priority conflict; never average it away.
 
 ## Boundaries
 
-Write outputs only inside the active project. Treat source material as read-only unless Artur authorizes its edit. Only Artur can set `approved_by_artur`; automated checks end at `human_review_required`. During V1 system testing, do not read, write, or otherwise touch `/grill-me`.
+Write outputs only inside the active project. Treat source material as read-only unless Artur authorizes its edit. Only Artur can set `approved_by_artur`; automated checks end at `human_review_required`. Never move, delete, or restructure a legacy project during a pilot; initialize missing editorial files non-destructively and preserve its existing layout.
