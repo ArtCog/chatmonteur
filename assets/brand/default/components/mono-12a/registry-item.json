@@ -1,0 +1,34 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-12a",
+  "type": "hyperframes:block",
+  "title": "12·A СПИСОК ТЕЗИСОВ · A",
+  "description": "пункты появляются по одному — агент раскрывает по реплике",
+  "tags": [
+    "immersive",
+    "mono",
+    "opaque"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 6.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-12a.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"В этом видео"},
+  {"id":"items","type":"string","label":"Points, one per line","default":"Ставим окружение за 10 минут\nПервый агент и его инструменты\nАвтоматизируем рутину монтажа"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 12·A «список тезисов · A» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     Points arrive one at a time, 0.95s apart (manifest listItemStaggerSec) — the
+     spec is that the agent opens each one on its own line of narration, so the
+     stagger has to match speech, not taste. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-12a" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;left:166px;right:166px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center">
+    <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.3em;color:#8A8A85;text-transform:uppercase;margin-bottom:31px">В этом видео</div>
+    <div id="m12a-items"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const items = String(vars.items ?? "Ставим окружение за 10 минут\nПервый агент и его инструменты\nАвтоматизируем рутину монтажа")
+    .split("\n").map(s => s.trim()).filter(Boolean);
+
+  document.getElementById("m12a-items").innerHTML = items.map((text, i) => `
+    <div class="m12a-item" style="display:flex;gap:52px;align-items:center;padding:52px 0;
+         border-top:3px solid #E0E0DB">
+      <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:39px;
+            background:#0B0B0C;color:#FAFAF7;padding:8px 23px;flex:none">${String(i + 1).padStart(2, "0")}</span>
+      <span style="font-family:'Golos Text',sans-serif;font-weight:600;font-size:75px;
+            color:#0B0B0C;line-height:1.1">${esc(text)}</span>
+    </div>`).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m12a-item", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out", stagger: 0.95 }, 0.1);
+
+  window.__timelines["mono-12a"] = tl;
+</script>
+</body>
+</html>

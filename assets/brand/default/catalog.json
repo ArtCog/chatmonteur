@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 35,
-    "todo": 28,
+    "ready": 41,
+    "todo": 22,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -373,8 +373,24 @@
       "hint": "по одному",
       "spec": "пункты появляются по одному — агент раскрывает по реплике",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-12a",
+      "compositionId": "mono-12a",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "В этом видео"
+        },
+        {
+          "id": "items",
+          "label": "Points, one per line",
+          "default": "Ставим окружение за 10 минут\nПервый агент и его инструменты\nАвтоматизируем рутину монтажа"
+        }
+      ]
     },
     {
       "id": "12·B",
@@ -526,8 +542,29 @@
       "hint": "bar chart",
       "spec": "горизонтальные бары · сравнение моделей · лидер залит · рост draw-line",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-18",
+      "compositionId": "mono-18",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "What is being measured",
+          "default": "бенчмарк · точность, %"
+        },
+        {
+          "id": "rows",
+          "label": "One per line: name|value",
+          "default": "Claude|90\nGPT-5.6|86\nGLM 5.2|80"
+        },
+        {
+          "id": "scale",
+          "label": "Value that fills the track",
+          "default": 100
+        }
+      ]
     },
     {
       "id": "19",
@@ -536,8 +573,29 @@
       "hint": "steps · контурные номера",
       "spec": "номера контурным начертанием (обводка 1.5px = 4px в 1920), текущий шаг залитый и крупнее · рельс прочерчивается сверху вниз · шаги по очереди, шаг 0.45с · максимум 5 шагов",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-19",
+      "compositionId": "mono-19",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "ПОРЯДОК РАБОТЫ"
+        },
+        {
+          "id": "items",
+          "label": "Steps, one per line — five at most",
+          "default": "Ставим окружение\nПодключаем инструменты\nПишем промпт агенту\nПервый рабочий прогон"
+        },
+        {
+          "id": "current",
+          "label": "Which step is happening now (1-based, 0 for none)",
+          "default": 3
+        }
+      ]
     },
     {
       "id": "20",
@@ -618,8 +676,34 @@
       "hint": "before / after",
       "spec": "сплит «до/после» · слева сырой кадр, справа наш бренд-результат · разделитель с хэндлом",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-24",
+      "compositionId": "mono-24",
+      "durationSec": 5.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "before",
+          "label": "Before frame, 1920×1080 — empty shows the placeholder",
+          "default": ""
+        },
+        {
+          "id": "after",
+          "label": "After frame, 1920×1080 — empty shows the placeholder",
+          "default": ""
+        },
+        {
+          "id": "name",
+          "label": "Name on the branded side",
+          "default": "Джулиан Иванов"
+        },
+        {
+          "id": "role",
+          "label": "Role",
+          "default": "AI Automation"
+        }
+      ]
     },
     {
       "id": "25",
@@ -664,8 +748,39 @@
       "hint": "KPI · digit roll",
       "spec": "цифры «прокручиваются» до значения (digit-roll, разряды с задержкой 0.07с) · дельта появляется после числа · Playfair 118px в кадре 740 = 306px в 1920",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-26",
+      "compositionId": "mono-26",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "What the number measures",
+          "default": "часов сэкономлено за год"
+        },
+        {
+          "id": "value",
+          "label": "The number — digits roll up to it",
+          "default": "247"
+        },
+        {
+          "id": "delta",
+          "label": "Delta chip — empty drops it",
+          "default": "▲ 38%"
+        },
+        {
+          "id": "deltaNote",
+          "label": "Delta note",
+          "default": "к прошлому году"
+        },
+        {
+          "id": "caption",
+          "label": "Caption",
+          "default": "Один агент закрывает рутину, на которую уходило по три часа в день."
+        }
+      ]
     },
     {
       "id": "27",
@@ -747,8 +862,44 @@
       "hint": "share",
       "spec": "кольцо прочерчивается от 12 часов по часовой (stroke-dashoffset) · всегда только две доли · легенда справа, не внутри",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-32",
+      "compositionId": "mono-32",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "percent",
+          "label": "Share, % — the ring draws to this",
+          "default": 74
+        },
+        {
+          "id": "centerLabel",
+          "label": "Ring label",
+          "default": "ЗАДАЧ"
+        },
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "кто делает работу"
+        },
+        {
+          "id": "headline",
+          "label": "Headline (use | for a line break)",
+          "default": "Три четверти задач|закрывает агент"
+        },
+        {
+          "id": "legendA",
+          "label": "Filled share",
+          "default": "агент"
+        },
+        {
+          "id": "legendB",
+          "label": "Remaining share",
+          "default": "человек"
+        }
+      ]
     },
     {
       "id": "33",

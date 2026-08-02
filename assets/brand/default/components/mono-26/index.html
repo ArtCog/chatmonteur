@@ -1,0 +1,113 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"What the number measures","default":"часов сэкономлено за год"},
+  {"id":"value","type":"string","label":"The number — digits roll up to it","default":"247"},
+  {"id":"delta","type":"string","label":"Delta chip — empty drops it","default":"▲ 38%"},
+  {"id":"deltaNote","type":"string","label":"Delta note","default":"к прошлому году"},
+  {"id":"caption","type":"string","label":"Caption","default":"Один агент закрывает рутину, на которую уходило по три часа в день."}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 26 «карточка числа» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     His own note — «Playfair 118px в кадре 740 = 306px в 1920» — is the arithmetic
+     check on the conversion, and it lands exactly.
+
+     The digit roll is built in JS: each place is a column holding 0…digit and slides
+     to its own value, 0.07s apart (manifest digitRollStaggerSec). Hand-writing the
+     columns would freeze the number into the markup. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-26" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;left:156px;right:156px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center;gap:36px">
+    <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">часов сэкономлено за год</div>
+    <div style="display:flex;align-items:flex-end;gap:62px">
+      <div id="m26-digits" style="display:flex;font-family:'Playfair Display',serif;font-weight:600;
+           font-size:306px;line-height:1;color:#0B0B0C;letter-spacing:-.02em"></div>
+      <div id="m26-delta" style="display:flex;align-items:center;gap:23px;padding-bottom:52px">
+        <span data-var-text="delta" style="background:#0B0B0C;color:#FAFAF7;
+              font-family:'Golos Text',sans-serif;font-weight:800;font-size:49px;
+              padding:13px 31px;white-space:nowrap">▲ 38%</span>
+        <span data-var-text="deltaNote" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+              letter-spacing:.06em;color:#8A8A85;white-space:nowrap">к прошлому году</span>
+      </div>
+    </div>
+    <div id="m26-rule" style="width:182px;height:8px;background:#0B0B0C;transform-origin:left"></div>
+    <div data-var-text="caption" style="font-family:'Golos Text',sans-serif;font-size:44px;
+         color:#3A3A3A;max-width:1349px;line-height:1.45">Один агент закрывает рутину, на которую уходило по три часа в день.</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const value = String(vars.value ?? "247");
+  // the roll window is taller than the type: Playfair's digits overshoot their em box,
+  // so a 1em cell lets the neighbouring digit peek in above and clips this one below
+  const CELL = 400;
+
+  // one column per character; digits get a 0…d strip that slides, anything else
+  // (a comma, a space, a %) is printed as-is
+  const box = document.getElementById("m26-digits");
+  const strips = [];
+  for (const ch of value) {
+    if (!/[0-9]/.test(ch)) {
+      const lit = document.createElement("span");
+      lit.style.cssText = `display:block;height:${CELL}px;line-height:${CELL}px`;
+      lit.textContent = ch;
+      box.appendChild(lit);
+      continue;
+    }
+    const col = document.createElement("span");
+    col.style.cssText = `display:block;height:${CELL}px;overflow:hidden`;
+    const strip = document.createElement("span");
+    strip.style.cssText = "display:block";
+    for (let d = 0; d <= Number(ch); d++) {
+      const cell = document.createElement("span");
+      cell.style.cssText = `display:block;height:${CELL}px;line-height:${CELL}px`;
+      cell.textContent = String(d);
+      strip.appendChild(cell);
+    }
+    col.appendChild(strip);
+    box.appendChild(col);
+    strips.push({ strip, digit: Number(ch) });
+  }
+
+  const hasDelta = String(vars.delta ?? "▲ 38%").trim() !== "";
+  if (!hasDelta) document.getElementById("m26-delta").remove();
+
+  const tl = gsap.timeline({ paused: true });
+  strips.forEach(({ strip, digit }, i) => {
+    tl.fromTo(strip, { y: 0 },
+              { y: -digit * CELL, duration: 1.1, ease: "expo.out" }, 0.1 + i * 0.07);
+  });
+  tl.fromTo("#m26-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "circ.out" }, 0.3);
+  // the delta lands after the number has settled — it is the comment, not the fact
+  if (hasDelta) {
+    tl.fromTo("#m26-delta", { y: 23, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 1.5);
+  }
+
+  window.__timelines["mono-26"] = tl;
+</script>
+</body>
+</html>

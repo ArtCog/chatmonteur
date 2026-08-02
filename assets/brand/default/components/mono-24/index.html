@@ -1,0 +1,92 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"before","type":"string","label":"Before frame, 1920×1080 — empty shows the placeholder","default":""},
+  {"id":"after","type":"string","label":"After frame, 1920×1080 — empty shows the placeholder","default":""},
+  {"id":"name","type":"string","label":"Name on the branded side","default":"Джулиан Иванов"},
+  {"id":"role","type":"string","label":"Role","default":"AI Automation"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 24 «до / после» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame card, so it is opaque.
+
+     This is the one card that is useless as drawn: both halves are placeholders for
+     footage. So each half takes a full-frame still and shows its own half of it —
+     left half of «before», right half of «after» — which is what a split wipe
+     actually is. With no images it falls back to his striped stand-ins, so the
+     component is still previewable on its own. */
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-24" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#0B0B0C">
+
+  <div id="m24-left" style="position:absolute;left:0;top:0;bottom:0;width:50%;overflow:hidden;
+       background:#26282A;background-image:repeating-linear-gradient(135deg,#2E3033 0 5px,#26282A 5px 29px)">
+    <div id="m24-left-ph" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+         font-family:'JetBrains Mono',monospace;font-size:34px;letter-spacing:.16em;color:#54565A;
+         white-space:nowrap">сырой кадр</div>
+    <div style="position:absolute;left:57px;top:52px;font-family:'JetBrains Mono',monospace;
+         font-size:31px;letter-spacing:.28em;color:#6A6C70">ДО</div>
+  </div>
+
+  <div id="m24-right" style="position:absolute;right:0;top:0;bottom:0;width:50%;overflow:hidden;
+       background:#1A1B1D;background-image:repeating-linear-gradient(135deg,#212225 0 5px,#1A1B1D 5px 29px)">
+    <div id="m24-right-ph" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+         font-family:'JetBrains Mono',monospace;font-size:34px;letter-spacing:.16em;color:#54565A;
+         white-space:nowrap">наш результат</div>
+    <div style="position:absolute;right:57px;top:52px;font-family:'JetBrains Mono',monospace;
+         font-size:31px;letter-spacing:.28em;color:#FAFAF7">ПОСЛЕ</div>
+    <div id="m24-plate" style="position:absolute;left:67px;bottom:88px;display:flex">
+      <div style="width:10px;background:#FAFAF7"></div>
+      <div style="background:#0B0B0C;padding:26px 39px">
+        <div data-var-text="name" style="font-family:'Playfair Display',serif;font-weight:600;
+             font-size:49px;color:#FAFAF7;line-height:1.2">Джулиан Иванов</div>
+        <div data-var-text="role" style="font-family:'JetBrains Mono',monospace;font-size:26px;
+             letter-spacing:.12em;color:#B7B7B2;margin-top:10px;text-transform:uppercase">AI Automation</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:50%;top:0;bottom:0;width:8px;background:#FAFAF7;transform:translateX(-50%)"></div>
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:114px;height:114px;
+       border-radius:50%;background:#FAFAF7;display:flex;align-items:center;justify-content:center;
+       font-family:'JetBrains Mono',monospace;font-weight:700;font-size:39px;color:#0B0B0C;
+       box-shadow:0 16px 47px rgba(0,0,0,.5)">‹›</div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+
+  // a full frame goes behind each half, offset so the half shows its own side of it
+  const fill = (halfId, phId, src, offset) => {
+    if (!String(src ?? "").trim()) return;
+    const half = document.getElementById(halfId);
+    half.style.background = "none";
+    document.getElementById(phId).remove();
+    const img = document.createElement("img");
+    img.src = String(src).trim();
+    img.style.cssText = `position:absolute;left:${offset}px;top:0;width:1920px;height:1080px;
+                         object-fit:cover;z-index:-1`;
+    half.insertBefore(img, half.firstChild);
+  };
+  fill("m24-left", "m24-left-ph", vars.before, 0);
+  fill("m24-right", "m24-right-ph", vars.after, -960);
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m24-plate", { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+            { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.6, ease: "circ.out" }, 0.4);
+
+  window.__timelines["mono-24"] = tl;
+</script>
+</body>
+</html>

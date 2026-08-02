@@ -1,0 +1,82 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"ПОРЯДОК РАБОТЫ"},
+  {"id":"items","type":"string","label":"Steps, one per line — five at most","default":"Ставим окружение\nПодключаем инструменты\nПишем промпт агенту\nПервый рабочий прогон"},
+  {"id":"current","type":"number","label":"Which step is happening now (1-based, 0 for none)","default":3}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 19 «шаги процесса» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card, so it is opaque.
+
+     His outline weight — «1.5px = 4px в 1920» — is the second place the conversion
+     checks out against his own arithmetic.
+
+     Only the current step is filled and set larger; the rest stay outlined. Which
+     step that is changes per shot, so it is a variable, not markup. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-19" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div data-var-text="kicker" style="position:absolute;left:161px;top:88px;
+       font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.28em;
+       color:#8A8A85">ПОРЯДОК РАБОТЫ</div>
+
+  <div style="position:absolute;left:161px;right:161px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center">
+    <div style="position:relative;padding-left:67px">
+      <div id="m19-rail" style="position:absolute;left:0;top:36px;bottom:36px;width:5px;
+           background:#2E3034;transform-origin:top"></div>
+      <div id="m19-steps"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const items = String(vars.items ?? "Ставим окружение\nПодключаем инструменты\nПишем промпт агенту\nПервый рабочий прогон")
+    .split("\n").map(s => s.trim()).filter(Boolean).slice(0, 5);
+  const current = Number(vars.current ?? 3);
+
+  document.getElementById("m19-steps").innerHTML = items.map((text, i) => {
+    const now = i + 1 === current;
+    const num = String(i + 1).padStart(2, "0");
+    const numStyle = now
+      ? "color:#FAFAF7"
+      : "color:transparent;-webkit-text-stroke:4px #6E7075";
+    const textStyle = now
+      ? "font-weight:800;font-size:65px;color:#FAFAF7"
+      : "font-weight:600;font-size:60px;color:#8A8A85";
+    return `<div class="m19-step" style="display:flex;align-items:center;gap:57px;padding:18px 0">
+      <span style="width:197px;font-family:'Golos Text',sans-serif;font-weight:900;font-size:109px;
+            line-height:1;${numStyle};flex:none">${num}</span>
+      <span style="font-family:'Golos Text',sans-serif;line-height:1.15;${textStyle}">${esc(text)}</span>
+    </div>`;
+  }).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m19-rail", { scaleY: 0 }, { scaleY: 1, duration: 1.1, ease: "power2.inOut" }, 0.05);
+  tl.fromTo(".m19-step", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out", stagger: 0.45 }, 0.2);
+
+  window.__timelines["mono-19"] = tl;
+</script>
+</body>
+</html>

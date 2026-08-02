@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-24",
+  "type": "hyperframes:block",
+  "title": "24 ДО / ПОСЛЕ",
+  "description": "сплит «до/после» · слева сырой кадр, справа наш бренд-результат · разделитель с хэндлом",
+  "tags": [
+    "after",
+    "before",
+    "immersive",
+    "mono",
+    "opaque"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-24.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

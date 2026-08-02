@@ -1,0 +1,106 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"percent","type":"number","label":"Share, % — the ring draws to this","default":74},
+  {"id":"centerLabel","type":"string","label":"Ring label","default":"ЗАДАЧ"},
+  {"id":"kicker","type":"string","label":"Kicker","default":"кто делает работу"},
+  {"id":"headline","type":"string","label":"Headline (use | for a line break)","default":"Три четверти задач|закрывает агент"},
+  {"id":"legendA","type":"string","label":"Filled share","default":"агент"},
+  {"id":"legendB","type":"string","label":"Remaining share","default":"человек"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 32 «доля / донат» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     Two shares only, and the legend sits beside the ring, never inside it — both
+     are his spec, and both are why this reads at a glance.
+
+     The dash offset is computed from the percentage (circumference 2πr = 339.29 at
+     r=54), so the ring and the printed number cannot disagree. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-32" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <!-- the flex row lives one level in, not on the composition root: the renderer owns
+       the root's own layout and the row collapsed to a column when it sat there -->
+  <div style="position:absolute;inset:0;display:flex;align-items:center;gap:145px;padding:0 171px">
+  <div id="m32-ring" style="position:relative;flex:0 0 auto;width:550px;height:550px">
+    <svg width="550" height="550" viewBox="0 0 120 120" style="display:block">
+      <circle cx="60" cy="60" r="54" fill="none" stroke="#E4E4DF" stroke-width="11"></circle>
+      <circle id="m32-arc" cx="60" cy="60" r="54" fill="none" stroke="#0B0B0C" stroke-width="11"
+              stroke-linecap="butt" stroke-dasharray="339.29" stroke-dashoffset="339.29"
+              transform="rotate(-90 60 60)"></circle>
+    </svg>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+         justify-content:center">
+      <div id="m32-pct" style="font-family:'Playfair Display',serif;font-weight:600;font-size:135px;
+           line-height:1.15;color:#0B0B0C">74%</div>
+      <div data-var-text="centerLabel" style="font-family:'JetBrains Mono',monospace;font-size:27px;
+           letter-spacing:.2em;color:#8A8A85;margin-top:13px">ЗАДАЧ</div>
+    </div>
+  </div>
+
+  <div id="m32-side" style="position:relative;flex:1">
+    <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">кто делает работу</div>
+    <div id="m32-head" style="font-family:'Playfair Display',serif;font-weight:600;font-size:88px;
+         line-height:1.2;color:#0B0B0C;margin-top:26px"></div>
+    <div style="display:flex;flex-direction:column;gap:26px;margin-top:52px">
+      <div style="display:flex;align-items:center;gap:29px">
+        <span style="width:36px;height:36px;background:#0B0B0C;flex:none"></span>
+        <span id="m32-legA" style="font-family:'Golos Text',sans-serif;font-size:42px;color:#3A3A3A"></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:29px">
+        <span style="width:36px;height:36px;background:#E4E4DF;flex:none"></span>
+        <span id="m32-legB" style="font-family:'Golos Text',sans-serif;font-size:42px;color:#3A3A3A"></span>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const CIRC = 339.29;
+  const pct = Math.max(0, Math.min(100, Number(vars.percent ?? 74)));
+  const offset = CIRC * (1 - pct / 100);
+
+  document.getElementById("m32-pct").textContent = pct + "%";
+  document.getElementById("m32-head").innerHTML =
+    String(vars.headline ?? "Три четверти задач|закрывает агент")
+      .split("|").map(esc).join("<br>");
+  document.getElementById("m32-legA").textContent = `${vars.legendA ?? "агент"} — ${pct}%`;
+  document.getElementById("m32-legB").textContent = `${vars.legendB ?? "человек"} — ${100 - pct}%`;
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m32-ring", { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  // clockwise from twelve, per the spec — the rotate(-90) on the arc is what puts
+  // the start of the stroke at the top
+  tl.fromTo("#m32-arc", { attr: { "stroke-dashoffset": CIRC } },
+            { attr: { "stroke-dashoffset": offset }, duration: 1.2, ease: "circ.out" }, 0.3);
+  tl.fromTo("#m32-side", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.35);
+
+  window.__timelines["mono-32"] = tl;
+</script>
+</body>
+</html>
