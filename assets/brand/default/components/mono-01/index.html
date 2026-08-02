@@ -1,0 +1,64 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"tagline","type":"string","label":"Tagline (italic)","default":"погружение в искусственный интеллект"},
+  {"id":"handle","type":"string","label":"Handle","default":"@art.immersive"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 01 «заставка» — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame card, so the background is
+     opaque paper rather than transparent. CSS revealUp/drawX become a GSAP
+     timeline; CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-01" data-start="0" data-duration="3.5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <!-- 44px design grid × 2.595 = 114px; the hairline stays 2px, since 1px scaled
+       literally would render as a soft grey wash rather than a drawn line -->
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+  <div style="position:absolute;top:0;left:0;width:311px;height:36px;background:#0B0B0C"></div>
+
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:42px">
+    <div id="m1-logo">
+      <span style="display:inline-flex;align-items:center;font-family:'Golos Text',sans-serif;
+            font-weight:900;font-size:151px;line-height:1;letter-spacing:-.02em;color:#0B0B0C">
+        <span style="background:#0B0B0C;color:#FAFAF7;padding:0 .1em .05em;margin-right:.03em">ИИ</span>мерсивный</span>
+    </div>
+    <div id="m1-rule" style="height:13px;width:545px;background:#0B0B0C;transform-origin:center"></div>
+    <div id="m1-sub" data-var-text="tagline" style="font-family:'Playfair Display',serif;
+         font-style:italic;font-weight:600;font-size:57px;color:#3A3A3A">погружение в искусственный интеллект</div>
+    <div id="m1-handle" data-var-text="handle" style="font-family:'JetBrains Mono',monospace;
+         font-size:34px;letter-spacing:.32em;color:#8A8A85;text-transform:uppercase">@art.immersive</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m1-logo", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  // the rule is drawn, not faded — it is the one moving part of the card
+  tl.fromTo("#m1-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 0.45);
+  tl.fromTo(["#m1-sub", "#m1-handle"], { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.45, stagger: 0.12, ease: "circ.out" }, 0.70);
+  tl.to("#root", { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.1);
+
+  window.__timelines["mono-01"] = tl;
+</script>
+</body>
+</html>

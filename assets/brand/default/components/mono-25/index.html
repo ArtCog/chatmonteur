@@ -1,0 +1,74 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"number","type":"string","label":"Chapter number","default":"01"},
+  {"id":"title","type":"string","label":"Chapter title","default":"Монтаж"},
+  {"id":"total","type":"string","label":"Total chapters (compact variant)","default":"05"},
+  {"id":"variant","type":"string","label":"large | compact","default":"large"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 25 «маркер главы» — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, transparent page. CSS
+     cornerIn/lineGrow become a GSAP timeline; CSS is not seekable.
+
+     The designer's card shows BOTH placements at once to compare them; the spec
+     says «крупный (лево-верх) ИЛИ компактный (право-низ)», so only one renders —
+     pick with the `variant` variable. */
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-25" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m25-large" style="position:absolute;left:104px;top:104px;display:flex;align-items:stretch;gap:34px">
+    <div id="m25-rule" style="width:10px;background:#FAFAF7;transform-origin:top center"></div>
+    <div>
+      <div data-var-text="number" style="font-family:'Playfair Display',serif;font-weight:600;
+           font-size:78px;line-height:1;color:#FAFAF7">01</div>
+      <div data-var-text="title" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+           letter-spacing:.24em;color:#B7B7B2;margin-top:16px;text-transform:uppercase">Монтаж</div>
+    </div>
+  </div>
+
+  <div id="m25-compact" style="position:absolute;right:104px;bottom:93px;display:inline-flex;
+       align-items:center;gap:23px;background:rgba(8,9,10,.4);padding:18px 31px">
+    <span id="m25-c-label" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+          letter-spacing:.2em;color:#FAFAF7">01 · МОНТАЖ</span>
+    <span style="width:42px;height:2px;background:#8A8A85"></span>
+    <span data-var-text="total" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+          letter-spacing:.14em;color:#8A8A85">05</span>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const compact = String(vars.variant ?? "large").toLowerCase() === "compact";
+
+  document.getElementById(compact ? "m25-large" : "m25-compact").remove();
+  if (compact) {
+    document.getElementById("m25-c-label").textContent =
+      `${vars.number ?? "01"} · ${String(vars.title ?? "Монтаж").toUpperCase()}`;
+  }
+
+  const tl = gsap.timeline({ paused: true });
+  const target = compact ? "#m25-compact" : "#m25-large";
+  // corner-in: it arrives from the frame edge it lives on, so it reads as part of
+  // the frame furniture rather than as a card dropped on top
+  tl.fromTo(target, { x: compact ? 47 : -47, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  if (!compact) {
+    tl.fromTo("#m25-rule", { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: "power2.inOut" }, 0.15);
+  }
+  tl.to(target, { x: compact ? 47 : -47, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["mono-25"] = tl;
+</script>
+</body>
+</html>

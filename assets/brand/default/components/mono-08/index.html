@@ -1,0 +1,45 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"handle","type":"string","label":"Handle","default":"@art.immersive"}
+]'>
+<head>
+<meta charset="utf-8">
+<style>
+  /* Mono element 08 «логобар / вотермарк» — ported 1:1 from the designer's
+     source (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, transparent page.
+
+     NO TIMELINE, deliberately: the manifest lists this under alwaysOn, so it sits
+     on every frame of the video. That makes it a still — render one frame to PNG
+     and let the overlay burn it once, instead of carrying a video layer the whole
+     runtime. The designer's card also blinks a REC dot (steps(1), 1.4s); it is not
+     in the element's written spec and a dot pulsing for ten minutes would force a
+     full-length video layer, so it is left out. Ask before adding it back. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-08" data-start="0" data-duration="1"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- lock-up top-right, inside the manifest's 104px side margin -->
+  <div style="position:absolute;right:104px;top:67px;display:inline-flex;align-items:center;
+       background:rgba(8,9,10,.34);padding:21px 34px">
+    <span style="display:inline-flex;align-items:center;font-family:'Golos Text',sans-serif;
+          font-weight:900;font-size:57px;line-height:1;letter-spacing:-.02em;color:#FAFAF7">
+      <span style="background:#0B0B0C;color:#FAFAF7;padding:0 .1em .05em;margin-right:.03em">ИИ</span>мерсивный</span>
+  </div>
+
+  <!-- compact mark + handle bottom-left; the shadow keeps the handle legible on
+       bright footage without putting a plate behind it -->
+  <div style="position:absolute;left:104px;bottom:73px;display:inline-flex;align-items:center;gap:26px">
+    <div style="font-family:'Golos Text',sans-serif;font-weight:900;font-size:54px;line-height:1;
+         color:#0B0B0C;background:#FAFAF7;padding:8px 26px 13px">ИИ</div>
+    <span data-var-text="handle" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+          letter-spacing:.18em;color:#FAFAF7;text-shadow:0 3px 13px rgba(0,0,0,.7)">@art.immersive</span>
+  </div>
+</div>
+</body>
+</html>

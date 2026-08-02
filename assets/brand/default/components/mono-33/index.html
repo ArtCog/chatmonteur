@@ -1,0 +1,68 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"содержание выпуска"},
+  {"id":"items","type":"string","label":"Chapters: one per line, \"тайминг|название\"","default":"00:00|Зачем вообще агент\n02:14|Ставим окружение\n07:38|Подключаем инструменты\n14:05|Первый рабочий прогон\n21:40|Где агент ломается"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 33 «таймкоды глав» — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card. CSS appearHold with a
+     0.5s delay per row becomes one staggered GSAP timeline; CSS is not seekable.
+
+     The row count is not fixed, so the rows are built from one multi-line
+     variable rather than from numbered slots — the same text the spec says goes
+     into the video description. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-33" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;left:171px;right:171px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center">
+    <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.3em;color:#8A8A85;text-transform:uppercase;margin-bottom:36px">содержание выпуска</div>
+    <div id="m33-rows"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const rows = String(vars.items ?? "").split("\n").map(l => l.trim()).filter(Boolean);
+  document.getElementById("m33-rows").innerHTML = rows.map((line, i) => {
+    const [time, ...rest] = line.split("|");
+    // the timecode column is a fixed 145px (designer's 56px): ragged timecodes
+    // would make the titles step in and out on every row
+    return `<div class="m33-row" style="display:flex;align-items:baseline;gap:52px;padding:34px 0;
+              border-top:2px solid #23252A${i === rows.length - 1 ? ";border-bottom:2px solid #23252A" : ""}">
+              <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:36px;
+                    letter-spacing:.1em;color:#FAFAF7;width:145px">${esc(time.trim())}</span>
+              <span style="font-family:'Golos Text',sans-serif;font-weight:600;font-size:57px;
+                    color:#FAFAF7;line-height:1.15">${esc(rest.join("|").trim())}</span>
+            </div>`;
+  }).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m33-row", { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, stagger: 0.5, ease: "circ.out" }, 0.05);
+  tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 5.6);
+
+  window.__timelines["mono-33"] = tl;
+</script>
+</body>
+</html>

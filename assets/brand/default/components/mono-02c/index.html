@@ -1,0 +1,53 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"quote","type":"string","label":"Quote","default":"ИИ не заменит монтажёра — заменит того, кто им не пользуется"},
+  {"id":"attribution","type":"string","label":"Attribution","default":"тема выпуска"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 02·C «титульная · цитата» — ported 1:1 from the designer's
+     source (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card. CSS softIn becomes
+     a GSAP timeline; CSS animations are not seekable by the renderer. */
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-02c" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+  <div style="position:absolute;left:99px;top:26px;font-family:'Playfair Display',serif;
+       font-weight:600;font-size:182px;line-height:1;color:#0B0B0C;opacity:.14">«</div>
+
+  <div id="m2c-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:62px;text-align:center;padding:0 228px">
+    <div data-var-text="quote" style="font-family:'Playfair Display',serif;font-style:italic;
+         font-weight:600;font-size:104px;line-height:1.24;color:#0B0B0C">ИИ не заменит монтажёра — заменит того, кто им не пользуется</div>
+    <div data-var-text="attribution" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">тема выпуска</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // one gesture for the whole card — a quote read as a single thought should not
+  // assemble itself in pieces (manifest: «одно движение на элемент»)
+  tl.fromTo("#m2c-body", { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-02c"] = tl;
+</script>
+</body>
+</html>

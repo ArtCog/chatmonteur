@@ -1,0 +1,72 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"title","type":"string","label":"Title","default":"Подпишись"},
+  {"id":"network","type":"string","label":"Network","default":"Telegram"},
+  {"id":"hint","type":"string","label":"Hint (use | for a line break)","default":"наведи камеру|на код"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 13·B «подписка» — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame ink card. CSS revealUp becomes
+     a GSAP timeline; CSS animations are not seekable by the renderer.
+
+     assets/tg-qr.png is generated, not drawn: it encodes https://t.me/Art_Cog
+     (the channel in _channel/CHANNEL.md) at error-correction M. Regenerate it
+     rather than editing the image if the channel ever moves. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-13b" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div id="m13-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;gap:62px">
+    <div data-var-text="title" style="font-family:'Playfair Display',serif;font-weight:600;
+         font-size:151px;line-height:1;color:#FAFAF7">Подпишись</div>
+    <div style="display:flex;align-items:center;gap:57px">
+      <!-- the QR sits on paper with padding: a code rendered straight onto ink
+           loses its quiet zone and phones stop reading it -->
+      <div style="width:306px;height:306px;background:#FAFAF7;padding:21px">
+        <img src="assets/tg-qr.png" alt="Telegram QR"
+             style="width:100%;height:100%;object-fit:contain;display:block">
+      </div>
+      <div style="text-align:left">
+        <div data-var-text="network" style="font-family:'Golos Text',sans-serif;font-weight:800;
+             font-size:57px;color:#FAFAF7">Telegram</div>
+        <div id="m13-hint" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+             letter-spacing:.06em;color:#8A8A85;margin-top:18px;line-height:1.5"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  document.getElementById("m13-hint").innerHTML =
+    String(vars.hint ?? "наведи камеру|на код").split("|")
+      .map(s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])))
+      .join("<br>");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m13-body", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#root", { opacity: 0, duration: 0.4, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-13b"] = tl;
+</script>
+</body>
+</html>
