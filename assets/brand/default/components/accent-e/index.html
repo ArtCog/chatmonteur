@@ -1,0 +1,56 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"emoji","type":"string","label":"Emoji glyph","default":"🔥"},
+  {"id":"text","type":"string","label":"Hype text","default":"это меняет всё"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element E «хайп · с эмодзи» (emoji hook) — ported 1:1 from the designer's
+     source (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. The ONLY element where an emoji
+     and the accent color #FF5B2E are allowed; ≤2 uses per video (designer note).
+     CSS popIn/glyphPulse re-expressed as a GSAP timeline (CSS is not seekable);
+     the infinite pulse becomes a bounded yoyo per the port rules. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-e" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- plate bottom edge = 145px (source 56px × 2.595); underline 13px (source 5px)
+       in hype #FF5B2E — the accent lives only in this otbivka, never in text -->
+  <div id="ae-wrap" style="position:absolute;left:0;right:0;bottom:145px;
+       display:flex;justify-content:center">
+    <div id="ae-plate" style="display:flex;align-items:center;gap:42px;
+         background:#0B0B0C;padding:31px 62px;border-bottom:13px solid #FF5B2E">
+      <span id="ae-emoji" data-var-text="emoji" style="display:inline-block;
+            font-size:114px;line-height:1">🔥</span>
+      <span id="ae-text" data-var-text="text" style="font-family:'Golos Text',sans-serif;
+            font-weight:900;font-size:114px;line-height:1;letter-spacing:-.01em;
+            color:#FAFAF7">это меняет всё</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  // popIn: same lifecycle as element A — enter scale .84→1 in 0.5s (circ.out),
+  // hold ~2s, exit mirrors the entry (manifest enter 0.4–0.7 / holdSec 1.6–2.4)
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#ae-wrap", { scale: 0.84, opacity: 0, transformOrigin: "50% 100%" },
+            { scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  // glyphPulse 1.4s ease-in-out infinite → bounded yoyo: 4 legs of 0.7s cover the
+  // hold (0.6–3.4s) and land back at scale 1 before the exit
+  tl.to("#ae-emoji", { scale: 1.16, duration: 0.7, ease: "sine.inOut",
+                       yoyo: true, repeat: 3, transformOrigin: "50% 50%" }, 0.6);
+  tl.to("#ae-wrap", { scale: 0.84, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-e"] = tl;
+</script>
+</body>
+</html>

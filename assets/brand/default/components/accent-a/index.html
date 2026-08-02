@@ -1,0 +1,48 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"word","type":"string","label":"Punch word","default":"БЕСПЛАТНО"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Element A «слово-удар» (punch word) — ported 1:1 from the designer's source
+     (source/ИИмерсивный - Акцентные плашки.dc.html, 740×416 frame) at the
+     manifest's scaleToRender 2.595 → 1920×1080. The CSS popIn keyframes are
+     re-expressed as a GSAP timeline because CSS animations are not seekable. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="accent-a" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- plate bottom edge = 145px (source 56px × 2.595); the 10px paper underline
+       (source 4px) is the shared marker of all loud hooks per the designer note -->
+  <div id="aa-wrap" style="position:absolute;left:0;right:0;bottom:145px;
+       display:flex;justify-content:center">
+    <div id="aa-plate" style="background:#0B0B0C;padding:36px 67px;
+         border-bottom:10px solid #FAFAF7">
+      <span id="aa-word" data-var-text="word" style="display:block;
+            font-family:'Golos Text',sans-serif;font-weight:900;font-size:135px;
+            line-height:1;letter-spacing:-.02em;color:#FAFAF7">БЕСПЛАТНО</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  // popIn: 0%,6% {opacity:0; scale .84} → 18%,86% {1} → 96% {back}, bezier
+  // (.33,1,.68,1) ≈ circ.out; spec card: «вход scale .84→1 за 0.5с · держать 2с»
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#aa-wrap", { scale: 0.84, opacity: 0, transformOrigin: "50% 100%" },
+            { scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  // hold ~2.0s (manifest holdSec 1.6–2.4), then exit mirrors the entry
+  tl.to("#aa-wrap", { scale: 0.84, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.55);
+
+  window.__timelines["accent-a"] = tl;
+</script>
+</body>
+</html>
