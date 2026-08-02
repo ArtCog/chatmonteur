@@ -26,6 +26,7 @@ models/
 
 # --- project media (never commit user footage / renders) ---
 raw/
+/projects/*/
 projects/*/clips/
 projects/*/previews/
 projects/*/renders/
@@ -36,6 +37,9 @@ projects/*/transcripts/*.json
 *.mkv
 *.wav
 !examples/**/*.mp4
+
+# --- local agent discovery links (canonical skills are tracked in .agents) ---
+/.claude/skills/
 
 # --- local strategy docs (not for the public repo) ---
 PLAN.local.md
