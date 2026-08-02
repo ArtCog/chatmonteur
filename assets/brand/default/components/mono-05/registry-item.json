@@ -1,0 +1,35 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-05",
+  "type": "hyperframes:block",
+  "title": "05 ВЫНОСКА / АКЦЕНТ",
+  "description": "скобки + коннектор + плашка-ярлык · инверсная подсказка · плавный scale",
+  "tags": [
+    "alpha",
+    "callout",
+    "immersive",
+    "mono"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-05.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

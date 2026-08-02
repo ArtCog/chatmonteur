@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-38",
+  "type": "hyperframes:block",
+  "title": "38 ТЕМА СЕГМЕНТА",
+  "description": "верхняя треть, плашка от левого края · закрывающий тик 6px справа · clip-reveal · показать 3с в начале сегмента и убрать",
+  "tags": [
+    "alpha",
+    "bar",
+    "immersive",
+    "mono",
+    "topic"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-38.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Segment number","default":"ЧАСТЬ 02"},
+  {"id":"title","type":"string","label":"Segment title","default":"Инструменты агента"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 38 «тема сегмента» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, so the page stays transparent.
+
+     The plate runs off the left edge on purpose — it is a tab, not a card, and the
+     6px paper tick closes it on the right.
+
+     It sits at the designer's 249px, which is the upper third he drew, not the
+     manifest's top band (0–250). The band is where a face is not; this element is
+     shown for 3s at the head of a segment, where the shot is a title or b-roll. */
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-38" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m38-bar" style="position:absolute;left:0;top:249px;display:flex">
+    <div style="background:#0B0B0C;padding:52px 88px 52px 145px;display:flex;align-items:center;gap:57px">
+      <span data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+            letter-spacing:.28em;color:#8A8A85;white-space:nowrap">ЧАСТЬ 02</span>
+      <span style="width:3px;height:83px;background:#3A3B3E;flex:none"></span>
+      <!-- line-height 1.2, not the designer's 1: Playfair's descenders sit below the
+           em box and a flat line-height clips them at this size -->
+      <span data-var-text="title" style="font-family:'Playfair Display',serif;font-weight:600;
+            font-size:99px;line-height:1.2;color:#FAFAF7;white-space:nowrap">Инструменты агента</span>
+    </div>
+    <div style="width:16px;background:#FAFAF7"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m38-bar", { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+            { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#m38-bar", { clipPath: "inset(0 0 100% 0)", opacity: 0,
+                      duration: 0.35, ease: "power2.in" }, 3.6);
+
+  window.__timelines["mono-38"] = tl;
+</script>
+</body>
+</html>

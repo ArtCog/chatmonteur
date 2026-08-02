@@ -1,0 +1,53 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"ИСТОЧНИК"},
+  {"id":"title","type":"string","label":"Title","default":"«Attention Is All You Need»"},
+  {"id":"meta","type":"string","label":"Reference","default":"arXiv:1706.03762 · Vaswani et al."}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 20 «плашка источника» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, so the page stays transparent.
+
+     Same bottom-left line and the same paper tick as the name plate 03 — one
+     citation and one name must not sit on two different baselines. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-20" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- 135px, not the designer's 130: element 03 sits at 135 and these two are the
+       same lower third — 5px of difference is a defect, not a decision -->
+  <div id="m20-wrap" style="position:absolute;left:130px;bottom:135px;display:flex;align-items:stretch">
+    <div style="width:13px;background:#FAFAF7"></div>
+    <div style="background:#0B0B0C;padding:34px 52px">
+      <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:26px;
+           letter-spacing:.24em;color:#B7B7B2;margin-bottom:13px">ИСТОЧНИК</div>
+      <div data-var-text="title" style="font-family:'Golos Text',sans-serif;font-weight:700;
+           font-size:49px;color:#FAFAF7;line-height:1.15">«Attention Is All You Need»</div>
+      <div data-var-text="meta" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+           color:#B7B7B2;margin-top:10px">arXiv:1706.03762 · Vaswani et al.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m20-wrap", { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+            { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#m20-wrap", { clipPath: "inset(0 0 100% 0)", opacity: 0,
+                       duration: 0.35, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-20"] = tl;
+</script>
+</body>
+</html>

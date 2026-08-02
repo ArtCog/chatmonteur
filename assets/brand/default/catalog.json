@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 29,
-    "todo": 34,
+    "ready": 35,
+    "todo": 28,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -182,8 +182,49 @@
       "hint": "callout",
       "spec": "скобки + коннектор + плашка-ярлык · инверсная подсказка · плавный scale",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-05",
+      "compositionId": "mono-05",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "x",
+          "label": "Bracket left, px",
+          "default": 239
+        },
+        {
+          "id": "y",
+          "label": "Bracket top, px",
+          "default": 311
+        },
+        {
+          "id": "w",
+          "label": "Bracket width, px",
+          "default": 649
+        },
+        {
+          "id": "h",
+          "label": "Bracket height, px",
+          "default": 389
+        },
+        {
+          "id": "kicker",
+          "label": "Label kicker",
+          "default": "СМОТРИ СЮДА"
+        },
+        {
+          "id": "label",
+          "label": "Label text",
+          "default": "эта команда"
+        },
+        {
+          "id": "hint",
+          "label": "Inverse hint chip — leave empty to drop it",
+          "default": "важный момент"
+        }
+      ]
     },
     {
       "id": "06·A",
@@ -413,8 +454,29 @@
       "hint": "glossary",
       "spec": "карточка термина · для объяснения AI-жаргона · крупное слово + определение",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-15",
+      "compositionId": "mono-15",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "термин"
+        },
+        {
+          "id": "term",
+          "label": "Term",
+          "default": "Инференс"
+        },
+        {
+          "id": "definition",
+          "label": "Definition — wrap the payoff in **stars** to set it in ink",
+          "default": "Запуск обученной модели на новых данных — момент, когда нейросеть **выдаёт ответ**, а не учится."
+        }
+      ]
     },
     {
       "id": "16",
@@ -484,8 +546,29 @@
       "hint": "citation",
       "spec": "нижняя плашка источника · для ссылок на статьи и arXiv · clip-reveal",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-20",
+      "compositionId": "mono-20",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "ИСТОЧНИК"
+        },
+        {
+          "id": "title",
+          "label": "Title",
+          "default": "«Attention Is All You Need»"
+        },
+        {
+          "id": "meta",
+          "label": "Reference",
+          "default": "arXiv:1706.03762 · Vaswani et al."
+        }
+      ]
     },
     {
       "id": "21",
@@ -700,8 +783,24 @@
       "hint": "warning",
       "spec": "инверсный блок «!» слева · без красного — акцент строится на инверсии · clip-reveal снизу · одна мысль, максимум две строки",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-34",
+      "compositionId": "mono-34",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "ВАЖНО"
+        },
+        {
+          "id": "text",
+          "label": "One thought, two lines at most",
+          "default": "Не давай агенту доступ на запись, пока не проверил дифф"
+        }
+      ]
     },
     {
       "id": "35",
@@ -772,8 +871,29 @@
       "hint": "sponsor",
       "spec": "право-низ, не перекрывает субтитры · слот под лого 96×42 (в 1920 — 250×110) · метка «реклама» обязательна · держать 5–7с",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-37",
+      "compositionId": "mono-37",
+      "durationSec": 7.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "ПАРТНЁР ВЫПУСКА"
+        },
+        {
+          "id": "disclosure",
+          "label": "Disclosure — required by law, do not blank it",
+          "default": "реклама"
+        },
+        {
+          "id": "logo",
+          "label": "Logo image path, 250×110 — empty shows the slot",
+          "default": ""
+        }
+      ]
     },
     {
       "id": "38",
@@ -782,8 +902,24 @@
       "hint": "topic bar",
       "spec": "верхняя треть, плашка от левого края · закрывающий тик 6px справа · clip-reveal · показать 3с в начале сегмента и убрать",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-38",
+      "compositionId": "mono-38",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Segment number",
+          "default": "ЧАСТЬ 02"
+        },
+        {
+          "id": "title",
+          "label": "Segment title",
+          "default": "Инструменты агента"
+        }
+      ]
     },
     {
       "id": "39",

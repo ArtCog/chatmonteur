@@ -1,0 +1,55 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker","default":"ВАЖНО"},
+  {"id":"text","type":"string","label":"One thought, two lines at most","default":"Не давай агенту доступ на запись, пока не проверил дифф"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 34 «предупреждение» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, so the page stays transparent.
+
+     No red anywhere: the alarm is carried by inverting the block, which is the whole
+     point of a two-colour brand. The paper «!» is the loudest thing on the frame.
+
+     Bottom inset 151px puts the plate's edge at 929 — clear of the player zone that
+     starts at 934, which matters here because this plate is full width. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-34" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m34-plate" style="position:absolute;left:166px;right:166px;bottom:151px;display:flex;
+       align-items:stretch;box-shadow:0 52px 130px -47px rgba(0,0,0,.65)">
+    <div style="width:145px;background:#FAFAF7;display:flex;align-items:center;justify-content:center;
+         font-family:'Golos Text',sans-serif;font-weight:900;font-size:83px;color:#0B0B0C;
+         line-height:1;flex:none">!</div>
+    <div style="flex:1;background:#0B0B0C;padding:42px 57px;border-top:5px solid #FAFAF7;
+         border-right:5px solid #FAFAF7;border-bottom:5px solid #FAFAF7">
+      <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+           letter-spacing:.24em;color:#B7B7B2;margin-bottom:16px">ВАЖНО</div>
+      <div data-var-text="text" style="font-family:'Golos Text',sans-serif;font-weight:700;
+           font-size:57px;line-height:1.25;color:#FAFAF7">Не давай агенту доступ на запись, пока не проверил дифф</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m34-plate", { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+            { clipPath: "inset(0 0 0% 0)", opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to("#m34-plate", { clipPath: "inset(0 0 100% 0)", opacity: 0,
+                        duration: 0.35, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-34"] = tl;
+</script>
+</body>
+</html>
