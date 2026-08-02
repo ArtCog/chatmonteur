@@ -1,0 +1,40 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-42",
+  "type": "hyperframes:block",
+  "title": "42 ТИКЕР-ПЕРЕХОД",
+  "description": "переход-альтернатива 07 · контурная бегущая строка 96px, линейно, бесшовный цикл · показывать 1.5–2с поверх смены кадра",
+  "tags": [
+    "alpha",
+    "immersive",
+    "marquee",
+    "mono"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 2.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-42.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

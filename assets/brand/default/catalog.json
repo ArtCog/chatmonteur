@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 52,
-    "todo": 11,
+    "ready": 55,
+    "todo": 8,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -330,9 +330,25 @@
       "hint": "заголовок след. блока",
       "spec": "плавная шторка · заголовок следующего блока",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
+      "status": "ready",
       "route": "component",
-      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
+      "component": "components/mono-07a",
+      "compositionId": "mono-07a",
+      "durationSec": 2.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker over the title",
+          "default": "Следующий блок · 02"
+        },
+        {
+          "id": "title",
+          "label": "What the next block is about",
+          "default": "Настройка агента"
+        }
+      ]
     },
     {
       "id": "07·B",
@@ -341,9 +357,20 @@
       "hint": "без текста",
       "spec": "без текста · полосы по очереди (blinds) · плавно",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
+      "status": "ready",
       "route": "component",
-      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
+      "component": "components/mono-07b",
+      "compositionId": "mono-07b",
+      "durationSec": 2.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "columns",
+          "label": "How many blinds",
+          "default": 6
+        }
+      ]
     },
     {
       "id": "07·C",
@@ -1329,9 +1356,25 @@
       "hint": "marquee",
       "spec": "переход-альтернатива 07 · контурная бегущая строка 96px, линейно, бесшовный цикл · показывать 1.5–2с поверх смены кадра",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
+      "status": "ready",
       "route": "component",
-      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать"
+      "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
+      "component": "components/mono-42",
+      "compositionId": "mono-42",
+      "durationSec": 2.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "text",
+          "label": "The running line",
+          "default": "НАСТРОЙКА АГЕНТА · БЛОК 02 ·"
+        },
+        {
+          "id": "label",
+          "label": "Label under the line",
+          "default": "СЛЕДУЮЩИЙ БЛОК"
+        }
+      ]
     },
     {
       "id": "43",

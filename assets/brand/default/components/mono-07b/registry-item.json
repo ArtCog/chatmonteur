@@ -1,0 +1,24 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-07b",
+  "type": "hyperframes:block",
+  "title": "07·B ПЕРЕХОД · B",
+  "description": "без текста · полосы по очереди (blinds) · плавно",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 2.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-07b.html",
+      "type": "hyperframes:composition"
+    }
+  ]
+}
