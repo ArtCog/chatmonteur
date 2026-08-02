@@ -38,7 +38,7 @@ pinned to the frame — see `references/edit-sequence.md` and the note below.
 | **Anchor** | bottom-center, `Alignment=2`, FIXED | — | 1 or 2 lines share the same bottom line; line 2 grows UP — captions never jump |
 | **Font** | **Golos Text Bold** (brand) | — | Brand kit «Mono»; excellent Cyrillic. TTF in `assets/brand/default/fonts/` |
 | **Colour** | paper `#FAFAF7` bold text, **NO plate, NO outline** | — | Артур 2026-07-24 (финальное, отменяет плашки): индустрия жжёт жирный белый текст без рамок. Читаемость держит только мягкая тень (0.05 em, ink 50%) — глубина, не рамка |
-| **Accent** | key/spoken word in COLOUR: `green` #2BE86A (бренд) или `yellow` #FFD700 (индустрия) | — | Hormozi/GaryVee-стандарт: акцент цветом, не инверсией и не размером. `accent=` параметр |
+| **Accent** | key/spoken word in COLOUR: `yellow` #FFD700 | — | Hormozi/GaryVee-стандарт: акцент цветом, не инверсией и не размером. `accent=` параметр |
 | **Emphasis** | = the Accent row (colour); NEVER size-scaled, NEVER caps | — | size-scaling and caps остаются запрещены |
 
 ## The five variants — the agent PICKS PER VIDEO, then asks

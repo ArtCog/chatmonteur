@@ -121,8 +121,8 @@ _SHADOW = "&H800A0908"     # ink @50% — soft drop shadow, never an outline
 _SHADOW_EM = 0.05
 # Accent per surface: a key word must stay legible both on footage and on paper.
 _ACCENTS = {
+    # green removed with the brandbook refresh — see subtitles.py _ACCENTS
     "yellow": {"dark": "&H00D7FF&", "paper": "&H0C59E8&"},   # #FFD700 / #E8590C
-    "green": {"dark": "&H6AE82B&", "paper": "&H4B8617&"},    # #2BE86A / #17864B
 }
 _STYLES = {"emoji_top", "sticker"}
 _BRAND_FONT = "Golos Text"

@@ -2,8 +2,9 @@
 
 Every on-screen element — captions, meaning-inserts, lower-thirds, motion components —
 must agree on the same colours and typefaces. Until now each tool carried its own copy of
-``#2BE86A`` and ``"Golos Text"``, which guarantees the day a token changes and the captions
-quietly keep the old one.
+the accent hex and ``"Golos Text"``, which guarantees the day a token changes and the
+captions quietly keep the old one. That is not hypothetical: the brandbook dropped its
+green accent and tokens.css kept it for weeks.
 
 **``assets/brand/<name>/tokens.css`` is the source of truth**, and it already existed: the
 HyperFrames compositions link it as ordinary CSS. So this parses that same file rather than
@@ -11,9 +12,13 @@ introducing a second format for Python to disagree with. One file, two consumers
 edits a token and both the burned captions and the rendered components follow.
 
     from .. import brand
-    brand.colour("accent")        # '#2BE86A'
-    brand.ass("accent")           # '&H6AE82B&'   — libass wants BGR
+    brand.colour("accent-hype")   # '#FF5B2E'
+    brand.ass("caption-accent")   # '&H00D7FF&'   — libass wants BGR
     brand.font("sans")            # 'Golos Text'
+
+There is deliberately no single ``--accent``: the brandbook is monochrome, its three
+accent colours are named for what they mean, and the caption colour is separate from
+all of them so a brandbook change cannot silently repaint burned-in captions.
 
 ASS colours are the reason this needs code and not a constant: libass writes colour as
 **BGR**, byte-reversed from the hex a designer hands you. Reversing by hand is how a green
@@ -65,7 +70,7 @@ def colour(key: str, *, brand: str = "default") -> str:
 def ass(key: str, *, brand: str = "default", alpha: int | None = None) -> str:
     """A token as an ASS colour override, e.g. ``&H6AE82B&``.
 
-    libass stores colour BYTE-REVERSED (BGR), so ``#2BE86A`` becomes ``&H6AE82B&``. Pass
+    libass stores colour BYTE-REVERSED (BGR), so ``#FF5B2E`` becomes ``&H2E5BFF&``. Pass
     ``alpha`` (0 opaque … 255 invisible) for the ``&HAABBGGRR`` style-field form used by
     shadows and plates.
     """

@@ -89,7 +89,7 @@ overstim fastest.) Concrete cadence:
   card a SEPARATE clip concatenated in front.
   **The HOOK gets 1–2 inserts MANDATORY**; body — by meaning or on
   request. Full subtitles are OFF unless Артур explicitly says «добавь субтитры»
-  (then karaoke-green). WHEN: inserts are built in phase ③ VISUAL MONTAGE, together with
+  (then karaoke-yellow). WHEN: inserts are built in phase ③ VISUAL MONTAGE, together with
   the rest of the motion pass — after the meaning cut locks timing, before color.
   Build: agent picks beats from the FINAL-cut transcript → writes `inserts.json` → shows
   the list for APPROVAL → calls the `inserts` capability. Never cover the speaker's
@@ -113,7 +113,7 @@ key words. Write `projects/<name>/transcripts/inserts.json`:
 - `emoji` — optional; picked for attention, matching the emotion (🚫 danger/negation,
   ✅ result, ⚠️ warning, 💰 money, 🔥 hot take).
 - Params: `style` = `emoji_top` (LOCKED default) | `sticker` (ONLY when Артур asks),
-  `accent` = `yellow` (default) | `green`.
+  `accent` = `yellow` (единственный цвет субтитров/вставок).
 - Timing: 2.5–3.5 s per insert, landing ON the anchor word, 3–6 per minute max.
 
 **Colour emoji are PNG overlays, not font glyphs** — libass renders outline glyphs only, so
@@ -239,7 +239,7 @@ meaning cuts; a transcript of the raw file is useless for sync.
 
 The default design system is `assets/brand/default/brand.md` («ИИмерсивный - Mono», imported
 from Claude Design). **The brand is BLACK-GRAY MONOCHROME (ink `#0B0B0C` / paper `#FAFAF7` /
-grays)** — green `#2BE86A` is a SMALL accent, never the base of a composition (Артур
+grays)** — colour is a SMALL accent, never the base of a composition (Артур
 2026-07-26: «наш бренд чёрно-серый»). Motion graphics live in that monochrome world.
 Use its fonts — do NOT pick your own:
 

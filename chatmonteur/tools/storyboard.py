@@ -87,7 +87,7 @@ class StoryboardTool(Tool):
                 continue
             plan = ctx.paths.transcripts / f"{section}.json"
             plan.write_text(json.dumps({section: items}, ensure_ascii=False), encoding="utf-8")
-            extra = section_kwargs.get(section, {})  # e.g. inserts={"accent": "green"}
+            extra = section_kwargs.get(section, {})  # e.g. inserts={"accent": "yellow"}
             res = tool.run(ctx, input=video, **{param: str(plan)}, **extra)
             video = res.artifacts["video"]
             done.append(f"{section}:{len(items)}")

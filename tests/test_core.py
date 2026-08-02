@@ -151,10 +151,11 @@ def test_variant_read_aloud_fades_each_word():
 
 
 def test_variant_accent_colors_only_the_emph_word():
-    green = _ass("accent")  # brand green by default, exactly one word marked
-    assert green.count("\\1c&H6AE82B&") == 1
-    yellow = _to_ass(_SUBS, 42, 1920, 1080, "Golos Text", "accent", "yellow")
+    yellow = _ass("accent")  # caption yellow by default, exactly one word marked
     assert yellow.count("\\1c&H00D7FF&") == 1
+    # the brandbook's old green went with the monochrome refresh — it was the default,
+    # so leaving it would have burned a colour the brand no longer has into every video
+    assert "&H6AE82B&" not in yellow
 
 
 def test_variant_typewriter_is_mono_with_cursor():
@@ -174,7 +175,7 @@ def test_no_plate_no_outline_shadow_only():
 
 def test_variant_highlight_colors_each_word_in_turn():
     ass = _ass("highlight")
-    assert ass.count("\\1c&H6AE82B&") == 4  # every word takes the accent at its time
+    assert ass.count("\\1c&H00D7FF&") == 4  # every word takes the accent at its time
     assert ass.count("\\1c&HF7FAFA&") == 4  # and flips back to paper after
 
 
@@ -810,7 +811,7 @@ def test_brand_loader_reproduces_every_hardcoded_value():
     is on YouTube.
     """
     from chatmonteur import brand
-    assert brand.ass("accent") == "&H6AE82B&"          # subtitles _ACCENTS["green"]
+    assert brand.ass("caption-accent") == "&H00D7FF&"  # subtitles _ACCENTS["yellow"]
     assert brand.ass("paper") == "&HF7FAFA&"           # subtitles _PAPER_C
     assert brand.ass("paper", alpha=0) == "&H00F7FAFA"  # subtitles/inserts _PAPER
     assert brand.ass("ink", alpha=0) == "&H000C0B0B"   # inserts _INK
@@ -822,8 +823,8 @@ def test_brand_loader_reproduces_every_hardcoded_value():
 def test_ass_colour_is_byte_reversed():
     """libass stores colour as BGR. Reversing by hand is how green ships as blue."""
     from chatmonteur import brand
-    assert brand.colour("accent") == "#2BE86A"
-    assert brand.ass("accent") == "&H6AE82B&"
+    assert brand.colour("accent-hype") == "#FF5B2E"
+    assert brand.ass("accent-hype") == "&H2E5BFF&"
 
 
 def test_brand_is_swappable_without_touching_code(tmp_path, monkeypatch):

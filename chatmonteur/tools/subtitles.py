@@ -14,7 +14,7 @@ Five brand «Mono» styles (see ``assets/brand/default/brand.md`` and
                     accent colour in sync (the dominant 2026 caption look).
 
 NO plate, NO outline (Артур 2026-07-24, final): bold white text with a soft drop
-shadow only; key words pop by COLOUR (``accent=`` green|yellow). Geometry is fixed
+shadow only; key words pop by COLOUR (``accent=`` yellow). Geometry is fixed
 (5.5% / 9% / 80%); motion and font differ by variant.
 """
 
@@ -48,7 +48,7 @@ class SubtitlesTool(Tool):
         max_chars: int = 39,  # Cyrillic-friendly CPL (≤39); safe for latin too
         burn: bool = True,
         variant: str = "clean",
-        accent: str = "green",
+        accent: str = "yellow",
         font: str | None = None,
         font_dir: str | None = None,
     ) -> ToolResult:
@@ -122,7 +122,9 @@ _PAPER_BGR = "&H00F7FAFA"    # paper #FAFAF7 — caption text
 _PAPER_C = "&HF7FAFA&"       # paper as a \1c value (flip back after a highlight)
 # Accent colours for the key/spoken word (\1c values). Артур выбирает `accent=`:
 _ACCENTS = {
-    "green": "&H6AE82B&",    # brand #2BE86A
+    # The brand green #2BE86A was removed here when the brandbook went monochrome
+    # (bank-grill-decisions-2026-08-01). It was the default, so every caption burned
+    # since would have carried a colour the brand no longer has.
     "yellow": "&H00D7FF&",   # industry-standard caption yellow #FFD700
 }
 _BRAND_FONT = "Golos Text"
@@ -149,7 +151,7 @@ def _video_wh(path: str) -> tuple[int, int]:
 # --- ASS document --------------------------------------------------------------
 
 def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str,
-            accent: str = "green") -> str:
+            accent: str = "yellow") -> str:
     """ASS with PlayRes pinned to the real frame → FontSize/margins are real px.
 
     One Dialogue per cue; the per-variant renderer decides how the cue's text

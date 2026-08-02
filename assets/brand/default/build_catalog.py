@@ -195,6 +195,42 @@ def check(cards):
     for entry in named:
         head = entry.split()[0]
         assert any(n.startswith(head[:2]) for n in numbers), f"manifest names {entry}, no card"
+    check_tokens(manifest)
+
+
+# tokens.css is hand-written but the manifest owns the values. Nothing enforced that,
+# which is how a green accent survived in tokens.css for weeks after the brandbook
+# dropped it — and Python reads tokens.css, so the stale colour was the one that burned.
+TOKEN_OF = {
+    "ink": "ink", "paper": "paper",
+    "graySecondaryText": "gray-1", "grayLabels": "gray-2",
+    "cardDark": "card-dark", "cardDarkBorder": "card-dark-border",
+    "captionBackdrop": "scrim",
+}
+ACCENT_TOKEN_OF = {"hype": "accent-hype", "danger": "accent-danger", "insight": "accent-insight"}
+
+
+def check_tokens(manifest):
+    css = io.open(os.path.join(ROOT, "tokens.css"), encoding="utf-8").read()
+    have = {k.lower(): v.strip() for k, v in re.findall(r"--([a-z0-9-]+)\s*:\s*([^;]+);", css, re.I)}
+    colors = manifest["colors"]
+
+    def same(a, b):                       # rgba(8, 9, 10, 0.52) == rgba(8,9,10,0.52)
+        return a.replace(" ", "").lower() == b.replace(" ", "").lower()
+
+    for key, name in TOKEN_OF.items():
+        assert name in have, f"tokens.css has no --{name} for manifest colors.{key}"
+        assert same(have[name], colors[key]), \
+            f"--{name} is {have[name]}, manifest says {colors[key]}"
+    for key, name in ACCENT_TOKEN_OF.items():
+        assert same(have[name], colors["accents"][key]["hex"]), \
+            f"--{name} is {have[name]}, manifest says {colors['accents'][key]['hex']}"
+    assert "accent" not in have, \
+        "tokens.css still defines a single --accent; the brandbook is monochrome now"
+
+    for key, name in (("primary", "font-sans"), ("mono", "font-mono"), ("display", "font-serif")):
+        assert manifest["fonts"][key]["family"] in have[name], \
+            f"--{name} does not start with the manifest's {manifest['fonts'][key]['family']}"
 
 
 if __name__ == "__main__":

@@ -74,7 +74,7 @@ Deterministic list, skip only what the request already answered:
 2. **Cut depth** — pauses only (mechanical), or intelligent (fillers, retakes, restructure)?
 3. **Anchors** — what must the viewer SEE at the 3–5 key moments? (his 10 minutes beat an
    hour of my guessing — see motion.md)
-4. **Captions** — none by default; burn only if he says so (then variant `highlight`+green
+4. **Captions** — none by default; burn only if he says so (then variant `highlight`+yellow
    is already locked).
 5. **Music** — mood, or none? SFX on cuts?
 6. **Target** — runtime and deadline; anything to definitely NOT cut?
