@@ -1,0 +1,80 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"title","type":"string","label":"What is being compared","default":"сравнение моделей"},
+  {"id":"leftName","type":"string","label":"Left chip","default":"GPT-5.6"},
+  {"id":"leftValue","type":"string","label":"Left figure","default":"86%"},
+  {"id":"leftNote","type":"string","label":"Left caption","default":"с первого раза"},
+  {"id":"rightName","type":"string","label":"Right chip","default":"GLM 5.2"},
+  {"id":"rightValue","type":"string","label":"Right figure","default":"80%"},
+  {"id":"rightNote","type":"string","label":"Right caption","default":"в 5× дешевле"},
+  {"id":"badge","type":"string","label":"Centre badge","default":"VS"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 06·A «инфографика · A» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     Both sides land together: this is a face-off, and staggering the two halves
+     would tell the viewer one of them won before the numbers do. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-06a" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div data-var-text="title" style="position:absolute;left:0;right:0;top:88px;text-align:center;
+       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:#8A8A85;
+       text-transform:uppercase">сравнение моделей</div>
+
+  <div style="position:absolute;inset:0;display:flex;align-items:center">
+    <div class="m6a-side" style="flex:1;display:flex;flex-direction:column;align-items:center;
+         text-align:center;padding:0 88px">
+      <div data-var-text="leftName" style="display:inline-block;background:#0B0B0C;color:#FAFAF7;
+           font-family:'Golos Text',sans-serif;font-weight:800;font-size:49px;padding:13px 34px">GPT-5.6</div>
+      <div data-var-text="leftValue" style="font-family:'Playfair Display',serif;font-weight:600;
+           font-size:244px;line-height:.86;color:#0B0B0C;margin-top:36px">86%</div>
+      <div data-var-text="leftNote" style="font-family:'Golos Text',sans-serif;font-size:39px;
+           color:#3A3A3A;margin-top:21px">с первого раза</div>
+    </div>
+
+    <div style="width:3px;align-self:stretch;background:#E0E0DB;margin:171px 0"></div>
+
+    <div class="m6a-side" style="flex:1;display:flex;flex-direction:column;align-items:center;
+         text-align:center;padding:0 88px">
+      <div data-var-text="rightName" style="display:inline-block;background:#0B0B0C;color:#FAFAF7;
+           font-family:'Golos Text',sans-serif;font-weight:800;font-size:49px;padding:13px 34px">GLM 5.2</div>
+      <div data-var-text="rightValue" style="font-family:'Playfair Display',serif;font-weight:600;
+           font-size:244px;line-height:.86;color:#0B0B0C;margin-top:36px">80%</div>
+      <div data-var-text="rightNote" style="font-family:'Golos Text',sans-serif;font-size:39px;
+           color:#3A3A3A;margin-top:21px">в 5× дешевле</div>
+    </div>
+
+    <div data-var-text="badge" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+         background:#0B0B0C;color:#FAFAF7;font-family:'Playfair Display',serif;font-weight:600;
+         font-size:52px;width:156px;height:156px;border-radius:50%;display:flex;align-items:center;
+         justify-content:center">VS</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m6a-side", { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  window.__timelines["mono-06a"] = tl;
+</script>
+</body>
+</html>

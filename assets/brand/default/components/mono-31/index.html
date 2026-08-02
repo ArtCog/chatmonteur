@@ -1,0 +1,98 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"title","type":"string","label":"What the field compares","default":"цена и качество"},
+  {"id":"axisY","type":"string","label":"Vertical axis (use | for a line break)","default":"ВЫШЕ|КАЧЕСТВО ↑"},
+  {"id":"axisX","type":"string","label":"Horizontal axis","default":"ДЕШЕВЛЕ →"},
+  {"id":"points","type":"string","label":"Four at most — label|x%|y%|1 for ours, 0 for the rest","default":"GPT-5.6|14|19|1\nGLM 5.2|86|12|1\nстарые API|12|84|0\nлокальные|84|80|0"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 31 «матрица 2×2» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     Points are placed in percent of the field, because the whole content of this
+     card is where things sit relative to each other. A point past the middle flips
+     its label to the left so it cannot run off the field. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-31" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div data-var-text="title" style="position:absolute;left:0;right:0;top:67px;text-align:center;
+       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:#8A8A85;
+       text-transform:uppercase">цена и качество</div>
+
+  <div id="m31-field" style="position:absolute;left:343px;top:182px;width:1230px;height:727px">
+    <div style="position:absolute;left:0;right:0;top:50%;height:3px;background:#D6D6D1"></div>
+    <div style="position:absolute;top:0;bottom:0;left:50%;width:3px;background:#D6D6D1"></div>
+    <div style="position:absolute;left:0;right:0;top:0;height:5px;background:#0B0B0C"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:5px;background:#0B0B0C"></div>
+    <div style="position:absolute;top:0;bottom:0;left:0;width:5px;background:#0B0B0C"></div>
+    <div style="position:absolute;top:0;bottom:0;right:0;width:5px;background:#0B0B0C"></div>
+
+    <div id="m31-axis-y" style="position:absolute;left:-306px;top:50%;transform:translateY(-50%);
+         font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;color:#8A8A85;
+         text-align:right;width:260px;line-height:1.4"></div>
+    <div data-var-text="axisX" style="position:absolute;left:0;right:0;bottom:-78px;text-align:right;
+         font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;
+         color:#8A8A85">ДЕШЕВЛЕ →</div>
+
+    <div id="m31-points"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  document.getElementById("m31-axis-y").innerHTML =
+    String(vars.axisY ?? "ВЫШЕ|КАЧЕСТВО ↑").split("|").map(esc).join("<br>");
+
+  const points = String(vars.points ?? "GPT-5.6|14|19|1\nGLM 5.2|86|12|1\nстарые API|12|84|0\nлокальные|84|80|0")
+    .split("\n").map(s => s.trim()).filter(Boolean).slice(0, 4)
+    .map(line => {
+      const [label, x, y, ours] = line.split("|").map(s => s.trim());
+      return { label, x: Number(x), y: Number(y), ours: ours === "1" };
+    });
+
+  document.getElementById("m31-points").innerHTML = points.map(p => {
+    const flip = p.x > 55;
+    const dot = p.ours
+      ? "width:34px;height:34px;background:#0B0B0C"
+      : "width:34px;height:34px;border:5px solid #8A8A85;background:#FAFAF7";
+    const text = p.ours
+      ? "font-weight:700;color:#0B0B0C"
+      : "font-weight:600;color:#8A8A85";
+    return `<div class="m31-pin" style="position:absolute;left:${p.x}%;top:${p.y}%;
+         transform:translate(${flip ? "-100%" : "0"},-50%);display:flex;align-items:center;
+         gap:23px;flex-direction:${flip ? "row-reverse" : "row"}">
+      <span style="${dot};flex:none"></span>
+      <span style="font-family:'Golos Text',sans-serif;font-size:42px;white-space:nowrap;${text}">${esc(p.label)}</span>
+    </div>`;
+  }).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m31-field", { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  // pins land 0.12s apart (manifest pinStaggerSec) — the order is the argument
+  tl.fromTo(".m31-pin", { scale: 0.4, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.45, ease: "circ.out", stagger: 0.12 }, 0.45);
+
+  window.__timelines["mono-31"] = tl;
+</script>
+</body>
+</html>

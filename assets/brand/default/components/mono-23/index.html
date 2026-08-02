@@ -1,0 +1,80 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"paramLabel","type":"string","label":"Left column heading","default":"параметр"},
+  {"id":"models","type":"string","label":"Columns, separated by |","default":"GPT-5.6|GLM 5.2"},
+  {"id":"rows","type":"string","label":"One per line: label|value|value","default":"Цена / млн|$10|$3\nКонтекст|256K|1M\nСкорость|1.0×|2.4×\nOpen-source|—|✓"},
+  {"id":"highlight","type":"number","label":"Which column is ours (1-based, 0 for none)","default":2}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 23 «сравнительная таблица» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     Hairlines and nothing else: no fills, no zebra, no boxes. The only emphasis in
+     the table is that one column's values are set in ink and the rest in grey —
+     which column that is depends on the video, so it is a variable. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-23" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div id="m23-table" style="position:absolute;left:114px;right:114px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center">
+    <div id="m23-head" style="display:flex;align-items:flex-end;margin-bottom:16px"></div>
+    <div id="m23-rows"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const models = String(vars.models ?? "GPT-5.6|GLM 5.2").split("|").map(s => s.trim()).filter(Boolean);
+  const rows = String(vars.rows ?? "Цена / млн|$10|$3\nКонтекст|256K|1M\nСкорость|1.0×|2.4×\nOpen-source|—|✓")
+    .split("\n").map(s => s.trim()).filter(Boolean).map(l => l.split("|").map(c => c.trim()));
+  const highlight = Number(vars.highlight ?? 2);
+
+  document.getElementById("m23-head").innerHTML =
+    `<div style="width:493px;font-family:'JetBrains Mono',monospace;font-size:31px;
+          letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">${esc(String(vars.paramLabel ?? "параметр"))}</div>`
+    + models.map(m => `<div style="flex:1;text-align:center;padding:0 26px">
+        <span style="display:inline-block;background:#0B0B0C;color:#FAFAF7;
+              font-family:'Golos Text',sans-serif;font-weight:800;font-size:47px;
+              padding:13px 36px">${esc(m)}</span></div>`).join("");
+
+  document.getElementById("m23-rows").innerHTML = rows.map(cells => {
+    const [label, ...values] = cells;
+    return `<div class="m23-row" style="display:flex;align-items:center;padding:42px 0;
+         border-top:3px solid #E0E0DB">
+      <div style="width:493px;font-family:'JetBrains Mono',monospace;font-size:34px;
+           letter-spacing:.06em;color:#8A8A85;text-transform:uppercase">${esc(label)}</div>
+      ${values.map((v, i) => `<div style="flex:1;text-align:center;
+           font-family:'Playfair Display',serif;font-weight:600;font-size:62px;
+           color:${i + 1 === highlight ? "#0B0B0C" : "#3A3A3A"}">${esc(v)}</div>`).join("")}
+    </div>`;
+  }).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  // the table arrives whole: a comparison read row by row stops being a comparison
+  tl.fromTo("#m23-table", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+
+  window.__timelines["mono-23"] = tl;
+</script>
+</body>
+</html>

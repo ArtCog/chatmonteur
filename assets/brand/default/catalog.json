@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 41,
-    "todo": 22,
+    "ready": 45,
+    "todo": 18,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -233,8 +233,54 @@
       "hint": "сравнение",
       "spec": "названия моделей — в инверсном чипе · числа крупно · VS по центру",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-06a",
+      "compositionId": "mono-06a",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "title",
+          "label": "What is being compared",
+          "default": "сравнение моделей"
+        },
+        {
+          "id": "leftName",
+          "label": "Left chip",
+          "default": "GPT-5.6"
+        },
+        {
+          "id": "leftValue",
+          "label": "Left figure",
+          "default": "86%"
+        },
+        {
+          "id": "leftNote",
+          "label": "Left caption",
+          "default": "с первого раза"
+        },
+        {
+          "id": "rightName",
+          "label": "Right chip",
+          "default": "GLM 5.2"
+        },
+        {
+          "id": "rightValue",
+          "label": "Right figure",
+          "default": "80%"
+        },
+        {
+          "id": "rightNote",
+          "label": "Right caption",
+          "default": "в 5× дешевле"
+        },
+        {
+          "id": "badge",
+          "label": "Centre badge",
+          "default": "VS"
+        }
+      ]
     },
     {
       "id": "06·B",
@@ -243,8 +289,39 @@
       "hint": "цифра / список",
       "spec": "крупная цифра + метрики на хайрлайнах · название модели в чипе",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-06b",
+      "compositionId": "mono-06b",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "kicker",
+          "label": "Kicker over the figure",
+          "default": "итог"
+        },
+        {
+          "id": "value",
+          "label": "The figure",
+          "default": "5×"
+        },
+        {
+          "id": "note",
+          "label": "What it means",
+          "default": "дешевле при том же результате"
+        },
+        {
+          "id": "model",
+          "label": "Chip",
+          "default": "GLM 5.2"
+        },
+        {
+          "id": "rows",
+          "label": "One per line: label|value",
+          "default": "ЦЕНА|$3 / млн\nСКОРОСТЬ|2.4×\nКАЧЕСТВО|80%"
+        }
+      ]
     },
     {
       "id": "07·A",
@@ -666,8 +743,34 @@
       "hint": "matrix",
       "spec": "матрица сравнения · хайрлайны · модели в чипах · значения крупной антиквой",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-23",
+      "compositionId": "mono-23",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "paramLabel",
+          "label": "Left column heading",
+          "default": "параметр"
+        },
+        {
+          "id": "models",
+          "label": "Columns, separated by |",
+          "default": "GPT-5.6|GLM 5.2"
+        },
+        {
+          "id": "rows",
+          "label": "One per line: label|value|value",
+          "default": "Цена / млн|$10|$3\nКонтекст|256K|1M\nСкорость|1.0×|2.4×\nOpen-source|—|✓"
+        },
+        {
+          "id": "highlight",
+          "label": "Which column is ours (1-based, 0 for none)",
+          "default": 2
+        }
+      ]
     },
     {
       "id": "24",
@@ -852,8 +955,34 @@
       "hint": "positioning",
       "spec": "поле обводится, оси серые · точки появляются по очереди (pin-in, шаг 0.12с) · заливка = «наш выбор», контур = остальные · максимум 4 точки",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-31",
+      "compositionId": "mono-31",
+      "durationSec": 6.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "title",
+          "label": "What the field compares",
+          "default": "цена и качество"
+        },
+        {
+          "id": "axisY",
+          "label": "Vertical axis (use | for a line break)",
+          "default": "ВЫШЕ|КАЧЕСТВО ↑"
+        },
+        {
+          "id": "axisX",
+          "label": "Horizontal axis",
+          "default": "ДЕШЕВЛЕ →"
+        },
+        {
+          "id": "points",
+          "label": "Four at most — label|x%|y%|1 for ours, 0 for the rest",
+          "default": "GPT-5.6|14|19|1\nGLM 5.2|86|12|1\nстарые API|12|84|0\nлокальные|84|80|0"
+        }
+      ]
     },
     {
       "id": "32",

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-31",
+  "type": "hyperframes:block",
+  "title": "31 МАТРИЦА 2×2",
+  "description": "поле обводится, оси серые · точки появляются по очереди (pin-in, шаг 0.12с) · заливка = «наш выбор», контур = остальные · максимум 4 точки",
+  "tags": [
+    "immersive",
+    "mono",
+    "opaque",
+    "positioning"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 6.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-31.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"kicker","type":"string","label":"Kicker over the figure","default":"итог"},
+  {"id":"value","type":"string","label":"The figure","default":"5×"},
+  {"id":"note","type":"string","label":"What it means","default":"дешевле при том же результате"},
+  {"id":"model","type":"string","label":"Chip","default":"GLM 5.2"},
+  {"id":"rows","type":"string","label":"One per line: label|value","default":"ЦЕНА|$3 / млн\nСКОРОСТЬ|2.4×\nКАЧЕСТВО|80%"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 06·B «инфографика · B» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     His flex row sat on the card itself; here it is one level in, because the
+     renderer owns the composition root's layout and a row put there collapses. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-06b" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;inset:0;display:flex;align-items:center;gap:130px;padding:0 145px">
+    <div id="m6b-figure" style="position:relative;flex:0 0 auto">
+      <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+           letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">итог</div>
+      <!-- line-height 1, not the designer's .82: at 363px the glyph is taller than a
+           .82 line box and sat on top of the caption below it -->
+      <div data-var-text="value" style="font-family:'Playfair Display',serif;font-weight:600;
+           font-size:363px;line-height:1;color:#0B0B0C;margin-top:16px">5×</div>
+      <div data-var-text="note" style="font-family:'Golos Text',sans-serif;font-size:42px;
+           color:#3A3A3A;margin-top:16px;max-width:519px">дешевле при том же результате</div>
+    </div>
+
+    <div id="m6b-metrics" style="position:relative;flex:1">
+      <div data-var-text="model" style="display:inline-block;background:#0B0B0C;color:#FAFAF7;
+           font-family:'Golos Text',sans-serif;font-weight:700;font-size:47px;padding:13px 31px;
+           margin-bottom:21px">GLM 5.2</div>
+      <div id="m6b-rows"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  const rows = String(vars.rows ?? "ЦЕНА|$3 / млн\nСКОРОСТЬ|2.4×\nКАЧЕСТВО|80%")
+    .split("\n").map(s => s.trim()).filter(Boolean).map(l => l.split("|").map(c => c.trim()));
+
+  document.getElementById("m6b-rows").innerHTML = rows.map(([label, value]) => `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:39px 0;
+         border-top:3px solid #E0E0DB">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:34px;letter-spacing:.16em;
+            color:#8A8A85">${esc(label || "")}</span>
+      <span style="font-family:'Playfair Display',serif;font-weight:600;font-size:67px;
+            color:#0B0B0C">${esc(value || "")}</span>
+    </div>`).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(["#m6b-figure", "#m6b-metrics"], { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+
+  window.__timelines["mono-06b"] = tl;
+</script>
+</body>
+</html>
