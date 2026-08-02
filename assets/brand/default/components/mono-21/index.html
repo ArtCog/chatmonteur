@@ -1,0 +1,52 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"glyph","type":"string","label":"Status glyph","default":"✓"},
+  {"id":"title","type":"string","label":"Title","default":"Агент завершил задачу"},
+  {"id":"meta","type":"string","label":"Detail line","default":"12 файлов изменено · 4.2s"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 21 «тост-уведомление» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, so the page stays transparent.
+
+     The designer's 40px inset lands on 104px — exactly the manifest's sideMargin,
+     and inside the top band where nothing else lives. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-21" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m21-toast" style="position:absolute;right:104px;top:104px;display:flex;align-items:center;
+       gap:36px;background:#FAFAF7;padding:36px 52px;box-shadow:0 42px 104px -36px rgba(0,0,0,.6)">
+    <div data-var-text="glyph" style="width:78px;height:78px;border-radius:50%;background:#0B0B0C;
+         color:#FAFAF7;display:flex;align-items:center;justify-content:center;
+         font-family:'Golos Text',sans-serif;font-weight:800;font-size:44px">✓</div>
+    <div>
+      <div data-var-text="title" style="font-family:'Golos Text',sans-serif;font-weight:800;
+           font-size:47px;color:#0B0B0C;line-height:1.15">Агент завершил задачу</div>
+      <div data-var-text="meta" style="font-family:'JetBrains Mono',monospace;font-size:31px;
+           color:#8A8A85;margin-top:10px">12 файлов изменено · 4.2s</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // pop-in, not reveal-up: a notification arrives, it does not slide into place
+  tl.fromTo("#m21-toast", { scale: 0.9, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.45, ease: "circ.out" }, 0.05);
+  tl.to("#m21-toast", { scale: 0.9, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.6);
+
+  window.__timelines["mono-21"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-21",
+  "type": "hyperframes:block",
+  "title": "21 ТОСТ-УВЕДОМЛЕНИЕ",
+  "description": "всплывающее уведомление (угол) · статус агента · pop-in",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono",
+    "toast"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 4.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-21.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/GolosText.ttf",
+      "target": "compositions/fonts/GolosText.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"label","type":"string","label":"Status line","default":"агент работает"},
+  {"id":"items","type":"string","label":"Steps, one per line — start a line with → for the current step","default":"✓ прочитал 34 файла\n✓ нашёл 3 зависимости\n→ пишет тесты"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 36 «агент думает» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Overlay, so the page stays transparent.
+
+     Bottom inset stays at the designer's 135px, matching the name plate 03 — 11px
+     of it reaches into the player zone, but every bottom-left element in this brand
+     sits on the same line and breaking that for 11px would read as a mistake.
+
+     Spec: close this element with the toast (21) — it is the "still working" state,
+     and something has to say it finished. */
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-36" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m36-panel" style="position:absolute;left:135px;bottom:135px;background:#161618;
+       border:3px solid #2A2A2C;box-shadow:0 57px 140px -52px rgba(0,0,0,.7);
+       padding:42px 52px;min-width:856px">
+    <div style="display:flex;align-items:center;gap:29px">
+      <div style="display:flex;gap:13px">
+        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
+        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
+        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
+      </div>
+      <span data-var-text="label" style="font-family:'JetBrains Mono',monospace;font-size:34px;
+            letter-spacing:.14em;color:#FAFAF7;text-transform:uppercase">агент работает</span>
+    </div>
+    <div id="m36-steps" style="display:flex;flex-direction:column;gap:18px;margin-top:36px;
+         padding-top:34px;border-top:3px solid #2A2A2C;font-family:'JetBrains Mono',monospace;
+         font-size:34px;line-height:1.5"></div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const DUR = 5;
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+  // a line that opens with → is what the agent is doing now: white, and it carries
+  // the cursor; everything above it is done and steps back to grey
+  const lines = String(vars.items ?? "✓ прочитал 34 файла\n✓ нашёл 3 зависимости\n→ пишет тесты")
+    .split("\n").map(s => s.trim()).filter(Boolean);
+  const last = lines.length - 1;
+  document.getElementById("m36-steps").innerHTML = lines.map((line, i) => {
+    const current = line.startsWith("→");
+    const cursor = current && i === last
+      ? '<span id="m36-cur">▌</span>' : "";
+    return `<div style="color:${current ? "#FAFAF7" : "#8A8A85"}">${esc(line)}${cursor}</div>`;
+  }).join("");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m36-panel", { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+
+  // the designer's dots pulse forever; the renderer seeks arbitrary frames, so the
+  // pulse is a bounded yoyo that outlives the hold instead
+  gsap.utils.toArray(".m36-dot").forEach((dot, i) => {
+    tl.set(dot, { opacity: 0.24 }, 0);
+    tl.to(dot, { opacity: 1, y: -10, duration: 0.6, ease: "sine.inOut",
+                 yoyo: true, repeat: 5 }, 0.6 + i * 0.16);
+  });
+  if (document.getElementById("m36-cur")) {
+    for (let i = 0; i * 0.5 < DUR; i++) {
+      tl.set("#m36-cur", { opacity: i % 2 ? 0 : 1 }, i * 0.5);
+    }
+  }
+  tl.to("#m36-panel", { y: 16, opacity: 0, duration: 0.35, ease: "power2.in" }, DUR - 0.4);
+
+  window.__timelines["mono-36"] = tl;
+</script>
+</body>
+</html>

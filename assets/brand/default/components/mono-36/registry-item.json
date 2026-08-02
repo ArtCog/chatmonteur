@@ -1,0 +1,30 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-36",
+  "type": "hyperframes:block",
+  "title": "36 АГЕНТ ДУМАЕТ",
+  "description": "три точки пульсируют бесконечно (шаг 0.16с) · выполненные шаги серые с ✓, текущий белый со стрелкой · закрывать элементом 21 (тост)",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono",
+    "thinking"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 5.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-36.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/registry-item.json",
+  "name": "mono-27",
+  "type": "hyperframes:block",
+  "title": "27 ЦИТАТА НА КАДРЕ",
+  "description": "затемнение слева (кадр читается справа) · антиква italic 36px · reveal-up · автор через штрих · не длиннее 9 слов",
+  "tags": [
+    "alpha",
+    "immersive",
+    "mono",
+    "pull",
+    "quote"
+  ],
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "duration": 6.0,
+  "files": [
+    {
+      "path": "index.html",
+      "target": "compositions/mono-27.html",
+      "type": "hyperframes:composition"
+    },
+    {
+      "path": "fonts/JetBrainsMono.ttf",
+      "target": "compositions/fonts/JetBrainsMono.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "fonts/PlayfairDisplay.ttf",
+      "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    }
+  ]
+}

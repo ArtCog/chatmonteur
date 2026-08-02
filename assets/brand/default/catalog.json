@@ -3,8 +3,8 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 23,
-    "todo": 40,
+    "ready": 29,
+    "todo": 34,
     "deferred": 1,
     "routed-ffmpeg": 2,
     "archived": 2,
@@ -433,8 +433,29 @@
       "hint": "prompt",
       "spec": "плашка промпта · показать, что просят у модели · моно-лейбл + курсор",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-17",
+      "compositionId": "mono-17",
+      "durationSec": 6.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "label",
+          "label": "Chip label",
+          "default": "PROMPT"
+        },
+        {
+          "id": "meta",
+          "label": "Model / agent",
+          "default": "claude · agent"
+        },
+        {
+          "id": "text",
+          "label": "Prompt text (use | for a line break)",
+          "default": "Сделай нарезку по смысловым блокам|и подпиши каждую плашкой"
+        }
+      ]
     },
     {
       "id": "18",
@@ -473,8 +494,29 @@
       "hint": "toast",
       "spec": "всплывающее уведомление (угол) · статус агента · pop-in",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-21",
+      "compositionId": "mono-21",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "glyph",
+          "label": "Status glyph",
+          "default": "✓"
+        },
+        {
+          "id": "title",
+          "label": "Title",
+          "default": "Агент завершил задачу"
+        },
+        {
+          "id": "meta",
+          "label": "Detail line",
+          "default": "12 файлов изменено · 4.2s"
+        }
+      ]
     },
     {
       "id": "23",
@@ -549,8 +591,24 @@
       "hint": "pull quote",
       "spec": "затемнение слева (кадр читается справа) · антиква italic 36px · reveal-up · автор через штрих · не длиннее 9 слов",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-27",
+      "compositionId": "mono-27",
+      "durationSec": 6.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "quote",
+          "label": "Quote (≤ 9 words)",
+          "default": "Мы перестали писать код — мы описываем результат"
+        },
+        {
+          "id": "author",
+          "label": "Attribution",
+          "default": "Джулиан Иванов · AI Automation"
+        }
+      ]
     },
     {
       "id": "28",
@@ -559,8 +617,24 @@
       "hint": "keycap",
       "spec": "кейкапы с тенью-подошвой 5px · нажатие: сдвиг вниз 5px, вторая клавиша с задержкой 0.12с · подпись команды под клавишами",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-28",
+      "compositionId": "mono-28",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "keys",
+          "label": "Keys, separated by |",
+          "default": "⌘|K"
+        },
+        {
+          "id": "caption",
+          "label": "What the command does",
+          "default": "палитра команд"
+        }
+      ]
     },
     {
       "id": "29",
@@ -636,8 +710,34 @@
       "hint": "chat",
       "spec": "вы — ink-плашка справа, модель — контурная слева · реплики с задержкой 0.75с · курсор в последней реплике · максимум 2 реплики на кадр",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-35",
+      "compositionId": "mono-35",
+      "durationSec": 7.0,
+      "layer": "opaque",
+      "variables": [
+        {
+          "id": "youLabel",
+          "label": "Left label (you)",
+          "default": "ВЫ"
+        },
+        {
+          "id": "you",
+          "label": "Your line",
+          "default": "Разбей это видео на смысловые блоки и подпиши каждый"
+        },
+        {
+          "id": "agentLabel",
+          "label": "Right label (model)",
+          "default": "CLAUDE"
+        },
+        {
+          "id": "agent",
+          "label": "Model reply",
+          "default": "Нашёл 5 блоков. Первый — вступление 0:00–2:14, дальше установка окружения"
+        }
+      ]
     },
     {
       "id": "36",
@@ -646,8 +746,24 @@
       "hint": "thinking",
       "spec": "три точки пульсируют бесконечно (шаг 0.16с) · выполненные шаги серые с ✓, текущий белый со стрелкой · закрывать элементом 21 (тост)",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "ready",
+      "route": "component",
+      "component": "components/mono-36",
+      "compositionId": "mono-36",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "label",
+          "label": "Status line",
+          "default": "агент работает"
+        },
+        {
+          "id": "items",
+          "label": "Steps, one per line — start a line with → for the current step",
+          "default": "✓ прочитал 34 файла\n✓ нашёл 3 зависимости\n→ пишет тесты"
+        }
+      ]
     },
     {
       "id": "37",

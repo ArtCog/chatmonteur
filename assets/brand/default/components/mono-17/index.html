@@ -1,0 +1,67 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"label","type":"string","label":"Chip label","default":"PROMPT"},
+  {"id":"meta","type":"string","label":"Model / agent","default":"claude · agent"},
+  {"id":"text","type":"string","label":"Prompt text (use | for a line break)","default":"Сделай нарезку по смысловым блокам|и подпиши каждую плашкой"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 17 «промпт-плашка» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080.
+
+     The striped grey field and the words «кадр · ваше видео» on the card are the
+     designer's stand-in for the footage, not artwork: this is an overlay, so the
+     page stays transparent and only the panel renders. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-17" data-start="0" data-duration="6"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- flex centring instead of the designer's top:50%/translateY(-50%): GSAP animates
+       the panel's own transform, and a hand-written translate would fight it -->
+  <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 208px">
+    <div id="m17-panel" style="width:100%;background:#161618;border:3px solid #2A2A2C;
+         box-shadow:0 78px 182px -78px rgba(0,0,0,.7);padding:57px 62px">
+      <div style="display:flex;align-items:center;gap:26px;margin-bottom:36px">
+        <span data-var-text="label" style="font-family:'JetBrains Mono',monospace;font-size:29px;
+              letter-spacing:.24em;color:#8A8A85;background:#0B0B0C;padding:10px 23px">PROMPT</span>
+        <span data-var-text="meta" style="font-family:'JetBrains Mono',monospace;
+              font-size:29px;color:#3A3B3E">claude · agent</span>
+      </div>
+      <div style="font-family:'Golos Text',sans-serif;font-weight:600;font-size:67px;
+           line-height:1.35;color:#FAFAF7"><span id="m17-text"></span><span id="m17-cur"
+           style="font-family:'JetBrains Mono',monospace;color:#FAFAF7">▌</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const DUR = 6;
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  document.getElementById("m17-text").innerHTML =
+    String(vars.text ?? "Сделай нарезку по смысловым блокам|и подпиши каждую плашкой")
+      .split("|").map(s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])))
+      .join("<br>");
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#m17-panel", { y: 52, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  // the cursor is the one place the manifest allows a linear, endless beat — but a
+  // CSS keyframe is not seekable, so the blink is stamped onto the timeline
+  for (let i = 0; i * 0.5 < DUR; i++) {
+    tl.set("#m17-cur", { opacity: i % 2 ? 0 : 1 }, i * 0.5);
+  }
+  tl.to("#m17-panel", { y: 52, opacity: 0, duration: 0.35, ease: "power2.in" }, DUR - 0.4);
+
+  window.__timelines["mono-17"] = tl;
+</script>
+</body>
+</html>

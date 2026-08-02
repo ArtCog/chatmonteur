@@ -1,0 +1,76 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"youLabel","type":"string","label":"Left label (you)","default":"ВЫ"},
+  {"id":"you","type":"string","label":"Your line","default":"Разбей это видео на смысловые блоки и подпиши каждый"},
+  {"id":"agentLabel","type":"string","label":"Right label (model)","default":"CLAUDE"},
+  {"id":"agent","type":"string","label":"Model reply","default":"Нашёл 5 блоков. Первый — вступление 0:00–2:14, дальше установка окружения"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 35 «диалог с моделью» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080. Full-frame paper card, so it is opaque.
+
+     The designer's 1px #E6E6E1 border is dropped: on his deck it separates the card
+     from the white page around it, but at full frame there is nothing to separate
+     from — it would just draw a hairline round the edge of the video.
+
+     Spec: two replies per frame, no more. You are the ink plate on the right, the
+     model is the outlined plate on the left. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-35" data-start="0" data-duration="7"
+     data-width="1920" data-height="1080"
+     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:
+       linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
+       linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
+       background-size:114px 114px"></div>
+
+  <div style="position:absolute;left:156px;right:156px;top:0;bottom:0;display:flex;
+       flex-direction:column;justify-content:center;gap:36px">
+    <div id="m35-you" style="align-self:flex-end;max-width:74%">
+      <div data-var-text="youLabel" style="font-family:'JetBrains Mono',monospace;font-size:27px;
+           letter-spacing:.2em;color:#8A8A85;text-align:right;margin-bottom:16px">ВЫ</div>
+      <div data-var-text="you" style="background:#0B0B0C;color:#FAFAF7;font-family:'Golos Text',sans-serif;
+           font-weight:600;font-size:52px;line-height:1.35;padding:36px 49px">Разбей это видео на смысловые блоки и подпиши каждый</div>
+    </div>
+    <div id="m35-agent" style="align-self:flex-start;max-width:80%">
+      <div data-var-text="agentLabel" style="font-family:'JetBrains Mono',monospace;font-size:27px;
+           letter-spacing:.2em;color:#8A8A85;margin-bottom:16px">CLAUDE</div>
+      <div style="background:#FAFAF7;border:5px solid #0B0B0C;color:#0B0B0C;
+           font-family:'Golos Text',sans-serif;font-weight:500;font-size:52px;line-height:1.4;
+           padding:36px 49px"><span data-var-text="agent">Нашёл 5 блоков. Первый — вступление 0:00–2:14, дальше установка окружения</span><span
+           id="m35-cur" style="font-family:'JetBrains Mono',monospace">▌</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const DUR = 7;
+  const tl = gsap.timeline({ paused: true });
+
+  // the reply lands 0.75s after the question, per the spec — the pause is the point
+  tl.fromTo("#m35-you", { y: 34, scale: 0.965, opacity: 0 },
+            { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  tl.fromTo("#m35-agent", { y: 34, scale: 0.965, opacity: 0 },
+            { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "circ.out" }, 0.8);
+  // cursor stamped on the timeline, not a CSS keyframe: the renderer seeks frames
+  for (let i = 0; i * 0.5 < DUR; i++) {
+    tl.set("#m35-cur", { opacity: i % 2 ? 0 : 1 }, i * 0.5);
+  }
+  tl.to(["#m35-you", "#m35-agent"], { y: 34, scale: 0.965, opacity: 0,
+        duration: 0.35, ease: "power2.in" }, DUR - 0.4);
+
+  window.__timelines["mono-35"] = tl;
+</script>
+</body>
+</html>
