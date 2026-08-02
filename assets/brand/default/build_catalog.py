@@ -31,8 +31,11 @@ SOURCES = [
 
 # Routing decided in PLAN.local.md v4 phase 3 — recorded here so nobody ports them twice.
 ROUTE = {
-    "29": ("ffmpeg", "спотлайт/зум — расширение zooms.py, не компонент"),
-    "41": ("ffmpeg", "глитч рвёт сам кадр, alpha-оверлеем не сделать"),
+    # both were routed to ffmpeg in the plan; reading the actual markup corrected it
+    "29": ("component", "alpha-оверлей: карточка ничего не увеличивает, окно только указывает. "
+                        "Нужен зум самого кадра — это отдельное решение, punch в zooms.py"),
+    "41": ("component", "alpha-оверлей: глитчатся только буквы (два призрака со сдвигом), "
+                        "кадр под ними не трогается"),
     "09": ("deferred", "прогресс-бар опционален, длинный слой — до догфуда"),
     "07·A": ("component", "alpha-блок поверх стыка, transitions.py не трогать"),
     "07·B": ("component", "alpha-блок поверх стыка, transitions.py не трогать"),

@@ -1,0 +1,80 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"text","type":"string","label":"What broke","default":"АГЕНТ УПАЛ"},
+  {"id":"note","type":"string","label":"The chip underneath","default":"exit code 1 · смотрим логи"}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 41 «глитч · сбой» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080.
+
+     An alpha overlay, not an ffmpeg effect. The plan routed this to ffmpeg on the
+     grounds that a glitch tears the frame itself — but this card's glitch is
+     entirely inside the type: two offset ghosts of the word, each clipped to half
+     its height. The footage underneath is never touched.
+
+     No colour, per the card: the ghosts are paper and grey. A chromatic-
+     aberration glitch would be a different brand.
+
+     The burst is tl.set steps, not tweens: the designer's steps(1) timing is the
+     whole point — a glitch that eases is a wobble. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+  .m41-word { font-family: 'Golos Text', sans-serif; font-weight: 900; font-size: 151px;
+              line-height: 1; letter-spacing: .02em; white-space: nowrap }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-41" data-start="0" data-duration="4"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m41-wrap" style="position:absolute;left:0;right:0;bottom:249px;display:flex;
+       flex-direction:column;align-items:center;gap:31px">
+    <div id="m41-shift" style="position:relative">
+      <span class="m41-word" id="m41-main" data-var-text="text" style="color:#FAFAF7">АГЕНТ УПАЛ</span>
+      <span class="m41-word m41-ghost" id="m41-g1" data-var-text="text"
+            style="position:absolute;left:16px;top:0;color:#FAFAF7;opacity:0;
+                   clip-path:inset(0 0 55% 0)">АГЕНТ УПАЛ</span>
+      <span class="m41-word m41-ghost" id="m41-g2" data-var-text="text"
+            style="position:absolute;left:-16px;top:0;color:#8A8A85;opacity:0;
+                   clip-path:inset(55% 0 0 0)">АГЕНТ УПАЛ</span>
+    </div>
+    <div data-var-text="note" style="font-family:'JetBrains Mono',monospace;font-size:39px;
+         letter-spacing:.18em;color:#B7B7B2;background:rgba(8,9,10,.6);
+         padding:16px 36px">exit code 1 · смотрим логи</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // the ghosts must say whatever the word says — don't rely on one variable
+  // binding to three elements, just copy what actually landed in the main span
+  const main = document.getElementById("m41-main").textContent;
+  document.getElementById("m41-g1").textContent = main;
+  document.getElementById("m41-g2").textContent = main;
+
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo("#m41-wrap", { y: 31, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.4, ease: "circ.out" }, 0.05);
+
+  // one burst, as the card specifies — 0.3s of hard steps and it is over
+  const T = 1.4;
+  tl.set(".m41-ghost", { opacity: 0.6 }, T + 0.05);
+  tl.set("#m41-shift",  { x: -18 },      T + 0.10);
+  tl.set("#m41-shift",  { x: 13 },       T + 0.20);
+  tl.set("#m41-shift",  { x: 0 },        T + 0.25);
+  tl.set(".m41-ghost", { opacity: 0 },   T + 0.30);
+
+  tl.to("#m41-wrap", { opacity: 0, duration: 0.4, ease: "power2.in" }, 3.6);
+
+  window.__timelines["mono-41"] = tl;
+</script>
+</body>
+</html>

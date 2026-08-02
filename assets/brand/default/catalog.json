@@ -3,10 +3,9 @@
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
   "counts": {
-    "ready": 55,
+    "ready": 57,
     "todo": 8,
     "deferred": 1,
-    "routed-ffmpeg": 2,
     "archived": 2,
     "total": 68
   },
@@ -1014,9 +1013,45 @@
       "hint": "spotlight",
       "spec": "кадр гасится до 78% · окно-вырез через box-shadow spread · вход zoom-out 1.07→1 · лейбл сверху, подпись снизу",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "routed-ffmpeg",
-      "route": "ffmpeg",
-      "routeNote": "спотлайт/зум — расширение zooms.py, не компонент"
+      "status": "ready",
+      "route": "component",
+      "routeNote": "alpha-оверлей: карточка ничего не увеличивает, окно только указывает. Нужен зум самого кадра — это отдельное решение, punch в zooms.py",
+      "component": "components/mono-29",
+      "compositionId": "mono-29",
+      "durationSec": 5.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "label",
+          "label": "Tag above the window",
+          "default": "СМОТРИ ЗДЕСЬ"
+        },
+        {
+          "id": "caption",
+          "label": "Caption under the window",
+          "default": "файл конфигурации агента"
+        },
+        {
+          "id": "x",
+          "label": "Window left, px in 1920×1080",
+          "default": 612
+        },
+        {
+          "id": "y",
+          "label": "Window top, px",
+          "default": 483
+        },
+        {
+          "id": "w",
+          "label": "Window width, px",
+          "default": 695
+        },
+        {
+          "id": "h",
+          "label": "Window height, px",
+          "default": 301
+        }
+      ]
     },
     {
       "id": "31",
@@ -1345,9 +1380,25 @@
       "hint": "glitch",
       "spec": "для моментов ошибок и фейлов · два призрака со сдвигом ±6px и разрезом пополам, вспыхивают раз в цикл на 0.3с · без цвета — глитч остаётся чёрно-белым",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "routed-ffmpeg",
-      "route": "ffmpeg",
-      "routeNote": "глитч рвёт сам кадр, alpha-оверлеем не сделать"
+      "status": "ready",
+      "route": "component",
+      "routeNote": "alpha-оверлей: глитчатся только буквы (два призрака со сдвигом), кадр под ними не трогается",
+      "component": "components/mono-41",
+      "compositionId": "mono-41",
+      "durationSec": 4.0,
+      "layer": "alpha",
+      "variables": [
+        {
+          "id": "text",
+          "label": "What broke",
+          "default": "АГЕНТ УПАЛ"
+        },
+        {
+          "id": "note",
+          "label": "The chip underneath",
+          "default": "exit code 1 · смотрим логи"
+        }
+      ]
     },
     {
       "id": "42",

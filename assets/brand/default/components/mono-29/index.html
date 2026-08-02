@@ -1,0 +1,83 @@
+<!doctype html>
+<html data-composition-variables='[
+  {"id":"label","type":"string","label":"Tag above the window","default":"СМОТРИ ЗДЕСЬ"},
+  {"id":"caption","type":"string","label":"Caption under the window","default":"файл конфигурации агента"},
+  {"id":"x","type":"number","label":"Window left, px in 1920×1080","default":612},
+  {"id":"y","type":"number","label":"Window top, px","default":483},
+  {"id":"w","type":"number","label":"Window width, px","default":695},
+  {"id":"h","type":"number","label":"Window height, px","default":301}
+]'>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  /* Mono element 29 «спотлайт / зум-акцент» — ported from the designer's source
+     (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
+     scaleToRender 2.595 → 1920×1080.
+
+     An alpha overlay, not an ffmpeg effect. The plan routed this to zooms.py, but
+     the card magnifies nothing: the only scale in it is the outline's own 1.07→1
+     entrance. The «зум» in its name is about pointing, not enlarging. If the
+     footage should also be punched in, that is zooms.py's punch on the same
+     window — two independent decisions the agent makes separately.
+
+     The scrim is four rectangles around a hole rather than a box-shadow spread,
+     because the renderer has to composite it onto footage: a shadow would paint
+     the hole too. They are computed from the window so the geometry can never
+     drift out of agreement with itself. */
+  @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'Playfair Display'; src: url('fonts/PlayfairDisplay.ttf'); font-weight: 100 900; }
+  @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+  .m29-scrim { position: absolute; background: rgba(8,9,10,.78) }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mono-29" data-start="0" data-duration="5"
+     data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <div id="m29-scrims"></div>
+  <div id="m29-box" style="position:absolute;border:5px solid #FAFAF7">
+    <div data-var-text="label" style="position:absolute;left:0;top:-83px;background:#FAFAF7;
+         color:#0B0B0C;font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;
+         padding:13px 29px;white-space:nowrap">СМОТРИ ЗДЕСЬ</div>
+    <div data-var-text="caption" style="position:absolute;left:0;right:0;bottom:-104px;
+         font-family:'Golos Text',sans-serif;font-weight:700;font-size:49px;color:#FAFAF7;
+         text-align:center;white-space:nowrap">файл конфигурации агента</div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const vars = window.__hyperframes ? window.__hyperframes.getVariables() : {};
+  const num = (v, d) => Number.isFinite(Number(v)) ? Number(v) : d;
+
+  // clamp the window into the frame — an off-frame window would leave a scrim
+  // rectangle with a negative size, which simply stops painting
+  const w = Math.max(40, Math.min(1920, num(vars.w, 695)));
+  const h = Math.max(40, Math.min(1080, num(vars.h, 301)));
+  const x = Math.max(0, Math.min(1920 - w, num(vars.x, 612)));
+  const y = Math.max(0, Math.min(1080 - h, num(vars.y, 483)));
+
+  document.getElementById("m29-scrims").innerHTML = `
+    <div class="m29-scrim" style="left:0;right:0;top:0;height:${y}px"></div>
+    <div class="m29-scrim" style="left:0;right:0;top:${y + h}px;bottom:0"></div>
+    <div class="m29-scrim" style="left:0;top:${y}px;width:${x}px;height:${h}px"></div>
+    <div class="m29-scrim" style="left:${x + w}px;right:0;top:${y}px;height:${h}px"></div>`;
+
+  const box = document.getElementById("m29-box");
+  Object.assign(box.style, { left: `${x}px`, top: `${y}px`,
+                             width: `${w}px`, height: `${h}px` });
+
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo(".m29-scrim", { opacity: 0 },
+            { opacity: 1, duration: 0.5, ease: "circ.out" }, 0.05);
+  tl.fromTo("#m29-box", { opacity: 0, scale: 1.07 },
+            { opacity: 1, scale: 1, duration: 0.6, ease: "circ.out" }, 0.05);
+  tl.to(["#m29-box", ".m29-scrim"],
+        { opacity: 0, duration: 0.4, ease: "power2.in" }, 4.6);
+
+  window.__timelines["mono-29"] = tl;
+</script>
+</body>
+</html>
