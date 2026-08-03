@@ -43,6 +43,7 @@ projects/*/transcripts/*.json
 
 # --- local strategy docs (not for the public repo) ---
 PLAN.local.md
+PLAN-history.local.md
 ROADMAP.local.md
 
 # --- os / editor ---
