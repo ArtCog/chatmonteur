@@ -900,3 +900,108 @@ def _write_plan(tmp_path, data):
     p = tmp_path / "plan.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     return p
+
+
+# --- cues: the brand gate ------------------------------------------------------
+#
+# The manifest's numbers are only worth writing down if something refuses to
+# render the plan that breaks them. These test the refusals, not the ffmpeg.
+
+from chatmonteur.tools.cues import _check, _load_brand, _resolve, _variables  # noqa: E402
+
+
+def _plan(*cues):
+    catalog, _ = _load_brand()
+    return _resolve(list(cues), catalog)
+
+
+def _gate(plan, duration=600.0, allow_thin=True):
+    _, manifest = _load_brand()
+    _check(plan, manifest, duration=duration, log=lambda *_: None, allow_thin=allow_thin)
+
+
+def test_cue_rejects_unknown_and_unbuilt_elements():
+    with pytest.raises(ToolError, match="unknown element"):
+        _plan({"t": 1, "element": "99", "text": "x"})
+    # 22 and 30 are named by the manifest but the designer never drew them, so the
+    # agent is right to expect them and deserves better than «unknown element»
+    with pytest.raises(ToolError, match="never drew a card"):
+        _plan({"t": 1, "element": "22", "text": "x"})
+
+
+def test_cue_text_fills_declared_variables_in_order():
+    plan = _plan({"t": 12.4, "element": "03",
+                  "text": ["Джулиан Иванов", "AI Automation · автор"]})
+    assert plan[0]["vars"] == {"name": "Джулиан Иванов", "role": "AI Automation · автор"}
+
+
+def test_cue_refuses_to_guess_which_line_goes_where():
+    """A wrong guess renders a plausible card that says the wrong thing."""
+    with pytest.raises(ToolError, match=r"needs 2 value"):
+        _plan({"t": 1, "element": "03", "text": "Джулиан Иванов"})
+
+
+def test_cue_highlight_word_splits_the_line():
+    plan = _plan({"t": 84.2, "element": "B", "text": "это абсолютно бесплатно",
+                  "highlightWord": "бесплатно"})
+    assert plan[0]["vars"] == {"pre": "это абсолютно", "word": "бесплатно", "post": ""}
+
+
+def test_cue_highlight_word_needs_a_splitting_element():
+    with pytest.raises(ToolError, match="pre/word/post"):
+        _plan({"t": 1, "element": "03", "text": "имя", "highlightWord": "имя"})
+
+
+def test_cue_vars_typo_names_the_real_variables():
+    with pytest.raises(ToolError, match=r"declares \['name', 'role'\]"):
+        _plan({"t": 1, "element": "03", "vars": {"naem": "x", "role": "y"}})
+
+
+def test_gate_refuses_two_cues_on_screen_at_once():
+    with pytest.raises(ToolError, match="share the screen"):
+        _gate(_plan({"t": 10, "element": "03", "text": ["a", "b"], "holdSec": 5},
+                    {"t": 12, "element": "15", "vars": {}, "holdSec": 5}))
+
+
+def test_gate_caps_the_loud_accents():
+    cues = [{"t": 30.0 * i, "element": "A", "text": "бум", "holdSec": 2}
+            for i in range(1, 6)]
+    with pytest.raises(ToolError, match="loud accents"):
+        _gate(_plan(*cues))
+
+
+def test_gate_keeps_accents_apart():
+    with pytest.raises(ToolError, match="apart"):
+        _gate(_plan({"t": 10, "element": "A", "text": "раз", "holdSec": 2},
+                    {"t": 25, "element": "A", "text": "два", "holdSec": 2}))
+
+
+def test_gate_allows_only_one_kind_of_transition():
+    with pytest.raises(ToolError, match="kinds of transition"):
+        _gate(_plan({"t": 10, "element": "07A", "text": ["ГЛАВА 2", "Настройка"]},
+                    {"t": 60, "element": "07B", "vars": {}}))
+
+
+def test_gate_counts_accents_per_ten_minutes():
+    cues = [{"t": 30.0 * i, "element": "B", "text": "это очень важно",
+             "highlightWord": "важно", "holdSec": 2} for i in range(1, 11)]
+    with pytest.raises(ToolError, match="ceiling for a film"):
+        _gate(_plan(*cues), duration=600.0)
+
+
+def test_gate_does_not_extrapolate_a_short_clip_into_a_violation():
+    """One accent in a 30s clip is one accent, not «twenty per ten minutes»."""
+    _gate(_plan({"t": 5, "element": "B", "text": "это важно", "highlightWord": "важно"}),
+          duration=30.0, allow_thin=False)
+
+
+def test_gate_lets_a_quiet_film_through_only_on_purpose():
+    plan = _plan({"t": 10, "element": "B", "text": "это важно", "highlightWord": "важно"})
+    with pytest.raises(ToolError, match="allow_thin"):
+        _gate(plan, duration=600.0, allow_thin=False)
+    _gate(plan, duration=600.0, allow_thin=True)      # said out loud: fine
+
+
+def test_gate_refuses_a_cue_held_past_the_ceiling():
+    with pytest.raises(ToolError, match="ceiling"):
+        _gate(_plan({"t": 10, "element": "03", "text": ["a", "b"], "holdSec": 9}))

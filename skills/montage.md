@@ -24,6 +24,7 @@ with "he just cut the pauses and added subtitles".
 | `cut_edl` | execute an APPROVED meaning cut | ② |
 | `stock` | source a free, commercially-safe image/clip before storyboarding | ③ |
 | `motion` | render a brand component to transparent ProRes 4444 for compositing | ③ |
+| `cues` | burn a brand cue list (`{t, element, text}`, see the manifest's `cueFormat`) — checks it against the brandbook's budgets first; `dry_run` holds the gate without rendering | ③ |
 | `storyboard` | ONE call executing the approved visual plan (zooms → overlays → inserts). **Scores the plan and refuses a thin one** | ③ |
 | `zooms` `overlays` `inserts` | individually only when iterating on one layer; normally go through `storyboard` | ③ |
 | `color` | grade before any text layer burns | ④ |
