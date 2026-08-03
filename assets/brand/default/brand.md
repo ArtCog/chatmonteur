@@ -37,19 +37,17 @@ carries text — it is a 4px strip under a plate, and only on elements E, N and 
 
 ## Components (exact specs from the design)
 
-### Subtitles — 5 styles (Golos Text Bold `#FAFAF7`; NO plate, NO outline; soft drop shadow only)
-⚠️ Overrides the designer source (Артур 2026-07-24, финальное): scrim plates & inversion chips
-are OUT for captions. Bold white text; the key/spoken word pops by COLOUR — `yellow` `#FFD700`.
-Plates/inversion stay for OTHER components (lower-third, callout) — only captions changed.
+### Subtitles — 5 styles (Golos Text Bold `#FAFAF7`, per card 04)
+✅ **RESOLVED — Артур 2026-08-03, supersedes 2026-07-24.** Captions follow card 04 as drawn:
+1. **Scrim plate is ON**: text sits on the dark scrim `rgba(8,9,10,.52)`.
+2. **Accent is INVERSION**: the key word becomes a paper chip with ink text (no colour
+   accent — the brandbook rule "colour never carries text" now holds for captions too).
+   `yellow` `#FFD700` is retired from captions along with the already-removed green.
 
-🔶 **OPEN — needs Артур.** The refreshed brandbook contradicts that decision on two points,
-and captions are burned in, so guessing costs a re-render of every video:
-1. Card 04 draws a scrim plate `rgba(8,9,10,.52)`; the 2026-07-24 decision removed plates.
-2. Card 04 does style B's accent by **inversion** (paper chip, ink text); the 2026-07-24
-   decision does it by colour. The brandbook's own rule is that colour never carries text.
-
-Until he rules, `subtitles.py` keeps rendering exactly as it does today — the `green` option
-is the only thing that must go, because that colour no longer exists anywhere in the brand.
+Implementation status: `subtitles.py` still renders the OLD look (no plate, yellow accent) —
+the port to card 04 is a pending task in PLAN.local.md. Burned-in inversion needs an ASS
+drawing layer (libass can't box a single glyph in a scrim line); the true chip exists in
+HyperFrames for non-burned use.
 - **A · читаем вслух** — words appear one-by-one (soft-in, ~0.2s stagger). For narrated key lines.
 - **B · акцент** — the marked word in the accent colour. A single punch-word per line.
 - **C · чисто** — plain line, no per-word motion. The safe default.

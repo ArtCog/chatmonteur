@@ -40,6 +40,16 @@ ROUTE = {
     "07·A": ("component", "alpha-блок поверх стыка, transitions.py не трогать"),
     "07·B": ("component", "alpha-блок поверх стыка, transitions.py не трогать"),
     "42": ("component", "alpha-блок поверх стыка, transitions.py не трогать"),
+    # Артур 2026-08-03: похоронены. Шесть карточек старой колоды — дизайн старше
+    # Mono-рефреша, если что-то из них понадобится, дизайнер нарисует заново в Mono.
+    "02·A": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    "07·C": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    "07·D": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    "11": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    "12·B": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    "12·C": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    # Баннер Артур настроил на канале вручную; карточка (и её зелёный #2BE86A) не нужна.
+    "14": ("dropped", "баннер канала настроен вручную, карточка не нужна (Артур 2026-08-03)"),
 }
 ARCHIVED = {"D", "G"}                            # brand-manifest: accentOverlays.archived
 NOT_DRAWN = ["22 таймлайн", "30 шаг N из M"]     # promised by the manifest, drawn nowhere
@@ -99,6 +109,8 @@ def build_cards():
             route, why = ROUTE.get(card["num"], ("component", None))
             if kind == "accent" and card["num"] in ARCHIVED:
                 status = "archived"
+            elif route == "dropped":
+                status = "dropped"
             elif comp:
                 status = "ready"
             elif route == "ffmpeg":

@@ -4,7 +4,8 @@
   "manifest": "brand-manifest.json",
   "counts": {
     "ready": 57,
-    "todo": 8,
+    "dropped": 7,
+    "todo": 1,
     "deferred": 1,
     "archived": 2,
     "total": 68
@@ -47,8 +48,9 @@
       "hint": "с номером",
       "spec": "киккер в чипе · контурный номер · reveal-up",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "02·B",
@@ -378,8 +380,9 @@
       "hint": "слэб с номером",
       "spec": "минимальный · слэб снизу, только номер блока",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "07·D",
@@ -388,8 +391,9 @@
       "hint": "robot assemble",
       "spec": "оригинальный · буквы слетаются и защёлкиваются в заголовок (как сборка роботом)",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "08",
@@ -482,8 +486,9 @@
       "hint": "code · terminal",
       "spec": "кодовая плашка · моно · результат инверсией · курсор",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "12·A",
@@ -518,8 +523,9 @@
       "hint": "чек-лист",
       "spec": "чек-лист · пункт отмечается галочкой по мере разбора",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "12·C",
@@ -528,8 +534,9 @@
       "hint": "по одному крупно",
       "spec": "по одному пункту КРУПНО, сменяется под реплику",
       "source": "Бренд-система ИИмерсивный.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
       "id": "13·A",
@@ -590,8 +597,9 @@
       "hint": "2048 × 1152",
       "spec": "матрица/Neo · зелёный акцент #2BE86A на тёмном · скачивается отдельно (2048×1152)",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "todo",
-      "route": "component"
+      "status": "dropped",
+      "route": "dropped",
+      "routeNote": "баннер канала настроен вручную, карточка не нужна (Артур 2026-08-03)"
     },
     {
       "id": "15",
