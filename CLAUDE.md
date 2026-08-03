@@ -163,3 +163,13 @@ Default transcription is local `faster-whisper` (no API key). Paid backends
 
 New capability = new module in `chatmonteur/tools/` exposing `TOOL`. New flow = a
 YAML in `pipelines/`. See `docs/extending.md`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (github.com/ArtCog/chatmonteur, via the `gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
