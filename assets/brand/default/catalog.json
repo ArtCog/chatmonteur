@@ -406,7 +406,7 @@
       "route": "component",
       "component": "components/mono-08",
       "compositionId": "mono-08",
-      "durationSec": 1.0,
+      "durationSec": 1.4,
       "layer": "alpha",
       "variables": [
         {

@@ -4,17 +4,19 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 08 «логобар / вотермарк» — ported 1:1 from the designer's
      source (source/ИИмерсивный - Mono.dc.html, 740×416 frame) at the manifest's
      scaleToRender 2.595 → 1920×1080. Overlay, transparent page.
 
-     NO TIMELINE, deliberately: the manifest lists this under alwaysOn, so it sits
-     on every frame of the video. That makes it a still — render one frame to PNG
-     and let the overlay burn it once, instead of carrying a video layer the whole
-     runtime. The designer's card also blinks a REC dot (steps(1), 1.4s); it is not
-     in the element's written spec and a dot pulsing for ten minutes would force a
-     full-length video layer, so it is left out. Ask before adding it back. */
+     ONE BLINK CYCLE LONG, and that is deliberate. The manifest lists this under
+     alwaysOn, so it sits on every frame of the video; the REC dot the designer
+     drew (1.4s, steps(1)) would otherwise force an alpha video layer as long as
+     the film. Instead the composition IS exactly one 1.4s cycle, seamless end to
+     end — burn it once and loop it (`-stream_loop -1`) for however long the video
+     runs. Frame at t=1.4 is never rendered, so the loop joins without a stutter.
+     (Артур 2026-08-03 asked for the blink; before that this was a still PNG.) */
   @font-face { font-family: 'Golos Text'; src: url('fonts/GolosText.ttf'); font-weight: 100 900; }
   @font-face { font-family: 'JetBrains Mono'; src: url('fonts/JetBrainsMono.ttf'); font-weight: 100 800; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,8 +24,16 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="mono-08" data-start="0" data-duration="1"
+<div id="root" data-composition-id="mono-08" data-start="0" data-duration="1.4"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
+  <!-- REC top-left. Designer drew it at 30px from the edge; moved to the manifest's
+       104px side margin so it lines up with the lock-up below it. -->
+  <div style="position:absolute;left:104px;top:73px;display:inline-flex;align-items:center;gap:21px">
+    <div id="m08-dot" style="width:26px;height:26px;border-radius:50%;background:#D8503C"></div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;
+          color:#FAFAF7;text-shadow:0 3px 13px rgba(0,0,0,.7)">REC</span>
+  </div>
+
   <!-- lock-up top-right, inside the manifest's 104px side margin -->
   <div style="position:absolute;right:104px;top:67px;display:inline-flex;align-items:center;
        background:rgba(8,9,10,.34);padding:21px 34px">
@@ -41,5 +51,18 @@
           letter-spacing:.18em;color:#FAFAF7;text-shadow:0 3px 13px rgba(0,0,0,.7)">@art.immersive</span>
   </div>
 </div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  // The designer's blink is a square wave, not a pulse: @keyframes rec is
+  // {0%,49%: opacity 1} → {50%,100%: opacity .18} driven by steps(1). Two instant
+  // sets reproduce it exactly and stay seek-safe; a tween would soften the edge
+  // into a throb, which reads as a glow rather than a recording light.
+  const tl = gsap.timeline({ paused: true });
+  tl.set("#m08-dot", { opacity: 1 }, 0);
+  tl.set("#m08-dot", { opacity: 0.18 }, 0.7);
+  tl.set("#m08-dot", { opacity: 1 }, 1.4);   // never rendered — it just ends the cycle
+  window.__timelines["mono-08"] = tl;
+</script>
 </body>
 </html>
