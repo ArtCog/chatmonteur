@@ -93,14 +93,32 @@ def encoder_quality_args(encoder: str) -> list[str]:
     return ["-preset", "medium", "-crf", "20"]  # libx264
 
 
+# Characters that end an argument or start a new filter inside a filtergraph.
+# A path carrying any of them silently truncates the argument (or injects a
+# filter) unless escaped — ``C:/My Videos, old/`` would read as two arguments.
+_FILTER_SPECIALS = ":,[];'"
+
+
 def filter_path(path: str | Path) -> str:
-    """Escape a path for use *inside* an ffmpeg filter (subtitles=, lut3d=).
+    """Escape a path for use *inside* an ffmpeg filter (ass=, lut3d=, fontsdir=).
 
     On Windows the drive colon and backslashes break filter parsing; convert to
     forward slashes and escape the colon: ``C:\\a\\b.srt`` -> ``C\\:/a/b.srt``.
+    Commas, brackets and semicolons get the same treatment — a folder named
+    ``Renders, final`` would otherwise cut the argument in half.
+
+    Callers wrap the result in single quotes, and ffmpeg offers no escape for a
+    quote inside a quoted argument — so a path containing one is refused rather
+    than silently mangled.
     """
     s = str(path).replace("\\", "/")
-    return s.replace(":", "\\:")
+    if "'" in s:
+        raise ValueError(
+            f"path contains a single quote, which ffmpeg filters cannot escape: {s}"
+        )
+    for ch in _FILTER_SPECIALS:
+        s = s.replace(ch, f"\\{ch}")
+    return s
 
 
 def ffprobe_json(path: str | Path) -> dict:

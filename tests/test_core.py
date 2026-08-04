@@ -964,16 +964,15 @@ def test_gate_refuses_two_cues_on_screen_at_once():
 
 
 def test_gate_caps_the_loud_accents():
-    cues = [{"t": 30.0 * i, "element": "A", "text": "бум", "holdSec": 2}
-            for i in range(1, 6)]
+    cues = [{"t": 30.0 * i, "element": "A", "text": "бум"} for i in range(1, 6)]
     with pytest.raises(ToolError, match="loud accents"):
         _gate(_plan(*cues))
 
 
 def test_gate_keeps_accents_apart():
     with pytest.raises(ToolError, match="apart"):
-        _gate(_plan({"t": 10, "element": "A", "text": "раз", "holdSec": 2},
-                    {"t": 25, "element": "A", "text": "два", "holdSec": 2}))
+        _gate(_plan({"t": 10, "element": "A", "text": "раз"},
+                    {"t": 25, "element": "A", "text": "два"}))
 
 
 def test_gate_allows_only_one_kind_of_transition():
@@ -984,7 +983,7 @@ def test_gate_allows_only_one_kind_of_transition():
 
 def test_gate_counts_accents_per_ten_minutes():
     cues = [{"t": 30.0 * i, "element": "B", "text": "это очень важно",
-             "highlightWord": "важно", "holdSec": 2} for i in range(1, 11)]
+             "highlightWord": "важно"} for i in range(1, 11)]
     with pytest.raises(ToolError, match="ceiling for a film"):
         _gate(_plan(*cues), duration=600.0)
 
@@ -1005,3 +1004,35 @@ def test_gate_lets_a_quiet_film_through_only_on_purpose():
 def test_gate_refuses_a_cue_held_past_the_ceiling():
     with pytest.raises(ToolError, match="ceiling"):
         _gate(_plan({"t": 10, "element": "03", "text": ["a", "b"], "holdSec": 9}))
+
+
+def test_filter_path_escapes_what_would_split_a_filter_argument():
+    """A folder named «Renders, final» must not read as two filter arguments."""
+    from chatmonteur.media import filter_path
+
+    assert filter_path(r"C:\Renders, final\sub.ass") == r"C\:/Renders\, final/sub.ass"
+    assert filter_path(r"C:\a[1]\b;c\f.ass") == r"C\:/a\[1\]/b\;c/f.ass"
+
+
+def test_filter_path_refuses_a_quote_it_cannot_escape():
+    """Callers wrap the result in '...'; ffmpeg has no escape for a quote inside."""
+    from chatmonteur.media import filter_path
+
+    with pytest.raises(ValueError, match="single quote"):
+        filter_path(r"C:\Users\Bob's PC\fonts")
+
+
+def test_gate_refuses_a_card_cut_shorter_than_the_designer_drew_it():
+    with pytest.raises(ToolError, match="needs 4.0s"):
+        _gate(_plan({"t": 10, "element": "A", "text": "бум", "holdSec": 1.5}))
+
+
+def test_gate_charges_reading_time_for_text_beyond_the_drawn_card():
+    """A paragraph poured into a card drawn for a phrase buys 0.2s per extra word."""
+    long_text = "это очень важно " * 5          # 15 words where the card drew ~3
+    plan = _plan({"t": 10, "element": "B", "text": long_text.strip(),
+                  "highlightWord": "важно", "holdSec": 4.0})
+    with pytest.raises(ToolError, match="needs"):
+        _gate(plan)
+    _gate(_plan({"t": 10, "element": "B", "text": long_text.strip(),
+                 "highlightWord": "важно", "holdSec": 7.0}))

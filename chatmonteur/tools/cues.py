@@ -173,6 +173,7 @@ def _resolve(items: list[dict], catalog: dict) -> list[dict]:
             raise ToolError(f"{where}: unknown position {position!r}; "
                             "choose center | left | right")
 
+        variables = _variables(raw, card, where)
         plan.append({
             "element": element,
             "kind": card["kind"],
@@ -180,8 +181,10 @@ def _resolve(items: list[dict], catalog: dict) -> list[dict]:
             "component_name": card["component"].rsplit("/", 1)[-1],
             "start": t,
             "end": t + hold,
-            "vars": _variables(raw, card, where),
+            "vars": variables,
             "position": position,
+            # computed here, where the card is in hand; the gate only compares
+            "floorSec": _reading_floor(card, variables),
         })
     plan.sort(key=lambda c: c["start"])
     return plan
@@ -234,6 +237,42 @@ def _variables(raw: dict, card: dict, where: str) -> dict:
 
 # --- the gate ------------------------------------------------------------------
 
+# Extra reading time per word, from the UK CAP/BCAP broadcast guidance ("On screen
+# text and subtitling in TV ads", 2016): 0.2 s per word, 0.25 s once the block runs
+# over three lines. Subtitle CPS does NOT apply — a subtitle times words the viewer
+# is also hearing, a card is read cold.
+#
+# The guidance's fixed 2–3 s "recognition period" is deliberately NOT added on top:
+# the designer's own durationSec already covers noticing the card (it animates in),
+# and measured against 57 drawn cards the raw formula contradicted 19 of them. The
+# card as drawn IS the brand's answer; CAP/BCAP only prices the words the agent adds
+# beyond it.
+_READ_SEC_PER_WORD = 0.2
+_READ_SEC_PER_WORD_DENSE = 0.25
+_DENSE_LINES = 3
+
+
+def _word_count(values) -> tuple[int, int]:
+    lines = [str(v) for v in values if str(v).strip()]
+    return sum(len(line.split()) for line in lines), len(lines)
+
+
+def _reading_floor(card: dict, variables: dict) -> float:
+    """Shortest honest hold for this cue: the drawn duration, plus time for extra text.
+
+    Two defects this refuses: cutting a card shorter than the animation the designer
+    drew, and pouring a paragraph into a card drawn for a phrase without paying the
+    reading time for it.
+    """
+    drawn = float(card["durationSec"])
+    written, lines = _word_count(variables.values())
+    designed, _ = _word_count(v.get("default", "") for v in card["variables"])
+    extra = max(0, written - designed)
+    if not extra:
+        return drawn
+    rate = _READ_SEC_PER_WORD_DENSE if lines > _DENSE_LINES else _READ_SEC_PER_WORD
+    return drawn + extra * rate
+
 def _check(plan: list[dict], manifest: dict, *, duration: float | None,
            log, allow_thin: bool) -> None:
     budget = manifest["accentOverlays"]["budget"]
@@ -255,6 +294,12 @@ def _check(plan: list[dict], manifest: dict, *, duration: float | None,
         if held > paragraph_max:
             raise ToolError(f"element {cue['element']} at {cue['start']:.1f}s holds "
                             f"{held:.1f}s; the manifest's ceiling is {paragraph_max}s")
+        floor = cue.get("floorSec", 0.0)
+        if held + 1e-6 < floor:
+            raise ToolError(
+                f"element {cue['element']} at {cue['start']:.1f}s holds {held:.1f}s, "
+                f"but needs {floor:.1f}s — the card was drawn to run that long, and "
+                "text nobody has time to read was never really on screen.")
 
     # One transition for the whole film, not a sampler.
     used = {c["element"] for c in plan if c["element"] in _transition_ids(manifest)}
