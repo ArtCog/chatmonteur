@@ -16,6 +16,8 @@ Load `SCRIPT.md`, the approved-passage map, and **protected spans**. Preserve fa
 - repeated cadence, forced three-part lists, and mechanical contrasts;
 - transitions that name the structure instead of moving the thought;
 - wording Artur is likely to paraphrase involuntarily during a cold read.
+- abstract claims that reach the end of a paragraph without a concrete example or visible consequence;
+- technical terms that are named but not explained in ordinary Russian on first use;
 
 ## Finding format
 
@@ -28,4 +30,3 @@ Load `SCRIPT.md`, the approved-passage map, and **protected spans**. Preserve fa
 ```
 
 `P0` blocks meaning or recording; `P1` creates audible friction; `P2` is optional polish. Use **minimal repair**: do not flatten the speaker's rhythm while fixing one sentence. If no material problem exists, report `no_finding` rather than manufacture variation.
-

@@ -11,6 +11,15 @@ Draft only from the accepted beat map and current evidence ledger. Write complet
 - Put beat IDs, source IDs, timing, delivery notes, demonstrations, visual ideas, and production notes in `SCRIPT-NOTES.md`; never embed them in spoken prose.
 - Preserve deliberately supplied punctuation, fragments, callbacks, and restrained tone. Do not add slang, metaphors, or emotional variation merely to sound human.
 
+## Concrete spoken language
+
+- Prefer one idea per sentence and a visible subject doing a clear action. Split a sentence when the listener must hold two subordinate ideas before reaching the point.
+- An abstract claim must immediately earn its place with a concrete example, observable consequence, or exact action. If it cannot, cut it.
+- Explain a technical term in plain language on first use. Example: do not stop at `TDD`; say that the agent writes a failing check first and then writes code that makes it pass.
+- Prefer concrete effects over vague phrases such as "improves interaction quality", "changes the experience", or "is not magic".
+- Use metaphors only when they shorten the explanation and map cleanly to the mechanism. Never stack metaphors.
+- Read each paragraph as speech. If a natural spoken paraphrase is shorter and keeps the same fact boundary, use the shorter version.
+
 ## Duration
 
 When a measured Artur WPM is available, calculate `target_words = target_minutes * measured_wpm`, compare the actual spoken-word count, and report the difference. When it is unavailable, label any planning rate as a provisional assumption; never present it as Artur's measurement. Prefer editing beat allocation over padding prose.
