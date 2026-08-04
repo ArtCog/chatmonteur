@@ -200,9 +200,12 @@ viewer must study is a feature, not dead air. So:
   it is the default. Background gameplay is a legitimate deliberate choice for story
   sections; which one a given stretch gets is Артур's call at the storyboard gate. Both
   live in the asset bank.
-- **Evidence cards sit on a blurred, LIVE backdrop**: when showing a screenshot/chat/post,
-  the background is the blurred moving video (or thematic filler), never a flat colour. The
-  motion floor holds even while the viewer reads.
+- **Evidence cards sit on a blurred AND DIMMED live backdrop**: when showing a
+  screenshot/chat/post, the background is the moving video (or thematic filler), never a
+  flat colour — but blurred, darkened and desaturated, all three. Blur removes detail;
+  only the dimming removes WEIGHT. `overlays` does this automatically for
+  `backdrop: "blur"`; the numbers live in `overlays.py`. The motion floor holds even
+  while the viewer reads.
 - Static images that must appear get Ken Burns (`zooms`/`overlays`) — minimum drift, never
   a frozen frame.
 - The `storyboard` gate already refuses >90 s without a visual event; this rule is stricter:

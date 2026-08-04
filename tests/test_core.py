@@ -1118,6 +1118,22 @@ def test_two_pass_loudnorm_falls_back_when_measurement_fails():
         _rd._measure = orig
 
 
+def test_card_backdrop_is_dimmed_not_merely_blurred():
+    """Артур 2026-08-01: «фон размыт И притемнён». Blur alone was shipping a bright
+    saturated plate under the card — visible the moment a real frame was looked at.
+    colorlevels must use the OUTPUT max (romax); the input form brightens instead."""
+    from chatmonteur.tools.overlays import _filter_graph, _BACKDROP_DIM
+
+    g = _filter_graph([{
+        "start": 1.0, "end": 4.0, "pos": "center", "width": 0.6,
+        "backdrop": "blur", "is_image": True, "card": True,
+    }], 1920, 1080)
+    assert "boxblur" in g
+    assert f"romax={_BACKDROP_DIM}" in g and "rimax=" not in g
+    assert "saturation=" in g
+    assert _BACKDROP_DIM < 1.0
+
+
 def test_contact_sheet_orders_every_section_by_time():
     """The sheet is read top to bottom in a minute — so it is one time-ordered
     list, not four sections the reviewer has to interleave in their head."""

@@ -45,6 +45,12 @@ _POSITIONS = {
 _DEF_WIDTH = 0.45      # fraction of frame width
 _MARGIN_FRAC = 0.03    # margin from frame edges
 _FADE = 0.18           # alpha fade in/out seconds
+# The backdrop rule is «размыт И притемнён» (Артур 2026-08-01) — blur alone leaves
+# a bright, saturated background fighting the card for the eye. Caught by looking
+# at a real frame: a blurred game backdrop still read as sky-blue and orange, on a
+# channel whose brand is black-gray. Blur removes DETAIL; this removes WEIGHT.
+_BACKDROP_DIM = 0.42   # keep this share of the original brightness
+_BACKDROP_SAT = 0.55   # and this share of its colour: the brand is black-gray
 
 
 class OverlaysTool(Tool):
@@ -181,7 +187,11 @@ def _filter_graph(items: list[dict], width: int, height: int) -> str:
             # The motion floor holds while the viewer reads: the card sits on a
             # blurred copy of the LIVE frame, never a flat colour (skills/motion.md).
             parts.append(f"[{prev}]split[base{i}][tob{i}]")
-            parts.append(f"[tob{i}]boxblur=20:2[bl{i}]")
+            # colorlevels ROmax (output max), not RImax — the input form would raise
+            # the ceiling and BRIGHTEN the plate, which is how this first went wrong.
+            parts.append(f"[tob{i}]boxblur=20:2,eq=saturation={_BACKDROP_SAT},"
+                         f"colorlevels=romax={_BACKDROP_DIM}:gomax={_BACKDROP_DIM}:"
+                         f"bomax={_BACKDROP_DIM}[bl{i}]")
             parts.append(
                 f"[base{i}][bl{i}]overlay=0:0:"
                 f"enable='between(t,{it['start']:.3f},{it['end']:.3f})'[bg{i}]"
