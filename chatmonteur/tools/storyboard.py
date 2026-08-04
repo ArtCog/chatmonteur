@@ -127,6 +127,20 @@ _MAX_TEXT_SHARE = 0.60  # more text-on-screen than this and it reads as animated
 _MIN_UNIQUE = 0.60      # unique-insert ratio below this = the same card over and over
 _MAX_SAME_ZOOM = 2      # a third identical shot size in a row is a rut
 
+# Guo, Kim & Rubin (ACM L@S 2014, 6.9M edX sessions): procedural/screencast video is
+# watched 2–3 minutes regardless of its total length — a flat line from a 3-minute
+# clip to a 40-minute one, unlike lecture content. So a screencast stretch needs a
+# real reset (cut to camera, chapter card, a graphic) on that clock. A zoom is not a
+# reset: it is the same screen, closer. Only checked when the agent declares the
+# material, since nothing in a plan reveals what the footage actually shows.
+_MAX_TUTORIAL_HOLD = 150.0
+
+# Murch's Rule of Six (In the Blink of an Eye): emotion 51%, story 23%, rhythm 10%,
+# eye-trace 7%, screen plane 5%, spatial continuity 4%. A move justified only by the
+# bottom three is chasing motion — the top three are what an audience feels.
+_ZOOM_REASONS = ("emotion", "story", "rhythm", "eye_trace", "plane", "continuity")
+_STRONG_REASONS = frozenset(_ZOOM_REASONS[:3])
+
 
 def _review_plan(data: dict, duration: float | None, log, allow_thin: bool) -> None:
     """Refuse to burn a plan that will read as "he just cut the pauses".
@@ -141,6 +155,10 @@ def _review_plan(data: dict, duration: float | None, log, allow_thin: bool) -> N
     """
     if duration is None or duration <= 0:
         return
+    # Taste-adjacent, so it advises and never blocks: a weak reason is a prompt to
+    # think again, not proof the move is wrong.
+    for note in _unjustified_zooms(data):
+        log(f"storyboard: {note}")
     findings = _thin_spots(data, duration)
     if not findings:
         return
@@ -154,6 +172,22 @@ def _review_plan(data: dict, duration: float | None, log, allow_thin: bool) -> N
         + "\n  Add visual events where they are missing, or pass allow_thin=True if "
         "this footage really should be left plain."
     )
+
+
+def _unjustified_zooms(data: dict) -> list[str]:
+    """Name the moves whose stated reason sits in Murch's bottom three, or is absent."""
+    notes = []
+    for i, z in enumerate(data.get("zooms") or [], 1):
+        reason = str(z.get("reason", "")).strip().lower()
+        at = float(z.get("start", z.get("at", 0)) or 0)
+        if not reason:
+            notes.append(f"zoom #{i} at {at:.0f}s states no reason — if you cannot name "
+                         f"one of {', '.join(_ZOOM_REASONS)}, the move is decoration")
+        elif reason not in _STRONG_REASONS:
+            notes.append(f"zoom #{i} at {at:.0f}s is justified only by '{reason}' — "
+                         "following movement is the weakest reason to push in; "
+                         "emotion, story or rhythm is what carries a cut")
+    return notes
 
 
 def _thin_spots(data: dict, duration: float) -> list[str]:
@@ -186,6 +220,17 @@ def _thin_spots(data: dict, duration: float) -> list[str]:
             f"only {len(set(texts))} distinct captions across {len(texts)} inserts — "
             "repeating the same words stops registering"
         )
+
+    if str(data.get("material", "")).strip().lower() == "screencast":
+        resets = [it for s in ("overlays", "inserts", "motion") for it in (data.get(s) or [])]
+        r_start, r_end = _longest_gap(resets, duration)
+        if r_end - r_start > _MAX_TUTORIAL_HOLD:
+            findings.append(
+                f"{r_end - r_start:.0f}s of screencast with no reset "
+                f"({r_start:.0f}s–{r_end:.0f}s) — a tutorial holds attention for about "
+                f"{_MAX_TUTORIAL_HOLD / 60:.1f} min before it needs a cut to camera, a "
+                "chapter card or a graphic; zooming the same screen does not reset it"
+            )
 
     run = _longest_identical_zoom_run(data.get("zooms") or [])
     if run > _MAX_SAME_ZOOM:

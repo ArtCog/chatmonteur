@@ -43,6 +43,7 @@ from chatmonteur.tools.storyboard import _check_one_text_at_a_time as _sb_check_
 from chatmonteur.tools.storyboard import _covered as _sb_covered  # noqa: E402
 from chatmonteur.tools.storyboard import _longest_gap as _sb_longest_gap  # noqa: E402
 from chatmonteur.tools.storyboard import _thin_spots as _sb_thin  # noqa: E402
+from chatmonteur.tools.storyboard import _unjustified_zooms as _sb_zoom_reasons  # noqa: E402
 from chatmonteur.tools.transcribe_whisper import _apply_fixes as _asr_fix  # noqa: E402
 from chatmonteur.tools.transcribe_whisper import _check_language as _asr_lang  # noqa: E402
 from chatmonteur.tools.transcribe_whisper import _drop_hallucinations as _asr_drop  # noqa: E402
@@ -1036,3 +1037,29 @@ def test_gate_charges_reading_time_for_text_beyond_the_drawn_card():
         _gate(plan)
     _gate(_plan({"t": 10, "element": "B", "text": long_text.strip(),
                  "highlightWord": "важно", "holdSec": 7.0}))
+
+
+def test_zoom_reason_advises_when_the_move_only_follows_movement():
+    """Murch's bottom three justify a move the least — say so, but never block it."""
+    notes = _sb_zoom_reasons({"zooms": [
+        {"start": 10, "reason": "story"},          # top three: silent
+        {"start": 20, "reason": "eye_trace"},      # weakest tier
+        {"start": 30},                             # no reason at all
+    ]})
+    assert len(notes) == 2
+    assert "eye_trace" in notes[0] and "20s" in notes[0]
+    assert "no reason" in notes[1]
+
+
+def test_screencast_needs_a_real_reset_not_a_zoom():
+    """Zooming the same screen is the same screen, closer — it resets nothing."""
+    zoom_only = {"material": "screencast",
+                 "zooms": [{"start": t, "end": t + 3} for t in range(0, 300, 30)]}
+    assert any("no reset" in f for f in _sb_thin(zoom_only, 300.0))
+
+    # one real graphic in the middle breaks the stretch into two survivable halves
+    with_reset = dict(zoom_only, inserts=[{"start": 150, "end": 154, "text": "глава 2"}])
+    assert not any("no reset" in f for f in _sb_thin(with_reset, 300.0))
+
+    # talking-head material is not judged on the tutorial clock
+    assert not any("no reset" in f for f in _sb_thin(dict(zoom_only, material="talking_head"), 300.0))

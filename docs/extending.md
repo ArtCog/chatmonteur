@@ -71,3 +71,34 @@ Run it: `chatmonteur edit clip.mp4 --pipeline shorts`.
 Give a step `when: <flag>`; it runs only if that option is truthy. Keep the
 linear chain intact (don't let a later step reference an optional step's output
 unless that option is always on).
+
+## Adding a dependency: the licence bar
+
+chatmonteur is MIT and must stay installable by anyone, including inside a
+commercial product. A dependency's licence is therefore part of its API — check
+it before you write the import, not after (ADR-0004).
+
+Verify against the actual file, never from memory or a blog post:
+
+```
+gh api repos/<owner>/<repo> --jq .license.spdx_id
+```
+
+If that returns `null` or `NOASSERTION`, read the LICENSE file yourself: no file
+at all means all rights reserved (an "open-source" README is not a licence), and
+custom text is usually where "academic, non-commercial use only" hides.
+
+**Rejected outright:** AGPL, GPL, "non-commercial", "research use only", and any
+project with no licence file. Fine: MIT, BSD-2/3, Apache-2.0 (keep its NOTICE),
+ISC, MPL-2.0.
+
+**The trap worth naming once, loudly: `pip install ultralytics` (YOLOv8/v11) is
+AGPL-3.0.** It reads like an ordinary permissive package and is the default
+building block behind most "detect X in an image" tutorials — including several
+face/cursor detectors that would otherwise fit this project. AGPL obligations
+attach to *use*, not just to copying, so it cannot be a dependency here at all.
+Reach for MediaPipe (Apache-2.0) or dlib/face_recognition (MIT/Boost) instead.
+
+An AGPL tool the user installs and runs themselves is a different question — that
+is an arms-length external program (same posture as ffmpeg's GPL builds), not
+something this tree imports.

@@ -45,13 +45,18 @@ You pick the emphasis moments from the FINAL-cut transcript, write
 
 ```json
 {"zooms": [
-  {"start": 34.2, "end": 37.8, "kind": "punch", "scale": 1.15},
-  {"start": 61.0, "end": 66.5, "kind": "push",  "scale": 1.10}
+  {"start": 34.2, "end": 37.8, "kind": "punch", "scale": 1.15, "reason": "story"},
+  {"start": 61.0, "end": 66.5, "kind": "push",  "scale": 1.10, "reason": "emotion"}
 ]}
 ```
 
 - Kinds: **`punch`** (instant in/out — reads as an angle change; THE DEFAULT) · `ease`
   (soft 0.35s) · `push` (slow creep for a long thought) · `drift` (punch + slow +3%).
+- **`reason` — name why the move exists**, from Murch's Rule of Six in the order he
+  weights them: `emotion` (51%) · `story` (23%) · `rhythm` (10%) · `eye_trace` (7%) ·
+  `plane` (5%) · `continuity` (4%). The storyboard review says so out loud when a move
+  rests only on the bottom three — following movement is the weakest reason to push in.
+  It advises, never blocks; but if you cannot name a reason, the zoom is decoration.
 - `scale` defaults to 1.15 (emphasis); 1.3 only for a critical point. >1.3 on a 1080p
   source visibly softens — the honest fix is recording at higher resolution.
 - Centre defaults to (0.5, 0.40) — a talking-head face sits above frame centre. Windows
@@ -72,6 +77,12 @@ overstim fastest.) Concrete cadence:
   source agrees on — steepest retention drop is the opening).
 - **Body — cut on meaning** (new sentence/concept), ~one visual change per 15–25 s. Not a clock.
 - **Every ~2–3 min — one longer "breathing" shot** (10–20 s) when an idea must sit.
+- **Screencast has a tighter clock than talking head.** Procedural video is watched
+  2–3 minutes regardless of its length (Guo/Kim/Rubin, 6.9M edX sessions) — a flat line
+  a lecture doesn't share. So a screen-recording stretch needs a real RESET every ~2.5 min:
+  a cut to camera, a chapter card, a graphic. **A zoom is not a reset** — same screen,
+  closer. Declare `"material": "screencast"` at the top of the storyboard and the plan
+  gate holds you to it (talking-head material keeps the looser 90 s dead-air rule).
 - **Zooms/punch-ins:** one specific element per use, never per sentence (seasick otherwise).
 - **On-screen text accent:** only the 1–3 words that matter (term/number/name), NEVER a
   duplicate of the subtitle line.
