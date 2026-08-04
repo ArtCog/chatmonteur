@@ -34,6 +34,11 @@ _PEAK_TARGET_DBFS = -1.0
 # Below this the move is not worth an extra filter — and re-encoding a file that
 # is already at level only adds a rounding error.
 _MIN_WORTH_MOVING_DB = 0.5
+# Same definition of "silent" the file gate uses. A track this quiet is not quiet
+# audio, it is the wrong track or a dead microphone — caught on Артур's own OBS
+# capture, whose first track is a silent desktop feed at −91 dBFS. Levelling it
+# would have computed +90 dB and applied that to the voice track beside it.
+_SILENT_DBFS = -60.0
 
 
 def _levelling_gain(src: str, *, log) -> float:
@@ -41,6 +46,11 @@ def _levelling_gain(src: str, *, log) -> float:
     peak = media.volume_stats(src).get("max")
     if peak is None:
         log("normalize: no readable audio peak — leaving the level untouched")
+        return 0.0
+    if peak <= _SILENT_DBFS:
+        log(f"⚠ normalize: the measured track peaks at {peak} dBFS — that is silence, "
+            "not quiet audio. Leaving the level alone; check which OBS track carries "
+            "the voice before cutting by level.")
         return 0.0
     gain = _PEAK_TARGET_DBFS - peak
     return gain if abs(gain) >= _MIN_WORTH_MOVING_DB else 0.0

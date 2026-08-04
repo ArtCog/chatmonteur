@@ -1084,6 +1084,21 @@ def test_levelling_gain_targets_the_peak_and_ignores_a_pointless_nudge():
         _nz.media.volume_stats = orig
 
 
+def test_levelling_refuses_to_amplify_a_silent_track():
+    """Артур's OBS track 1 is a silent desktop feed at −91 dBFS: +90 dB of gain
+    applied to the voice track beside it is the accident this prevents."""
+    import chatmonteur.tools.normalize as _nz
+
+    said = []
+    orig = _nz.media.volume_stats
+    try:
+        _nz.media.volume_stats = lambda _src: {"max": -91.0}
+        assert _nz._levelling_gain("obs.mkv", log=said.append) == 0.0
+        assert any("silence" in m for m in said)
+    finally:
+        _nz.media.volume_stats = orig
+
+
 def test_two_pass_loudnorm_falls_back_when_measurement_fails():
     """A slightly compressed render beats no render — but it must say so."""
     import chatmonteur.tools.render as _rd
