@@ -151,12 +151,13 @@ def test_variant_read_aloud_fades_each_word():
     assert ass.count("\\t(") == 4 and "\\alpha&HFF&" in ass  # 4 words, each fades in
 
 
-def test_variant_accent_colors_only_the_emph_word():
-    yellow = _ass("accent")  # caption yellow by default, exactly one word marked
-    assert yellow.count("\\1c&H00D7FF&") == 1
-    # the brandbook's old green went with the monochrome refresh — it was the default,
-    # so leaving it would have burned a colour the brand no longer has into every video
-    assert "&H6AE82B&" not in yellow
+def test_variant_accent_inverts_only_the_emph_word():
+    """Card 04 accents by inversion; the brandbook rule is colour never carries text."""
+    ass = _ass("accent")
+    assert ass.count("\\1c&H0D0B0B&") == 1            # exactly one word flips to ink
+    assert ass.count("\\3c&HF7FAFA&\\3a&H00&") == 1   # on an opaque paper chip
+    # no caption colour survives: the retired yellow, and the green before it
+    assert "&H00D7FF&" not in ass and "&H6AE82B&" not in ass
 
 
 def test_variant_typewriter_is_mono_with_cursor():
@@ -164,20 +165,23 @@ def test_variant_typewriter_is_mono_with_cursor():
     assert "JetBrains Mono" in ass and "▌" in ass and "\\t(" in ass
 
 
-def test_no_plate_no_outline_shadow_only():
+def test_every_variant_sits_on_the_scrim():
+    """BorderStyle 3 is the scrim: OutlineColour fills the box, Outline pads it."""
     for variant in ("clean", "accent", "highlight", "read_aloud", "typewriter"):
         ass = _ass(variant)
-        assert "Style: Plate," not in ass, variant
         style = next(l for l in ass.splitlines() if l.startswith("Style: Default"))
         parts = style.split(",")
-        border_style, outline, shadow = parts[15], parts[16], parts[17]
-        assert border_style == "1" and outline == "0" and int(shadow) >= 2, variant
+        outline_colour, border_style, outline = parts[5], parts[15], parts[16]
+        assert outline_colour == "&H7A0A0908", variant   # ink at 52%, card 04
+        assert border_style == "3" and int(outline) >= 2, variant
 
 
-def test_variant_highlight_colors_each_word_in_turn():
+def test_variant_highlight_chips_each_word_in_turn():
     ass = _ass("highlight")
-    assert ass.count("\\1c&H00D7FF&") == 4  # every word takes the accent at its time
-    assert ass.count("\\1c&HF7FAFA&") == 4  # and flips back to paper after
+    assert ass.count("\\1c&H0D0B0B&") == 4   # every word takes the chip at its time
+    assert ass.count("\\1c&HF7FAFA&") == 4   # and returns to paper-on-scrim after
+    # returning restores the scrim's own box — \bord0 would punch a hole in the band
+    assert "\\bord0" not in ass
 
 
 def test_fit_timing_extends_a_flashing_cue():

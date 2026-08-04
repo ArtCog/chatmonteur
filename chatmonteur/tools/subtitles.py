@@ -8,14 +8,14 @@ Five brand «Mono» styles (see ``assets/brand/default/brand.md`` and
 
 * ``clean``       — C · чисто: plain line, no per-word motion. The pipeline default.
 * ``read_aloud``  — A · читаем вслух: words fade in one-by-one, synced to speech.
-* ``accent``      — B · акцент: the marked word (``"emph": true``) in the accent colour.
+* ``accent``      — B · акцент: the marked word (``"emph": true``) inverted into a chip.
 * ``typewriter``  — D · печатная машинка: JetBrains Mono, typed char-by-char + cursor.
-* ``highlight``   — E · караоке: whole line visible; the word being SPOKEN takes the
-                    accent colour in sync (the dominant 2026 caption look).
+* ``highlight``   — E · караоке: whole line visible; the word being SPOKEN inverts
+                    into the chip in sync (the dominant 2026 caption look).
 
-NO plate, NO outline (Артур 2026-07-24, final): bold white text with a soft drop
-shadow only; key words pop by COLOUR (``accent=`` yellow). Geometry is fixed
-(5.5% / 9% / 80%); motion and font differ by variant.
+Card 04 as drawn (Артур 2026-08-03, supersedes the 2026-07-24 "no plate" call):
+the line sits on a scrim and a key word is accented by INVERSION, never by colour.
+Geometry is fixed (5.5% / 9% / 80%); motion and font differ by variant.
 """
 
 from __future__ import annotations
@@ -48,15 +48,12 @@ class SubtitlesTool(Tool):
         max_chars: int = 39,  # Cyrillic-friendly CPL (≤39); safe for latin too
         burn: bool = True,
         variant: str = "clean",
-        accent: str = "yellow",
         font: str | None = None,
         font_dir: str | None = None,
     ) -> ToolResult:
         media.require("ffmpeg")
         if variant not in _VARIANTS:
             raise ToolError(f"unknown subtitle variant {variant!r}; choose one of {sorted(_VARIANTS)}")
-        if accent not in _ACCENTS:
-            raise ToolError(f"unknown accent colour {accent!r}; choose one of {sorted(_ACCENTS)}")
         font = font or _VARIANT_FONT.get(variant, _BRAND_FONT)
         font_dir = font_dir or _BRAND_FONT_DIR
         data = json.loads(open(transcript, encoding="utf-8").read())
@@ -82,7 +79,7 @@ class SubtitlesTool(Tool):
             # frame, so FontSize/margins are REAL PIXELS. SRT+force_style is scaled
             # by libass's default 288 PlayResY → a giant caption. (Learned the hard way.)
             ass_path = ctx.paths.transcripts / "captions.ass"
-            ass_path.write_text(_to_ass(data, max_chars, w, h, font, variant, accent), encoding="utf-8")
+            ass_path.write_text(_to_ass(data, max_chars, w, h, font, variant), encoding="utf-8")
             artifacts["ass"] = str(ass_path)
             fd = f":fontsdir='{media.filter_path(font_dir)}'" if font_dir else ""
             # Run from the ASS's folder, reference by bare name (dodge drive colon).
@@ -120,21 +117,29 @@ _FADE_MS = 150        # per-word soft-in for read_aloud (brand: ~0.2s)
 # Brand colours as ASS BGR (&HAABBGGRR; AA alpha: 00 opaque … FF transparent).
 _PAPER_BGR = "&H00F7FAFA"    # paper #FAFAF7 — caption text
 _PAPER_C = "&HF7FAFA&"       # paper as a \1c value (flip back after a highlight)
-# Accent colours for the key/spoken word (\1c values). Артур выбирает `accent=`:
-_ACCENTS = {
-    # The brand green #2BE86A was removed here when the brandbook went monochrome
-    # (bank-grill-decisions-2026-08-01). It was the default, so every caption burned
-    # since would have carried a colour the brand no longer has.
-    "yellow": "&H00D7FF&",   # industry-standard caption yellow #FFD700
-}
+_INK_C = "&H0D0B0B&"         # ink #0B0B0D — text inside an inverted chip
+# Scrim behind the line: ink #08090A at 52% opacity, exactly card 04's
+# rgba(8,9,10,.52). Alpha 0x7A = (1 − 0.52) × 255.
+_SCRIM_BGR = "&H7A0A0908"    # style-line form (&HAABBGGRR)
+_SCRIM_C = "&H0A0908&"       # the same colour as an inline \3c value
 _BRAND_FONT = "Golos Text"
 _VARIANT_FONT = {"typewriter": "JetBrains Mono"}  # D uses the mono face
 _VARIANTS = {"clean", "read_aloud", "accent", "typewriter", "highlight"}
-# Plate rule (Артур 2026-07-24, FINAL): NO plate, NO outline — ever. The designer's
-# scrim boxes are out; the industry look (Hormozi/GaryVee era) is bold white text with
-# the key word in an accent COLOUR. Legibility aid = a soft dark drop shadow only
-# (~0.05 em, 50% ink) — depth, not a visible frame.
+# Plate rule (Артур 2026-08-03, FINAL — supersedes the 2026-07-24 "no plate"):
+# captions follow card 04 as drawn. The line sits on a scrim, and a key word is
+# accented by INVERSION (paper chip, ink text), not by colour — the brandbook's
+# own rule is that colour never carries text. Caption yellow #FFD700 is retired
+# here alongside the green that went with the monochrome refresh.
+#
+# Both boxes are ASS BorderStyle 3 ("opaque box"), whose fill is OutlineColour and
+# whose padding is Outline — so a chip is an inline \3c + \3a + \bord on the word.
+# Verified by rendering: libass DOES box a span inside a scrimmed line (an earlier
+# note in the plan claimed otherwise). The one thing it cannot do is asymmetric
+# padding — the designer's 7/16 px scrim and 3/11 px chip become one value each,
+# matched to the VERTICAL number because the band's thickness is what reads.
 _TYPE_SCALE = 23 / 26
+_SCRIM_PAD_EM = 7 / 26       # card 04: 7px padding at a 26px face
+_CHIP_PAD_EM = 3 / 26        # card 04: the chip nests inside the scrim
 _SHADOW_EM = 0.05            # shadow offset as a fraction of font size
 _SHADOW_BGR = "&H800A0908"   # ink #08090A at ~50% — the drop shadow colour
 # Bundled brand fonts (Golos/JetBrains/Playfair, OFL) — libass finds them by family.
@@ -150,8 +155,7 @@ def _video_wh(path: str) -> tuple[int, int]:
 
 # --- ASS document --------------------------------------------------------------
 
-def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str,
-            accent: str = "yellow") -> str:
+def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str) -> str:
     """ASS with PlayRes pinned to the real frame → FontSize/margins are real px.
 
     One Dialogue per cue; the per-variant renderer decides how the cue's text
@@ -163,7 +167,8 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
     mv = round(_MARGIN_FRAC * height)
     side = round((1 - _WIDTH_FRAC) / 2 * width)  # L/R margin → 80% text width
     bold = 0 if variant == "typewriter" else -1  # D is Mono 500, others Golos 700
-    sh = max(2, round(_SHADOW_EM * fs))          # soft drop shadow — the only aid
+    sh = max(2, round(_SHADOW_EM * fs))          # soft drop shadow under the scrim
+    scrim = max(2, round(_SCRIM_PAD_EM * fs))    # box padding = the scrim's thickness
     header = (
         "[Script Info]\n"
         "ScriptType: v4.00+\n"
@@ -174,17 +179,16 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        # BorderStyle 1, Outline 0 → no box, no stroke; Shadow in BackColour (\4c).
-        f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SHADOW_BGR},{_SHADOW_BGR},"
-        f"{bold},0,0,0,100,100,0,0,1,0,{sh},2,{side},{side},{mv},1\n\n"
+        # BorderStyle 3 → opaque box: OutlineColour fills it, Outline is its padding.
+        f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SCRIM_BGR},{_SHADOW_BGR},"
+        f"{bold},0,0,0,100,100,0,0,3,{scrim},{sh},2,{side},{side},{mv},1\n\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
     )
     render = _RENDERERS[variant]
-    ac = _ACCENTS[accent]
     lines = []
     for cue in _build_cues(data, max_chars):
-        body = render(cue, max_chars, fs, ac)
+        body = render(cue, max_chars, fs)
         lines.append(
             f"Dialogue: 0,{_ass_time(cue['start'])},{_ass_time(cue['end'])},Default,,0,0,0,,{body}"
         )
@@ -193,12 +197,12 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
 
 # --- per-variant cue renderers (cue -> ASS body text) --------------------------
 
-def _r_clean(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+def _r_clean(cue: dict, max_chars: int, fs: int = 0) -> str:
     """C · чисто — the whole line at once, brand soft-in fade."""
     return "{\\fad(180,0)}" + _wrap(cue["text"], max_chars).replace("\n", "\\N")
 
 
-def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0) -> str:
     """A · читаем вслух — each word fades in at its own spoken time."""
     words = cue.get("words") or []
     if not words:
@@ -214,10 +218,38 @@ def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
     return _layout(tokens, max_chars, render)
 
 
-def _r_accent(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
-    """B · акцент — the emphasised word (``"emph": true``) in the accent COLOUR.
+def _scrim_pad(fs: int) -> int:
+    return max(2, round(_SCRIM_PAD_EM * fs))
 
-    Industry standard (Hormozi-era): key words pop by colour, nothing else changes.
+
+def _chip_state(fs: int) -> str:
+    """Override that turns a span into the inverted chip: paper box, ink text.
+
+    \\3a is set explicitly — inheriting the scrim's 52% alpha tints the chip grey
+    instead of paper, which is exactly how the first test render came out.
+    """
+    return f"\\3c{_PAPER_C}\\3a&H00&\\bord{max(2, round(_CHIP_PAD_EM * fs))}\\1c{_INK_C}"
+
+
+def _scrim_state(fs: int) -> str:
+    """Override that returns a span to the ordinary scrimmed line.
+
+    Not \\bord0: the box IS the scrim, so a word with no border punches a notch
+    out of the band instead of blending back into it.
+    """
+    return f"\\3c{_SCRIM_C}\\3a&H7A&\\bord{_scrim_pad(fs)}\\1c{_PAPER_C}"
+
+
+def _chip(text: str, fs: int) -> str:
+    """Wrap one word in the inverted chip (card 04, style B)."""
+    return f"{{{_chip_state(fs)}}}{text}{{\\r}}"
+
+
+def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
+    """B · акцент — the emphasised word (``"emph": true``) inverted into a chip.
+
+    Card 04 accents by inversion, and the brandbook's rule is that colour never
+    carries text — so the key word flips to ink-on-paper rather than changing hue.
     """
     words = cue.get("words") or []
     if not words:
@@ -228,14 +260,17 @@ def _r_accent(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
         return _r_clean(cue, max_chars)  # nothing marked → plain line
 
     def render(tok: dict) -> str:
-        return f"{{\\1c{ac}}}{tok['text']}{{\\r}}" if tok["emph"] else tok["text"]
+        return _chip(tok["text"], fs) if tok["emph"] else tok["text"]
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_highlight(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
-    """E · караоке — the whole line shows at once; the word being SPOKEN takes the
-    accent colour, then flips back. The dominant 2026 caption look. Needs word timings.
+def _r_highlight(cue: dict, max_chars: int, fs: int = 0) -> str:
+    """E · караоке — the whole line shows at once; the word being SPOKEN inverts
+    into a chip, then flips back. Needs word timings.
+
+    The chip appears and leaves instantly (\\t over 0ms): a box that fades reads as
+    a rendering fault, where a hard flip reads as a beat landing on the word.
     """
     words = cue.get("words") or []
     if not words:
@@ -247,14 +282,14 @@ def _r_highlight(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
               for w in words if w["word"].strip()]
 
     def render(tok: dict) -> str:
-        s, e = tok["s"], max(tok["e"], tok["s"] + 120)  # colour holds ≥120ms, never blinks
-        return (f"{{\\t({s},{s + 80},\\1c{ac})\\t({e},{e + 80},\\1c{_PAPER_C})}}"
+        s, e = tok["s"], max(tok["e"], tok["s"] + 120)  # holds ≥120ms, never blinks
+        return (f"{{\\t({s},{s},{_chip_state(fs)})\\t({e},{e},{_scrim_state(fs)})}}"
                 f"{tok['text']}{{\\r}}")
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_typewriter(cue: dict, max_chars: int, fs: int = 0, ac: str = "") -> str:
+def _r_typewriter(cue: dict, max_chars: int, fs: int = 0) -> str:
     """D · печатная машинка — chars type in at a steady pace, cursor follows the caret.
 
     Untyped chars are hidden AND zero-width (`\\fscx0`), not just transparent — else the

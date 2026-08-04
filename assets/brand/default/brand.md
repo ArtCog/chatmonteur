@@ -44,10 +44,12 @@ carries text — it is a 4px strip under a plate, and only on elements E, N and 
    accent — the brandbook rule "colour never carries text" now holds for captions too).
    `yellow` `#FFD700` is retired from captions along with the already-removed green.
 
-Implementation status: `subtitles.py` still renders the OLD look (no plate, yellow accent) —
-the port to card 04 is a pending task in PLAN.local.md. Burned-in inversion needs an ASS
-drawing layer (libass can't box a single glyph in a scrim line); the true chip exists in
-HyperFrames for non-burned use.
+Implementation: DONE 2026-08-03 in `subtitles.py`, verified on frames over a busy
+screencast (`черновик/СУБТИТРЫ-v2-*.png`). Both boxes are ASS BorderStyle 3 — the
+earlier claim that libass cannot box one word inside a scrimmed line turned out to
+be wrong; an inline `\3c` + `\3a` + `\bord` gives the chip. Its one real limit is
+symmetric padding, so the designer's 7/16 px scrim and 3/11 px chip each collapse
+to their vertical number (the band's thickness is what reads).
 - **A · читаем вслух** — words appear one-by-one (soft-in, ~0.2s stagger). For narrated key lines.
 - **B · акцент** — the marked word in the accent colour. A single punch-word per line.
 - **C · чисто** — plain line, no per-word motion. The safe default.
