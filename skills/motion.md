@@ -233,6 +233,29 @@ Frame device worth keeping: full-screen film-style plates (black, centered white
 as intro/outro — «основано на реальных событиях» → «продолжение следует». We have the
 title-card composition for this; it is a brand-book component candidate.
 
+### Sourcing the material — two beats, and who does which (Артур 2026-08-01)
+
+Decisions from the bank grill; the reasoning is in `bank-grill-decisions-2026-08-01.md`.
+
+**Two beats, never one.** The list of material needed is born on the SCRIPT (the planning
+canvas): what to film, what to download, what to generate — so the bank and the project's
+`assets/` fill up before or during the shoot. The exact placement against timecodes happens
+only AFTER the final cut, because every cut moves everything. Planning placement early is
+work thrown away.
+
+**Ask who sources it, don't assume.** At the START of the visual phase, ask which mode this
+video runs in: agent does everything / Артур supplies links and ready screenshots / split
+the work. Then work in the chosen mode.
+
+- **Default expectation: Артур takes part** in choosing the meaningful screenshots. Full
+  autonomy only when he grants it for this video.
+- **Annotating what was found is ALWAYS the agent** — highlighting the sentence in the
+  article, circling the UI element.
+- **Social networks (X, Telegram): screenshots come from Артур.** Playwright hits login
+  walls and bot checks there; do not burn an hour proving it again.
+- **Never substitute motion graphics for a real screenshot.** Graphics are for abstractions;
+  a NAMED entity gets the real thing (the classification table below already says this).
+
 ### The asset bank
 
 Channel-wide reusable material lives in `bank/` at the repo root (contents gitignored —
@@ -242,6 +265,13 @@ thematic / illustrations / screenshots / music, each file registered in `ledger.
 shots must not repeat across videos (Артур's standing rule). After burning an asset into
 a video, append the video slug to its `used_in`. Per-video assets stay in the project's
 `assets/`, not in the bank.
+
+**Two registries, not two competitors.** `manifest.json` (written by `stock` into the
+project) is the RAW catch — it lives and dies with the video, and is not to be rewritten.
+`ledger.jsonl` in the bank is the PERMANENT registry, and holds only what was promoted.
+Promotion = a line in the ledger plus the file moved, and it happens on a deliberate
+decision — when the thing has actually proved reusable (logos, model covers, a recurring
+metaphor). One-off material never gets dumped into the forever pile.
 
 Priority — own/exact first, stock only for generic. What to use per sentence:
 

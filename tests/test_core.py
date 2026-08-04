@@ -1116,3 +1116,63 @@ def test_two_pass_loudnorm_falls_back_when_measurement_fails():
         assert any("falling back" in m for m in said)
     finally:
         _rd._measure = orig
+
+
+def test_contact_sheet_orders_every_section_by_time():
+    """The sheet is read top to bottom in a minute — so it is one time-ordered
+    list, not four sections the reviewer has to interleave in their head."""
+    import chatmonteur.tools.contact_sheet as _cs
+
+    beats = _cs._beats({
+        "inserts": [{"start": 30, "end": 33, "text": "вот так"}],
+        "zooms": [{"start": 5, "end": 9, "kind": "punch", "scale": 1.2, "reason": "story"}],
+        "overlays": [{"start": 12, "end": 18, "file": "bank/gameplay/race-01.mp4"}],
+    })
+    assert [b["start"] for b in beats] == [5.0, 12.0, 30.0]
+    assert [b["section"] for b in beats] == ["zooms", "overlays", "inserts"]
+    assert beats[0]["what"] == "punch ×1.2 — story"
+
+
+def test_contact_sheet_marks_filler_that_owes_a_reason():
+    """Артур 2026-08-01: no ceiling on how much filler a video may use — instead
+    the duty to explain each one. Serial 'found nothing' is visible as laziness."""
+    import chatmonteur.tools.contact_sheet as _cs
+
+    assert _cs._is_filler(r"bank\gameplay\race-01.mp4")   # Windows path too
+    assert _cs._is_filler("bank/thematic/terminal.mp4")
+    assert not _cs._is_filler("projects/x/assets/tweet.png")
+
+    beats = _cs._beats({"overlays": [
+        {"start": 1, "end": 4, "file": "bank/gameplay/race-01.mp4"},
+        {"start": 5, "end": 8, "file": "bank/thematic/term.mp4", "why": "связка между блоками"},
+    ]})
+    page = _cs._page(beats, "demo")
+    assert "заливка без объяснения" in page
+    assert "связка между блоками" in page
+    assert page.count("class=\"owed\"") == 1
+
+
+def test_contact_sheet_never_passes_off_the_footage_as_a_missing_asset():
+    """Caught on the first live run: a planned asset that isn't on disk showed the
+    frame UNDER it, so the reviewer would approve a beat that cannot burn."""
+    import chatmonteur.tools.contact_sheet as _cs
+
+    beats = _cs._beats({"overlays": [{"start": 4, "end": 9, "file": "bank/gameplay/nope.mp4"}]})
+    assert beats[0]["missing"]
+
+    said = []
+    assert _cs._thumb(beats[0], "under.mp4", Path("x.jpg"), log=said.append) == ""
+    assert any("not on disk" in m for m in said)
+    assert "файла нет на диске" in _cs._page(beats, "demo")
+
+
+def test_contact_sheet_quotes_the_words_the_picture_covers():
+    """A picture is judged against what is being said under it, not on its own."""
+    import chatmonteur.tools.contact_sheet as _cs
+
+    segs = [{"start": 0.0, "end": 4.0, "text": " первое"},
+            {"start": 4.0, "end": 9.0, "text": " второе"}]
+    assert _cs._said_at(segs, 5.0) == "второе"
+    assert _cs._said_at(segs, 4.0) == "второе"    # boundary belongs to the later line
+    assert _cs._said_at(segs, 99.0) == ""
+    assert _cs._tc(75.4) == "1:15"

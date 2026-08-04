@@ -25,6 +25,7 @@ with "he just cut the pauses and added subtitles".
 | `stock` | source a free, commercially-safe image/clip before storyboarding | ③ |
 | `motion` | render a brand component to transparent ProRes 4444 for compositing | ③ |
 | `cues` | burn a brand cue list (`{t, element, text}`, see the manifest's `cueFormat`) — checks it against the brandbook's budgets first; `dry_run` holds the gate without rendering | ③ |
+| `contact_sheet` | the visual gate itself: renders the plan as ONE scrollable HTML page — picture + the words it covers + timecode. Show THIS, never raw JSON | ③ |
 | `storyboard` | ONE call executing the approved visual plan (zooms → overlays → inserts). **Scores the plan and refuses a thin one** | ③ |
 | `zooms` `overlays` `inserts` | individually only when iterating on one layer; normally go through `storyboard` | ③ |
 | `color` | grade before any text layer burns | ④ |
@@ -100,13 +101,18 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
    → cutting.md Tier 2
 
 ③ VISUAL MONTAGE (editorial, approval-gated) — locks the GEOMETRY, before color
-   FIRST classify every meaning-bit (entity / abstraction / demo / connective —
+   FIRST ask who sources the material for this video (agent alone / Артур supplies
+   links and screenshots / split) — the default is that he takes part, and social-
+   network screenshots always come from him (motion.md, «Sourcing the material»).
+   THEN classify every meaning-bit (entity / abstraction / demo / connective —
    motion.md) and source its visual: live screenshot, HyperFrames graphic, own
    screencast, stock, evidence card (`card`+`backdrop:"blur"`). Enforce the motion
    floor: no static second; connective gaps get thematic filler with BREATHING
    (30–60 s unbroken is right on pure storytelling). Then plan the whole pass as
    ONE artifact — `transcripts/storyboard.json` with `zooms` + `overlays` +
-   `inserts` sections → show it → APPROVAL → ONE call to the `storyboard`
+   `inserts` sections → render it with `contact_sheet` and show THAT page (one
+   candidate per slot; every bank-filler beat carries a `why`) → APPROVAL, and a
+   second round only on the beats marked wrong → ONE call to the `storyboard`
    capability, which burns in the load-bearing order: zooms (geometry locks) →
    overlays (placed on final geometry) → inserts (text on top). 1–2 inserts in
    the hook MANDATORY. Motion-graphic clips (HyperFrames components from the
