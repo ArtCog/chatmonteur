@@ -200,6 +200,14 @@ viewer must study is a feature, not dead air. So:
   it is the default. Background gameplay is a legitimate deliberate choice for story
   sections; which one a given stretch gets is Артур's call at the storyboard gate. Both
   live in the asset bank.
+  ⚠ **Tested 2026-08-04 and it argues against gameplay** — put the case to him before
+  planning one in. A real clip (SuperTuxKart, the calmest legal option) carries four HUD
+  elements of readable text, a lap timer and a protagonist: that is motion WITH
+  information, which is exactly what the background rule forbids, and the eye goes to it
+  instead of the voice. Licence is the second problem — even a free game's footage came
+  under CC BY-SA 4.0, whose share-alike reaches the video it sits in, and a stranger's
+  "no-copyright" claim is worth nothing. Under a card the dimming tames it; full-screen
+  it does not. Thematic filler and our own loops (`assets/loops/`) have neither problem.
 - **Evidence cards sit on a blurred AND DIMMED live backdrop**: when showing a
   screenshot/chat/post, the background is the moving video (or thematic filler), never a
   flat colour — but blurred, darkened and desaturated, all three. Blur removes detail;
@@ -246,12 +254,13 @@ canvas): what to film, what to download, what to generate — so the bank and th
 only AFTER the final cut, because every cut moves everything. Planning placement early is
 work thrown away.
 
-**Ask who sources it, don't assume.** At the START of the visual phase, ask which mode this
-video runs in: agent does everything / Артур supplies links and ready screenshots / split
-the work. Then work in the chosen mode.
+**The sourcing mode has a default — state it, don't interrogate.** A ritual "which mode
+are we in?" every single video trains him to stop reading the question. So: assume the
+default, say in one line which mode you are working in, and ASK only when you want to
+deviate (you think you can do this one alone, or you need more from him than usual).
 
-- **Default expectation: Артур takes part** in choosing the meaningful screenshots. Full
-  autonomy only when he grants it for this video.
+- **Default: Артур takes part** in choosing the meaningful screenshots. Full autonomy
+  only when he grants it for this video.
 - **Annotating what was found is ALWAYS the agent** — highlighting the sentence in the
   article, circling the UI element.
 - **Social networks (X, Telegram): screenshots come from Артур.** Playwright hits login
