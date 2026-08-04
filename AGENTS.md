@@ -19,7 +19,7 @@ chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
 chatmonteur tools     # list capabilities + readiness
 ```
 
-Pipeline `talking_head` (mechanical only): normalize (CFR + loudnorm) →
+Pipeline `talking_head` (mechanical only): normalize (CFR + level prep) →
 cut pauses by audio level → transcribe → subtitles → color → render.
 Output: `projects/<name>/renders/final.mp4`. Re-runs resume from checkpoints.
 

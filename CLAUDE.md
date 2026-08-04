@@ -60,7 +60,7 @@ chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
 ```
 
 This runs the **talking_head** pipeline — mechanical steps only: normalize
-(CFR + loudnorm −14) → cut pauses by audio level → transcribe → color
+(CFR + level prep) → cut pauses by audio level → transcribe → color
 (optional; DEFAULT IS UNGRADED — a LUT only when the user picks one) →
 subtitles → render. Output lands in `projects/<name>/renders/final.mp4`.
 Re-running resumes from checkpoints. Before burning subtitles, ASK which of

@@ -1063,3 +1063,37 @@ def test_screencast_needs_a_real_reset_not_a_zoom():
 
     # talking-head material is not judged on the tutorial clock
     assert not any("no reset" in f for f in _sb_thin(dict(zoom_only, material="talking_head"), 300.0))
+
+
+def test_levelling_gain_targets_the_peak_and_ignores_a_pointless_nudge():
+    """The cut threshold needs a predictable peak; anything under 0.5 dB is noise."""
+    import chatmonteur.tools.normalize as _nz
+
+    def _peak(value):
+        return lambda _src: {"max": value} if value is not None else {}
+
+    orig = _nz.media.volume_stats
+    try:
+        _nz.media.volume_stats = _peak(-9.3)
+        assert _nz._levelling_gain("x.mov", log=lambda m: None) == pytest.approx(8.3)
+        _nz.media.volume_stats = _peak(-1.2)          # already at level
+        assert _nz._levelling_gain("x.mov", log=lambda m: None) == 0.0
+        _nz.media.volume_stats = _peak(None)          # no readable audio
+        assert _nz._levelling_gain("x.mov", log=lambda m: None) == 0.0
+    finally:
+        _nz.media.volume_stats = orig
+
+
+def test_two_pass_loudnorm_falls_back_when_measurement_fails():
+    """A slightly compressed render beats no render — but it must say so."""
+    import chatmonteur.tools.render as _rd
+
+    said = []
+    orig = _rd._measure
+    try:
+        _rd._measure = lambda src, base, log: {}
+        f = _rd._loudnorm_filter("x.mov", -14.0, log=said.append)
+        assert f == "loudnorm=I=-14.0:TP=-1.5:LRA=11"
+        assert any("falling back" in m for m in said)
+    finally:
+        _rd._measure = orig

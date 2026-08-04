@@ -18,8 +18,9 @@ Each entry: the value, why it works, where it lives in our code.
 | SFX level | −12…−18 dB, always ≥6 dB under dialogue | Present without competing | `_SFX_GAIN_DB` |
 | `amix` needs `normalize=0` | — | Otherwise every extra layer silently attenuates the dialogue ~6 dB | `tools/sound.py` |
 | Fade **before** any delay/trim | — | Fading after a delay fades the silence, not the audio | `tools/sound.py` |
-| Loudness is the **last** audio step | −14 LUFS / −1.5 dBTP + true-peak limiter | Normalising mid-chain and again at the end double-compresses dialogue | `tools/render.py` |
-| …with ONE deliberate exception | `normalize.py` runs loudnorm FIRST, by design | Branch A's cut threshold (0.14 of peak) only means something on level-controlled audio; render re-flattens at the end, so it acts as an idempotent re-normalize, not double compression. Audit 2026-07-31 flagged this as undocumented — it is intentional | `tools/normalize.py` |
+| Loudness is set **once**, at the last audio step | −14 LUFS / −1.5 dBTP + true-peak limiter | Normalising mid-chain and again at the end puts dialogue through two rounds of dynamic compression | `tools/render.py` |
+| …and it is measured before it is applied | pass 1 `loudnorm …:print_format=json` → pass 2 with `measured_*` + `linear=true` | One-pass loudnorm guesses the programme level as it goes and rides the gain; handed the measurement it becomes a straight linear shift. ffmpeg falls back to the dynamic mode by itself when the source cannot reach the target linearly | `_loudnorm_filter` |
+| Mid-chain levelling is a **plain gain**, never loudnorm | peak → −1 dBFS (skipped under 0.5 dB) | Branch A's cut threshold (0.14 of peak) needs a predictable peak, nothing more; a linear gain gives it that and leaves the voice's dynamics alone. Fixed 2026-08-03 — this row used to document the double loudnorm as intentional | `_levelling_gain` in `tools/normalize.py` |
 | Stock beds open sparse | pick the loudest window by `ebur128` momentary + sliding average | A bed that starts on the quiet intro sounds like it is still loading | `_best_segment` |
 
 ## Cutting
