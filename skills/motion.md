@@ -15,6 +15,34 @@ a graphics engine for a lower third.
 - **Zoom classification** (from the transcript): normal statement 1.0x · emphasis 1.15x ·
   critical point 1.3x. Punch-ins land on the emphasized WORD, not vaguely near it.
 
+### Is a graphic justified here? — ask the section, not the clock
+
+Walk the script section by section and answer. A "yes" earns the graphic; nothing
+earns it by elapsed time alone:
+
+1. Is he explaining something **visual or structural**? → a diagram.
+2. Is there a **number, a name or a quote** the ear can't hold? → text on screen.
+3. Is there **code or a terminal**? → the real thing, captured, not described.
+4. Has he been on camera **>30 s straight** with nothing changing? → the monotony
+   trigger: B-roll, an overlay, or a cut to the screen.
+5. Is this the **hook or the close**? → the one line that matters, large.
+
+If none of the five fires, add NOTHING. A graphic placed to fill time is worse
+than plain footage: it teaches the viewer that graphics here mean nothing.
+
+**Placement law, once decided:** never cover the face (eyes, nose, mouth stay
+visible) · pick a side (left or right) and keep it for the whole film · text
+lives on screen 2–5 s — long enough to read, short enough not to feel stuck.
+
+### Trim to the moment
+
+A 12-second clip usually holds one 3-second moment that earns its place and 9
+seconds of settling into it. Find the moment; the rest is not footage, it is
+approach. Cut **before** the action's natural end — end on a look, not on the
+move-off — so the cut reads as intentional rather than exhausted. Leave a few
+frames of handle at both ends for the fade. Never hold on a freeze-frame: it
+reads as a technical fault, not a choice.
+
 ### `overlays` — B-roll OVER the speaker (how to drive it)
 
 The channel's b-roll style: the speaker stays in frame, the asset rides on top. You source

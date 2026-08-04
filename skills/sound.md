@@ -39,6 +39,29 @@ Rules for choosing a track:
 Restraint is a feature: an SFX on EVERY cut is amateur. Accent structural moments
 (chapters, reveals, the finale), not every jump cut.
 
+### Silence is an instrument — use it once, use it hard
+
+Drop the music out entirely for ~2 s at the single emotional centre of the film:
+the one line the whole piece was made to deliver. Not three times, not "wherever
+it feels quiet" — once. A pause that happens twice stops being a pause and
+becomes a gap. If you cannot name which line deserves it, the film has no centre
+yet and that is the real finding.
+
+Related, and separate: **the tail fade.** Music fades under the last 3–5 s so the
+closing image can breathe without a musical resolution fighting it.
+
+### The L-cut — carry sound across the seam
+
+Let the outgoing scene's audio run 0.5–1.5 s under the incoming picture (or the
+reverse: start the next scene's sound before its picture arrives). The ear
+crosses the cut before the eye does, so the seam stops registering as a seam.
+
+Use it on the 3–4 hardest transitions in a piece — the ones where the picture
+jumps but the thought continues. Everywhere is worse than nowhere: applied to
+every cut it becomes mush, and the moments that needed it lose their power.
+For a talking head this is most often the join between a screen recording and
+the camera, where the voice is continuous and only the picture moves.
+
 ## Ducking (the short version — full canon in the reference)
 
 - **EQ pocket first, gentle duck second.** Carve ~1.5 kHz (−3…−5 dB) out of the music so

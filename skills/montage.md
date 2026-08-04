@@ -163,6 +163,24 @@ Approval gates ask the user. These two ask the work, and stop the pipeline.
 
 When either fires, **never re-run with the check disabled.** Fix what it names.
 
+## Write plans in causes, never in moods
+
+A plan is an instruction to a later stage, and mood words instruct nothing: "epic
+reveal", "moody atmosphere", "powerful swell" mean something different to every
+reader and cannot be executed or checked. Name the concrete cause that would
+produce the feeling instead:
+
+| Instead of | Write |
+|---|---|
+| «эпичное появление» | wide pull-back, subject against the light, 8 s hold |
+| «мощный акцент музыки» | music drops at 0:42, 1.5 s of silence, returns at half tempo |
+| «динамично» | cut every 3–5 s, three shot sizes, no repeat |
+
+The word **«cinematic» is banned outright** — it names a feeling and hides the
+decision. Every gate in this project scores what a plan *says*; a plan written in
+adjectives passes them while meaning nothing, which is the one failure mode the
+gates cannot catch for you.
+
 ## Verification (what qc does NOT cover)
 
 `qc` already checks duration drift, silence, clipping and black frames. What still needs eyes:
