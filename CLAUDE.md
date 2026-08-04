@@ -148,6 +148,15 @@ projects/<name>/
 ```
 Never write to `raw/` or the repo root. Finals go only to `renders/`.
 
+**Anything Артур has to LOOK at goes to `черновик/`** (gitignored) — Артур 2026-08-04:
+«все наши тесты мы добавляем в папку черновик, там же сортируем, чтобы я мог сразу
+смотреть». Every test render, style variant, preview frame and demo page lands there,
+never in a scratch directory he would have to be told the path to. Sort it: one
+subfolder per topic (`фоны/`, `плашки/`, `моно/`), and inside it the established
+naming — `тема-N-вариант.mp4`, with `СТАНДАРТ` marking the one that won. Ship both
+`.mp4` and `.png` for anything he cannot open otherwise (ProRes, alpha). When a demo
+needs more than one file, add a `СМОТРЕТЬ.html` that opens all of it at once.
+
 The brand lives in `assets/brand/default/`: **`catalog.json` is the inventory** — every
 card the designer drew, what it is for, and which component renders it (with its variables
 and duration). `brand-manifest.json` holds the rules on top of it (safe zones, budgets,

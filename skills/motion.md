@@ -200,14 +200,16 @@ viewer must study is a feature, not dead air. So:
   it is the default. Background gameplay is a legitimate deliberate choice for story
   sections; which one a given stretch gets is Артур's call at the storyboard gate. Both
   live in the asset bank.
-  ⚠ **Tested 2026-08-04 and it argues against gameplay** — put the case to him before
-  planning one in. A real clip (SuperTuxKart, the calmest legal option) carries four HUD
-  elements of readable text, a lap timer and a protagonist: that is motion WITH
-  information, which is exactly what the background rule forbids, and the eye goes to it
-  instead of the voice. Licence is the second problem — even a free game's footage came
-  under CC BY-SA 4.0, whose share-alike reaches the video it sits in, and a stranger's
-  "no-copyright" claim is worth nothing. Under a card the dimming tames it; full-screen
-  it does not. Thematic filler and our own loops (`assets/loops/`) have neither problem.
+  **Confirmed on real frames 2026-08-04.** Артур looked at gameplay next to an authored
+  abstract loop and picked gameplay outright: the loop read as boring, the game did not.
+  So gameplay is a first-class background here, not a grudging exception — and generating
+  an abstract loop ourselves is NOT the answer (that attempt was dropped the same day).
+  Two things that DO hold from the test:
+  - **Under a card it must be dimmed**, which `overlays` now does automatically. A
+    blurred-only game backdrop still read as sky-blue and orange against a black-gray brand.
+  - **Licence is checked, never assumed.** Even a free game's footage came under
+    CC BY-SA 4.0, whose share-alike reaches the video around it; a stranger's
+    "no-copyright" claim is worth nothing. Record the real licence in the ledger.
 - **Evidence cards sit on a blurred AND DIMMED live backdrop**: when showing a
   screenshot/chat/post, the background is the moving video (or thematic filler), never a
   flat colour — but blurred, darkened and desaturated, all three. Blur removes detail;
