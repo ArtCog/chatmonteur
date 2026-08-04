@@ -4,9 +4,13 @@ Real-world raw footage is variable-frame-rate with messy timestamps. Cutting it
 directly desyncs audio. This step rebuilds a clean CFR file that every later step
 can safely seek and cut. (Hard-won rule from production use.)
 
-It also brings the audio up to a predictable level by default: the silence
-threshold downstream (``cut_silence`` 0.14) is a fraction of PEAK and is only
-valid on level-controlled audio — on a quiet recording it shreds words.
+It also brings the audio up to a predictable level by default. auto-editor's
+threshold is an ABSOLUTE line — 0.14 of full scale, not of the file's own peak
+(measured 2026-08-03: `auto-editor levels` returns 0.768 for a clip and 0.0768
+for the same clip 20 dB down, i.e. the numbers scale with the signal instead of
+renormalising). So the line only lands in the right place when the recording is
+brought to a known level first; on a quiet file every sample sits under 0.14 and
+the cutter reads the whole thing as silence.
 
 That levelling is a plain linear gain, not ``loudnorm``. Loudness is set ONCE,
 at the final render (see ``render.py``): running a full loudnorm here as well

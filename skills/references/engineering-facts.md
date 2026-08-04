@@ -20,14 +20,14 @@ Each entry: the value, why it works, where it lives in our code.
 | Fade **before** any delay/trim | — | Fading after a delay fades the silence, not the audio | `tools/sound.py` |
 | Loudness is set **once**, at the last audio step | −14 LUFS / −1.5 dBTP + true-peak limiter | Normalising mid-chain and again at the end puts dialogue through two rounds of dynamic compression | `tools/render.py` |
 | …and it is measured before it is applied | pass 1 `loudnorm …:print_format=json` → pass 2 with `measured_*` + `linear=true` | One-pass loudnorm guesses the programme level as it goes and rides the gain; handed the measurement it becomes a straight linear shift. ffmpeg falls back to the dynamic mode by itself when the source cannot reach the target linearly | `_loudnorm_filter` |
-| Mid-chain levelling is a **plain gain**, never loudnorm | peak → −1 dBFS (skipped under 0.5 dB) | Branch A's cut threshold (0.14 of peak) needs a predictable peak, nothing more; a linear gain gives it that and leaves the voice's dynamics alone. Fixed 2026-08-03 — this row used to document the double loudnorm as intentional | `_levelling_gain` in `tools/normalize.py` |
+| Mid-chain levelling is a **plain gain**, never loudnorm | peak → −1 dBFS (skipped under 0.5 dB) | Branch A's cut threshold is 0.14 of FULL SCALE, so it only lands right on a recording brought to a known level; a linear gain does that and leaves the voice's dynamics alone. Fixed 2026-08-03 — this row used to document the double loudnorm as intentional | `_levelling_gain` in `tools/normalize.py` |
 | Stock beds open sparse | pick the loudest window by `ebur128` momentary + sliding average | A bed that starts on the quiet intro sounds like it is still loading | `_best_segment` |
 
 ## Cutting
 
 | Fact | Value | Why | Ours |
 |---|---|---|---|
-| Silence detection | `silencedetect=noise=-35dB:d=0.5` OR relative-to-peak threshold | Absolute thresholds mis-cut quiet recordings — ours is relative (0.14 of peak), which is why it beat theirs on Arthur's footage | `tools/cut_silence.py` |
+| Silence detection | auto-editor `audio:threshold=0.14` — a fraction of FULL SCALE, not of the file's peak | Measured 2026-08-03: `auto-editor levels` gives 0.768 for a clip and 0.0768 for the same clip 20 dB down, so the level scales with the signal. Hence the levelling step upstream — the same clip 20 dB down cuts to "Timeline is empty", and with the gain restored cuts identically to the original | `tools/cut_silence.py` + `_levelling_gain` |
 | Keep padding around a cut | 0.08–0.12 s each side | Prevents clipped word heads/tails | `cut_silence` margins |
 | Merge micro-gaps | drop segments <0.01 s; merge gaps <0.05 s | Otherwise the concat stutters | — |
 | Dead air | trim >1.5 s down to ~0.5 s | Below that it reads as natural breathing | agent rule |

@@ -7,7 +7,7 @@ a later step doesn't force rework or leave a visible defect. Don't reorder witho
 
 | Stage | Comes after | Why (technical / craft) |
 |---|---|---|
-| Normalize (CFR + loudnorm −14) | ingest | Two jobs: clean CFR so cuts don't desync; loudnorm so the silence threshold (a fraction of peak) is valid. This is PREP loudness, not the final master loudness. |
+| Normalize (CFR + peak → −1 dBFS) | ingest | Two jobs: clean CFR so cuts don't desync; a linear gain so the silence threshold lands right. That threshold is 0.14 of FULL SCALE, not of the file's own peak — a quiet recording reads as silence end to end. This is PREP level, not master loudness (which `render` sets once, last). |
 | Silence removal (audio level) | normalize | Cuts pauses by how loud the audio is — blind to meaning but safe: a screen-demo with sound is kept. Shrinks the transcript the LLM then reasons over. |
 | Transcribe | silence removal | Transcript must match the CUT timeline — timings drift after every cut, so transcribe the draft, not the raw. |
 | Meaning cut (agent → cut_edl) | transcribe | The LLM decides fillers/false starts/retakes from the verbatim transcript, writes an EDL, gets approval. This locks the audio spine ("picture-lock"). |
