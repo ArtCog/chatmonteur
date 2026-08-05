@@ -276,8 +276,10 @@ Channel-wide reusable material lives in `bank/` at the repo root (contents gitig
 weight + third-party licences; only the spec `bank/BANK.md` is committed): gameplay /
 thematic / illustrations / screenshots / music, each file registered in `ledger.jsonl`
 (what, source, license, `used_in`). Before picking an asset, CHECK `used_in` — similar
-shots must not repeat across videos (Артур's standing rule). After burning an asset into
-a video, append the video slug to its `used_in`. Per-video assets stay in the project's
+shots must not repeat across videos (Артур's standing rule). The WRITE side is automatic:
+`overlays` appends the project slug to `used_in` after the burn succeeds, so do not edit
+the field by hand. (Bank music burned by `sound` is not recorded yet — add the same three
+lines there when `bank/music/` starts filling up.) Per-video assets stay in the project's
 `assets/`, not in the bank.
 
 **The agent NEVER picks the background alone — it ASKS.** Артур 2026-08-04: «агент же

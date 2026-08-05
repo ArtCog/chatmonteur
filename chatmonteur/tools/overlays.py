@@ -96,7 +96,14 @@ class OverlaysTool(Tool):
                 "-c:v", encoder, *media.encoder_quality_args(encoder),
                 "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)]
         media.run(cmd, log=ctx.log, desc=f"burn {len(items)} overlays ({h}p)")
-        return ToolResult(artifacts={"video": str(out)}, meta={"overlays": len(items)})
+        try:
+            marked = _note_used_in(ctx.config.root / "bank", [it["file"] for it in items],
+                                   ctx.project, log=ctx.log)
+        except Exception as exc:  # noqa: BLE001 — the video is burned; a broken ledger
+            ctx.log(f"overlays: could not update bank/ledger.jsonl ({exc})")  # must not eat it
+            marked = []
+        return ToolResult(artifacts={"video": str(out)},
+                          meta={"overlays": len(items), "bank_used": marked})
 
 
 def _load_plan(path: pathlib.Path) -> list[dict]:
@@ -162,6 +169,45 @@ def _make_card(src: str, dst: pathlib.Path) -> None:
     canvas.alpha_composite(img, (pad, pad))
     dst.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(dst)
+
+
+def _note_used_in(bank: pathlib.Path, files: list[str], slug: str, log=None) -> list[str]:
+    """Append the video's slug to ``used_in`` of every bank asset just burned.
+
+    Rule 3 of ``bank/BANK.md``: похожие кадры не повторяются между роликами. The
+    agent CHECKS ``used_in`` before offering a clip — so this write is what makes
+    that rule enforceable at all. Only bank material counts; a per-video asset out
+    of ``projects/<name>/assets/`` is not registry material and is skipped.
+    """
+    ledger = bank / "ledger.jsonl"
+    if not ledger.is_file():
+        return []
+    root = bank.resolve()
+    burned = set()
+    for f in files:
+        try:
+            burned.add(pathlib.Path(f).resolve().relative_to(root).as_posix())
+        except ValueError:
+            continue  # not from the bank
+    if not burned:
+        return []
+
+    marked, lines = [], []
+    for line in ledger.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            row = json.loads(line)
+            if row.get("file") in burned and slug not in row.setdefault("used_in", []):
+                row["used_in"].append(slug)
+                marked.append(row["file"])
+            line = json.dumps(row, ensure_ascii=False)
+        lines.append(line)
+    if marked:
+        tmp = ledger.with_suffix(".jsonl.tmp")  # the ledger IS the bank's memory
+        tmp.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        tmp.replace(ledger)
+        if log:
+            log(f"bank: {slug} recorded in used_in of {', '.join(marked)}")
+    return marked
 
 
 def _video_wh(path: str) -> tuple[int, int]:

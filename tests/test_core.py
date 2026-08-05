@@ -1192,3 +1192,59 @@ def test_contact_sheet_quotes_the_words_the_picture_covers():
     assert _cs._said_at(segs, 4.0) == "второе"    # boundary belongs to the later line
     assert _cs._said_at(segs, 99.0) == ""
     assert _cs._tc(75.4) == "1:15"
+
+
+# --- bank ledger: used_in ------------------------------------------------------
+
+def _ledger(tmp_path: Path, *rows: dict) -> Path:
+    bank = tmp_path / "bank"
+    (bank / "gameplay").mkdir(parents=True, exist_ok=True)
+    (bank / "ledger.jsonl").write_text(
+        "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8"
+    )
+    return bank
+
+
+def test_bank_ledger_records_which_video_used_the_asset(tmp_path):
+    """Правило канала «похожие кадры не повторяются между роликами» держится
+    целиком на used_in — а поле живо, только если монтаж в него пишет."""
+    from chatmonteur.tools.overlays import _note_used_in
+
+    bank = _ledger(
+        tmp_path,
+        {"file": "gameplay/гонка-01.mp4", "used_in": []},
+        {"file": "gameplay/космос-02.mp4", "used_in": ["старый-ролик"]},
+    )
+    marked = _note_used_in(
+        bank,
+        [str(bank / "gameplay" / "гонка-01.mp4"), "projects/x/assets/tweet.png"],
+        "новый-ролик",
+    )
+
+    assert marked == ["gameplay/гонка-01.mp4"]   # ассет проекта в банк не пишется
+    rows = [json.loads(l) for l in (bank / "ledger.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert rows[0]["used_in"] == ["новый-ролик"]
+    assert rows[1]["used_in"] == ["старый-ролик"]   # чужие строки не трогаем
+
+
+def test_bank_ledger_does_not_repeat_a_slug_on_re_render(tmp_path):
+    """Перерендер — норма (превью, потом финал). Слаг должен лечь один раз,
+    иначе used_in превращается в счётчик прогонов и перестаёт читаться."""
+    from chatmonteur.tools.overlays import _note_used_in
+
+    bank = _ledger(tmp_path, {"file": "gameplay/гонка-01.mp4", "used_in": ["ролик"]})
+    clip = str(bank / "gameplay" / "гонка-01.mp4")
+
+    assert _note_used_in(bank, [clip], "ролик") == []
+    rows = [json.loads(l) for l in (bank / "ledger.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert rows[0]["used_in"] == ["ролик"]
+
+
+def test_bank_ledger_missing_never_breaks_a_render(tmp_path):
+    """bank/ в git не уходит: у клона репозитория его нет вообще. Отсутствие
+    реестра — не ошибка монтажа, рендер уже состоялся."""
+    from chatmonteur.tools.overlays import _note_used_in
+
+    said = []
+    assert _note_used_in(tmp_path / "bank", ["whatever.mp4"], "ролик", log=said.append) == []
+    assert not said   # нечего сказать: банка нет, ассеты не из него
