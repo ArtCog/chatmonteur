@@ -45,6 +45,7 @@ projects/*/transcripts/*.json
 PLAN.local.md
 PLAN-history.local.md
 ROADMAP.local.md
+STATE.md
 
 # --- os / editor ---
 .DS_Store
