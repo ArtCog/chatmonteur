@@ -1248,3 +1248,52 @@ def test_bank_ledger_missing_never_breaks_a_render(tmp_path):
     said = []
     assert _note_used_in(tmp_path / "bank", ["whatever.mp4"], "ролик", log=said.append) == []
     assert not said   # нечего сказать: банка нет, ассеты не из него
+
+
+def test_stock_sees_a_key_that_lives_only_in_dotenv(monkeypatch, tmp_path):
+    """Ключи лежат в .env, а не в окружении процесса. Config.get_secret умеет
+    читать .env — провайдер обязан спрашивать у него, иначе рабочий ключ
+    невидим и tool молча говорит «нет провайдера»."""
+    monkeypatch.delenv("PEXELS_API_KEY", raising=False)
+    (tmp_path / ".env").write_text("PEXELS_API_KEY=из-дотенва\n", encoding="utf-8")
+    secret = load_config(str(tmp_path)).get_secret
+
+    assert _stock_providers("video", None, secret) == ["pexels"]
+    assert _stock_providers("video", None) == []   # без резолвера — как было
+
+
+def test_pexels_picks_by_width_because_that_is_what_gets_scaled():
+    """Оверлей масштабируется по ШИРИНЕ кадра (scale=target_w:-2), фон — тоже.
+    Критерий по высоте врёт на вертикальных кандидатах: живая выкачка принесла
+    720x1280 как «достаточное 1080p», а по ширине это 720."""
+    from chatmonteur.tools.stock import _pexels_file
+
+    files = [{"width": 640, "height": 360, "link": "a"},
+             {"width": 3840, "height": 2160, "link": "b"},
+             {"width": 1920, "height": 1080, "link": "c"},
+             {"width": 720, "height": 1280, "link": "вертикаль"}]
+    assert _pexels_file(files, 1280) == "c"      # самый лёгкий, которого ХВАТАЕТ по ширине
+    assert _pexels_file(files, 2560) == "b"      # ниже цели нет — берём максимум
+    assert _pexels_file([{"width": 640, "height": 360, "link": "e"}], 1280) == "e"
+    assert _pexels_file([], 1280) is None
+
+
+def test_sfx_kind_routes_to_freesound_only_with_a_key(monkeypatch, tmp_path):
+    """SFX — четвёртый вид материала рядом с image/video/meme, а не отдельный
+    инструмент: качает кандидатов, ведёт manifest, тот же селектор провайдеров."""
+    monkeypatch.delenv("FREESOUND_API_KEY", raising=False)
+    assert _stock_providers("sfx", None) == []
+    (tmp_path / ".env").write_text("FREESOUND_API_KEY=токен\n", encoding="utf-8")
+    assert _stock_providers("sfx", None, load_config(str(tmp_path)).get_secret) == ["freesound"]
+
+
+def test_freesound_licence_flags_come_from_the_licence_url():
+    """Freesound отдаёт лицензию ссылкой. CC0 не требует ничего; by — строку в
+    описании ролика; by-nc и sampling+ ограничивают коммерческое использование —
+    канал не монетизируется, но пометка нужна, чтобы потом было что перебрать."""
+    from chatmonteur.tools.stock import _licence_flags
+
+    assert _licence_flags("http://creativecommons.org/publicdomain/zero/1.0/") == (False, False)
+    assert _licence_flags("https://creativecommons.org/licenses/by/4.0/") == (True, False)
+    assert _licence_flags("https://creativecommons.org/licenses/by-nc/4.0/") == (True, True)
+    assert _licence_flags("https://creativecommons.org/licenses/sampling+/1.0/") == (True, True)

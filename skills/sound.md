@@ -2,8 +2,12 @@
 
 The decision layer for sound design. Execution (filter graphs, locked levels, the one-pass
 final render) lives in `references/final-render-and-audio.md` — read it before building the
-mix. Nothing is generated: music and SFX come from the bundled CC0 pack and the user's own
-drop-in files.
+mix. Nothing is generated: music and SFX come from the bundled CC0 pack, the user's own
+drop-in files, and — when the pack has no fitting hit — `stock kind=sfx` (Freesound, needs
+`FREESOUND_API_KEY`). It downloads the MP3 preview, not the original: an OAuth2 dance for a
+2-second whoosh sitting 15 dB under speech buys nothing. Every candidate carries
+`attribution_required` and `noncommercial` in the manifest — CC-BY means a line in the video
+description, so prefer CC0 when two candidates are equally good.
 
 ## The sound pack
 
