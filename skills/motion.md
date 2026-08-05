@@ -280,6 +280,13 @@ shots must not repeat across videos (Артур's standing rule). After burning 
 a video, append the video slug to its `used_in`. Per-video assets stay in the project's
 `assets/`, not in the bank.
 
+**The agent NEVER picks the background alone — it ASKS.** Артур 2026-08-04: «агент же
+будет меня спрашивать, а не сам выбирать, не так ли? По умолчанию так должно быть».
+So at every stretch that needs filler, offer the candidates from the ledger — his
+`priority` order, the `tier` that fits the section — and let him choose. Autonomy here
+is something he grants later and per video, never something the agent assumes. The
+`used_in` check still applies on top: do not offer a clip that already carried a video.
+
 **Two registries, not two competitors.** `manifest.json` (written by `stock` into the
 project) is the RAW catch — it lives and dies with the video, and is not to be rewritten.
 `ledger.jsonl` in the bank is the PERMANENT registry, and holds only what was promoted.
