@@ -24,6 +24,12 @@ python3 -m pip install auto-editor
 [ -f config.toml ] || cp config.example.toml config.toml && echo "  wrote config.toml"
 [ -f .env ] || cp .env.example .env && echo "  wrote .env"
 
+# --- repository safety ---
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  git config core.hooksPath .githooks
+  echo "  enabled repository safety hooks"
+fi
+
 # --- report encoders ---
 say "Available hardware encoders"
 ffmpeg -hide_banner -encoders 2>/dev/null | grep -iE 'nvenc|videotoolbox|qsv' || echo "  none — will use libx264 (CPU)"

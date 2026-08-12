@@ -20,6 +20,11 @@ python -m pip install auto-editor
 if (-not (Test-Path config.toml)) { Copy-Item config.example.toml config.toml; Write-Host "  wrote config.toml" }
 if (-not (Test-Path .env))        { Copy-Item .env.example .env;             Write-Host "  wrote .env" }
 
+if ((Have git) -and (Test-Path .git)) {
+    git config core.hooksPath .githooks
+    Write-Host "  enabled repository safety hooks"
+}
+
 Say "Available hardware encoders"
 ffmpeg -hide_banner -encoders 2>$null | Select-String -Pattern "nvenc|videotoolbox|qsv"
 

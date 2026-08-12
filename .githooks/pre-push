@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+zero=0000000000000000000000000000000000000000
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    [ "$local_sha" = "$zero" ] && continue
+
+    blocked_paths=$(
+        git -c core.quotepath=false ls-tree -r --name-only "$local_sha" |
+            grep -E '(^\.env$|^STATE\.md$|\.local\.md$|^_audit/|^черновик/|^bank/)' |
+            grep -v -E '^bank/BANK\.md$' || true
+    )
+    if [ -n "$blocked_paths" ]; then
+        printf '%s\n' 'pre-push: refusing to publish private or third-party files:' >&2
+        printf '  %s\n' "$blocked_paths" >&2
+        status=1
+    fi
+
+    if [ "$remote_sha" = "$zero" ]; then
+        diff_base=$(git hash-object -t tree /dev/null)
+    else
+        diff_base=$remote_sha
+    fi
+    possible_secret=$(
+        git diff --no-ext-diff --unified=0 "$diff_base" "$local_sha" -- |
+            grep -E '^\+' |
+            grep -v -E '^\+\+\+' |
+            sed 's/^+//' |
+            grep -Ei "(api[_-]?key|token|secret|password)[A-Za-z0-9_-]*[[:space:]]*[:=][[:space:]]*['\"]?[A-Za-z0-9_./+=-]{20,}" |
+            grep -E '[0-9]' |
+            grep -Eiv '(replace|placeholder|example|dummy|changeme|your[_ -]?(key|token|secret|password))' || true
+    )
+    if [ -n "$possible_secret" ]; then
+        printf '%s\n' 'pre-push: possible secret found in added lines; move it to .env before pushing.' >&2
+        status=1
+    fi
+done
+
+exit "$status"

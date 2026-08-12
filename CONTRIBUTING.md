@@ -8,6 +8,7 @@ chatmonteur grows by adding tools and pipelines — contributions welcome.
 git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
 python -m pip install -e ".[whisper,dev]"
 python -m pip install auto-editor      # silence removal backend
+git config core.hooksPath .githooks    # block private files and likely secrets
 pytest -q                              # fast guard tests (no ffmpeg)
 ```
 
