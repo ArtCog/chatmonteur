@@ -22,6 +22,7 @@ with "he just cut the pauses and added subtitles".
 | `transitions` | joining separate pieces: title card + body, several takes, intro/outro. Three kinds, one primary on ≥60 % of joins or it refuses | ① |
 | `transcribe` | before any editorial decision | ② |
 | `cut_edl` | execute an APPROVED meaning cut | ② |
+| `redact` | permanently cover credentials, personal data, or private UI found during source review; solid cover, never reversible blur | ② |
 | `stock` | source a free, commercially-safe image/clip before storyboarding | ③ |
 | `motion` | render a brand component to transparent ProRes 4444 for compositing | ③ |
 | `cues` | burn a brand cue list (`{t, element, text}`, see the manifest's `cueFormat`) — checks it against the brandbook's budgets first; `dry_run` holds the gate without rendering | ③ |
@@ -97,7 +98,8 @@ or a visible defect; the "why" is in `references/edit-sequence.md`.
 
 ② MEANING CUT (editorial — transcript-driven, approval-gated) — locks the audio spine
    verbatim transcript of the DRAFT → intelligent cut-plan (fillers/false starts/retakes)
-   → APPROVAL → cut_edl (one pass). This is the audio "picture-lock".
+   → APPROVAL → cut_edl (one pass) → inspect real frames for credentials/private data
+   → redact before any review copy leaves the project. This is the audio "picture-lock".
    → cutting.md Tier 2
 
 ③ VISUAL MONTAGE (editorial, approval-gated) — locks the GEOMETRY, before color

@@ -50,7 +50,9 @@ heuristics buried in a prompt.
 git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
 ./setup.sh                  # Windows: ./setup.ps1   (installs chatmonteur + free local toolchain)
 chatmonteur tools           # see capabilities and what's ready
-chatmonteur edit raw.mp4    # raw footage → projects/raw/renders/final.mp4
+chatmonteur init 2026-demo --title "My video"       # optional explicit project creation
+chatmonteur edit raw.mp4 --project 2026-demo        # imports raw → projects/2026-demo/raw/
+                                                    # final → projects/2026-demo/renders/final.mp4
 ```
 
 Then just talk to your agent: *"edit raw.mp4 — cut the filler, add captions,
@@ -84,6 +86,8 @@ raw footage
 agent-driven on top (never automatic):
   → intelligent cut                  the AGENT reasons over the transcript, writes an
     (fillers, stumbles, retakes)     EDL cut-plan, you approve → one frame-accurate pass
+  → privacy redaction                timecoded solid coverage for credentials/private UI;
+                                     inspected before any review copy leaves the project
   → storyboard                       zooms + b-roll + meaning-inserts as ONE approved plan,
                                      scored for boringness before it burns
   → motion graphics                  HyperFrames rendered to transparent ProRes and

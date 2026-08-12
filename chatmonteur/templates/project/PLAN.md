@@ -1,8 +1,6 @@
 ---
 project_title: "{{PROJECT_TITLE}}"
-editorial_status: intake
-approved_by: null
-production_handoff: not_ready
+montage_status: intake
 legacy_source_root: "{{LEGACY_SOURCE_ROOT}}"
 ---
 
@@ -12,13 +10,12 @@ This file is the first read for every agent entering this video project.
 
 ## Current state
 
-- Stage: intake
-- Next decision: establish the promise, audience action, evidence, and structure.
-- Human gate: Artur must approve the spoken script after a cold read.
+- Stage: ingest
+- Next step: import source media and run the mechanical skeleton.
+- Approval gates: meaning cut, voice tempo, storyboard, optional subtitles, and mix test.
 
 ## File contract
 
-- `preproduction/` — script, evidence, acquisition brief, and design direction.
 - `raw/` — immutable source recordings; never edit or overwrite them.
 - `assets/` — project-specific screenshots, b-roll, and licensed media.
 - `clips/` — reproducible technical and editorial intermediates.
@@ -26,7 +23,6 @@ This file is the first read for every agent entering this video project.
 - `compositions/` — HyperFrames sources and alpha renders.
 - `previews/` — approval-gate samples; never call these final.
 - `renders/` — masters and QC evidence only.
-- `youtube/` — upload package, description, credits, and thumbnail handoff.
 
 ## Project identity and constraints
 
@@ -34,14 +30,7 @@ This file is the first read for every agent entering this video project.
 - Legacy source root: `{{LEGACY_SOURCE_ROOT}}`
 - `canvas.json` is optional and is created only when the Planning Canvas is used.
 
-## Structure and editorial decisions
+## Montage decisions
 
-Record the current beat map, locked wording, rejected options, timing target, and unresolved decisions here.
-
-## Script review and cold read
-
-Record spoken-audit findings and Artur's requested changes here. Do not mark approval on Artur's behalf.
-
-## Production handoff
-
-The handoff becomes ready only after the script, sources, visual acquisition brief, and video-specific design direction are approved.
+Record source selection, cut decisions, approved timing, storyboard, exact on-screen wording,
+subtitle choice, mix approval, render status, and unresolved montage decisions here.

@@ -2,6 +2,10 @@
 
 ChatMonteur closes the video-production loop from editorial development through a QC-approved render. Distribution remains a separate boundary.
 
+> **Release boundary:** this document also describes Artur's private workspace
+> wrapper. Public ChatMonteur v0.1 starts at montage ingest and does not ship the
+> private research/script/localization workflow. See ADR 0012.
+
 ## Phase 0: editorial pre-production
 
 The `youtube-editorial` skill owns:
@@ -24,7 +28,13 @@ Every new project is initialized under `projects/<yyyy-slug>/` with:
 - `preproduction/REFERENCES.md` as the claim-level evidence ledger;
 - `preproduction/VISUAL-PACK.md` as the acquisition brief;
 - `preproduction/DESIGN.md` for video-specific design exceptions;
-- `raw/`, `assets/`, `clips/`, `transcripts/`, `previews/`, `renders/`, and `youtube/` for the production lifecycle.
+- `raw/`, `assets/`, `clips/`, `transcripts/`, `compositions/`, `previews/`, `renders/`, and `youtube/` for the production lifecycle.
+
+The private `youtube-editorial` initializer creates this full workspace contract.
+Public `chatmonteur init <yyyy-slug>` and `chatmonteur edit ... --project <yyyy-slug>`
+create only the montage contract (`raw/`, `assets/`, `clips/`, `transcripts/`,
+`compositions/`, `previews/`, `renders/`) idempotently. `edit` imports an external
+recording into immutable `raw/`; existing files are never overwritten.
 
 `canvas.json` is optional. Chat history is never authoritative project state. Local project dossiers are private and ignored by the public repository; the reusable public skeleton lives inside the skill package.
 

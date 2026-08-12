@@ -29,6 +29,24 @@ next steps) — read its latest checkpoint at the start of any session. This fil
 `AGENTS.md` (same content for non-Claude agents) are the project's memory; the
 conversation is not.
 
+## Mandatory per-video container
+
+Before any edit, identify `projects/<yyyy-slug>/PLAN.md` and read it. If the
+project does not exist, run `chatmonteur init <yyyy-slug> --title "..."` or use
+`chatmonteur edit ... --project <yyyy-slug>`; `edit` initializes the same full
+contract and imports the source into immutable `raw/` automatically. Never keep
+an active video's working state in `_audit/`, `черновик/`, or chat history.
+
+The public montage layout is `raw/`, `assets/`, `clips/`, `transcripts/`,
+`compositions/`, `previews/`, and `renders/`.
+Approval artifacts live in `previews/`; only masters and QC evidence live in
+`renders/`.
+
+Artur's private preproduction workflow (`preproduction/`, research, Russian
+spoken-script adaptation, and `youtube/` packaging) may wrap the same project,
+but is not part of the public ChatMonteur v0.1 contract. The handoff into the
+public core is source media plus language-neutral transcript/EDL/storyboard data.
+
 ## Rule zero: the agent does not invent (IMPORTANT)
 
 **Артур 2026-07-30: «агент ничего не создаёт, а следует инструкциям и следует возможностям
@@ -56,7 +74,8 @@ tool is a win, not a loss.
 ## The one command
 
 ```
-chatmonteur edit <raw.mp4> [--lut warm_film] [--project name] [--model large-v3]
+chatmonteur init <yyyy-slug> --title "Video title"
+chatmonteur edit <raw.mp4> [--lut warm_film] [--project yyyy-slug] [--model large-v3]
 ```
 
 This runs the **talking_head** pipeline — mechanical steps only: normalize

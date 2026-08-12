@@ -25,6 +25,7 @@ from .core import (
     ToolRegistry,
     load_config,
 )
+from .project import import_source, initialize_project
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 _PIPELINES = _REPO_ROOT / "pipelines"
@@ -53,6 +54,13 @@ def main(argv: list[str] | None = None) -> int:
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="chatmonteur", description="Agent-orchestrated talking-head video editing.")
     sub = p.add_subparsers(dest="command", required=True)
+
+    init = sub.add_parser("init", help="create a complete per-video project contract")
+    init.add_argument("project", help="project name under projects/")
+    init.add_argument("--title", help="human-readable video title (default: project name)")
+    init.add_argument("--root", default=".", help="workspace root holding projects/ (default: cwd)")
+    init.add_argument("--legacy-source-root", default="", help="optional path to existing source material")
+    init.set_defaults(func=_cmd_init)
 
     edit = sub.add_parser("edit", help="raw footage -> finished video")
     edit.add_argument("input", help="path to the raw video")
@@ -90,6 +98,9 @@ def _cmd_edit(args: argparse.Namespace) -> int:
         config = dataclasses.replace(config, transcribe=dataclasses.replace(config.transcribe, model=args.model))
 
     project = args.project or src.stem
+    project_root = config.projects_dir / project
+    initialize_project(project_root, title=project, legacy_source_root=str(src.parent))
+    src = import_source(src, project_root)
     ctx = RunContext.for_project(config, project)
     ctx.log(f"project '{project}' → {ctx.paths.project_root}")
 
@@ -101,6 +112,17 @@ def _cmd_edit(args: argparse.Namespace) -> int:
 
     final = results["render"].artifacts["video"]
     print(f"\nDONE: {final}")
+    return 0
+
+
+def _cmd_init(args: argparse.Namespace) -> int:
+    config = load_config(args.root)
+    project_root = initialize_project(
+        config.projects_dir / args.project,
+        title=args.title or args.project,
+        legacy_source_root=args.legacy_source_root,
+    )
+    print(f"PROJECT_READY {project_root}")
     return 0
 
 

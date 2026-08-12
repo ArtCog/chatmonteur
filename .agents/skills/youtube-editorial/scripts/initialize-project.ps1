@@ -14,7 +14,7 @@ if (-not (Test-Path -LiteralPath $templateRoot -PathType Container)) {
 
 $directories = @(
   '', 'preproduction', 'preproduction\research', 'raw', 'assets', 'clips',
-  'transcripts', 'previews', 'renders', 'youtube'
+  'transcripts', 'compositions', 'previews', 'renders', 'youtube'
 )
 foreach ($relative in $directories) {
   $path = if ($relative) { Join-Path $ProjectRoot $relative } else { $ProjectRoot }

@@ -19,7 +19,7 @@ try {
   )
   $requiredDirectories = @(
     'preproduction\research', 'raw', 'assets', 'clips', 'transcripts',
-    'previews', 'renders', 'youtube'
+    'compositions', 'previews', 'renders', 'youtube'
   )
 
   foreach ($relative in $requiredFiles) {

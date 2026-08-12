@@ -41,6 +41,10 @@ class ProjectPaths:
         return self.project_root / "compositions"
 
     @property
+    def raw(self) -> Path:
+        return self.project_root / "raw"
+
+    @property
     def previews(self) -> Path:
         return self.project_root / "previews"
 
@@ -51,6 +55,7 @@ class ProjectPaths:
     def ensure(self) -> "ProjectPaths":
         """Create every subdirectory. Idempotent."""
         for p in (
+            self.raw,
             self.clips,
             self.transcripts,
             self.assets,

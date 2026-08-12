@@ -487,7 +487,7 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
-    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
+    expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "redact", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
                 "color", "motion", "render", "qc", "transitions"}
     assert expected <= caps
 

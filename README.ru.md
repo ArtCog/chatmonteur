@@ -51,7 +51,9 @@
 git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
 ./setup.sh                  # Windows: ./setup.ps1
 chatmonteur tools           # что умеет и что готово
-chatmonteur edit raw.mp4    # сырьё → projects/raw/renders/final.mp4
+chatmonteur init 2026-demo --title "Мой ролик"       # явное создание проекта (необязательно)
+chatmonteur edit raw.mp4 --project 2026-demo        # копия сырья → projects/2026-demo/raw/
+                                                    # финал → projects/2026-demo/renders/final.mp4
 ```
 
 Дальше просто говори с агентом: *«смонтируй raw.mp4 — убери филлеры, добавь субтитры,
@@ -82,6 +84,8 @@ chatmonteur edit raw.mp4    # сырьё → projects/raw/renders/final.mp4
 поверх — через агента (никогда автоматически):
   → умная резка                       АГЕНТ рассуждает над транскриптом, пишет EDL
     (филлеры, оговорки, дубли)        cut-plan, ты подтверждаешь → один точный проход
+  → скрытие приватных данных          таймкодированные непрозрачные маски для ключей/личного UI;
+                                      проверяются до любой выдачи preview
   → моушн-графика                     hyperframes-композиции, которые пишет агент
   → звук (музыка, ducking, SFX)
 ```
