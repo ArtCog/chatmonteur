@@ -841,6 +841,22 @@ def test_brand_loader_reproduces_every_hardcoded_value():
     assert brand.font_dir().is_dir()
 
 
+def test_cold_open_outline_text_is_painted_for_hyperframes_check():
+    """An outlined headline must not use a transparent fill that the layout gate rejects."""
+    component = (
+        Path(__file__).resolve().parents[1]
+        / "assets"
+        / "brand"
+        / "default"
+        / "components"
+        / "mono-39"
+        / "index.html"
+    ).read_text(encoding="utf-8")
+    assert 'id="m39-a-text"' in component
+    assert "color:transparent;-webkit-text-stroke:5px #FAFAF7" not in component
+    assert "color:#0B0B0C;-webkit-text-stroke:5px #FAFAF7" in component
+
+
 def test_ass_colour_is_byte_reversed():
     """libass stores colour as BGR. Reversing by hand is how green ships as blue."""
     from chatmonteur import brand
