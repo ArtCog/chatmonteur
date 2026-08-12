@@ -7,6 +7,7 @@ defaults, pipeline parsing, registry discovery, param resolution.
 from __future__ import annotations
 
 import sys
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -29,6 +30,7 @@ from chatmonteur.tools.inserts import _load_plan as _load_ins_plan  # noqa: E402
 from chatmonteur.tools.inserts import _to_ass as _ins_to_ass  # noqa: E402
 from chatmonteur.tools.overlays import _filter_graph as _ovl_filter_graph  # noqa: E402
 from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E402
+from chatmonteur.tools.overlays import TOOL as _OVL_TOOL  # noqa: E402
 from chatmonteur.tools.sound import _load_plan as _load_sound_plan  # noqa: E402
 from chatmonteur.tools.sound import _next_input_index as _snd_next_index  # noqa: E402
 from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
@@ -488,6 +490,20 @@ def test_registry_discovers_all_capabilities():
     expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
                 "color", "motion", "render", "qc", "transitions"}
     assert expected <= caps
+
+
+def test_overlay_declares_its_pillow_runtime_dependency():
+    assert "PIL" in _OVL_TOOL.manifest.requires_py
+
+
+def test_fresh_setup_and_dev_install_include_pillow():
+    root = Path(__file__).resolve().parents[1]
+    project = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    dev = [dep.lower() for dep in project["optional-dependencies"]["dev"]]
+    assert any(dep.startswith("pillow") for dep in dev)
+    for script in ("setup.ps1", "setup.sh"):
+        assert ".[whisper,emoji]" in (root / script).read_text(encoding="utf-8")
+    assert ".[whisper,emoji,dev]" in (root / "CONTRIBUTING.md").read_text(encoding="utf-8")
 
 
 def test_every_capability_is_routed_in_the_skill():

@@ -16,8 +16,8 @@ have node    || echo "  - node missing (only needed for motion/hyperframes)"
 [ "$miss" = 1 ] && { echo "Install the items above, then re-run."; exit 1; }
 
 # --- python deps ---
-say "Installing chatmonteur + local transcription (faster-whisper) + auto-editor"
-python3 -m pip install -e ".[whisper]"
+say "Installing chatmonteur + local transcription + image support + auto-editor"
+python3 -m pip install -e ".[whisper,emoji]"
 python3 -m pip install auto-editor
 
 # --- config scaffolding ---

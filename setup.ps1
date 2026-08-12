@@ -13,8 +13,8 @@ if (-not (Have ffprobe)) { Write-Host "  ! ffprobe missing (ships with ffmpeg)";
 if (-not (Have npx))     { Write-Host "  - node/npx missing (only needed for motion/hyperframes)" }
 if ($miss) { Write-Host "Install the items above, then re-run."; exit 1 }
 
-Say "Installing chatmonteur + local transcription (faster-whisper) + auto-editor"
-python -m pip install -e ".[whisper]"
+Say "Installing chatmonteur + local transcription + image support + auto-editor"
+python -m pip install -e ".[whisper,emoji]"
 python -m pip install auto-editor
 
 if (-not (Test-Path config.toml)) { Copy-Item config.example.toml config.toml; Write-Host "  wrote config.toml" }

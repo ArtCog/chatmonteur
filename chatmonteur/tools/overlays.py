@@ -60,6 +60,7 @@ class OverlaysTool(Tool):
         summary="Burn approved B-roll overlays (images/clips over the speaker) with ffmpeg.",
         backends=("ffmpeg",),
         requires_bin=("ffmpeg",),
+        requires_py=("PIL",),
         cost="free",
     )
 
