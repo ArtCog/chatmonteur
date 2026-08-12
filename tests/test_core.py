@@ -1226,6 +1226,40 @@ def test_contact_sheet_quotes_the_words_the_picture_covers():
     assert _cs._tc(75.4) == "1:15"
 
 
+def test_contact_sheet_shows_transparent_motion_over_the_real_frame(tmp_path):
+    """A transparent motion snapshot on black lies about the approved result.
+
+    The sheet must show the same composition the viewer gets: the alpha element
+    over the footage, with the footage still visible outside the graphic.
+    """
+    from PIL import Image, ImageDraw
+    import chatmonteur.tools.contact_sheet as _cs
+
+    base = tmp_path / "base.png"
+    overlay = tmp_path / "overlay.png"
+    thumb = tmp_path / "thumb.jpg"
+    Image.new("RGB", (320, 180), (220, 20, 20)).save(base)
+    # HyperFrames components are 1920×1080 while the dogfood preview is
+    # 2560×1440. Use the same 3:4 mismatch so the test catches a top-left-only
+    # composite as well as a missing backplate.
+    layer = Image.new("RGBA", (240, 135), (0, 0, 0, 0))
+    ImageDraw.Draw(layer).rectangle((90, 45, 150, 90), fill=(20, 40, 220, 255))
+    layer.save(overlay)
+
+    beat = {
+        "section": "motion",
+        "start": 0.0,
+        "file": str(overlay),
+        "missing": False,
+    }
+    assert _cs._thumb(beat, str(base), thumb, log=lambda _msg: None).startswith("data:image/jpeg")
+    rendered = Image.open(thumb).convert("RGB")
+    outside = rendered.getpixel((20, 20))
+    inside = rendered.getpixel((180, 90))
+    assert outside[0] > 180 and outside[1] < 60 and outside[2] < 60
+    assert inside[2] > 160 and inside[0] < 80
+
+
 # --- bank ledger: used_in ------------------------------------------------------
 
 def _ledger(tmp_path: Path, *rows: dict) -> Path:

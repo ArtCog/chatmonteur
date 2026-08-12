@@ -142,11 +142,13 @@ def _is_filler(file: str) -> bool:
 
 
 def _thumb(beat: dict, video: str, dst: pathlib.Path, *, log) -> str:
-    """One data-URI thumbnail: the ASSET when the beat brings one, else the frame.
+    """One data-URI thumbnail: the visible result at this beat.
 
     An overlay's candidate is the picture going in, not the footage under it — so
-    for anything carrying a file we show the file. Zooms and inserts have nothing
-    of their own, and their candidate IS the frame at that moment.
+    ordinary overlay assets are shown alone. A motion snapshot is different: it is
+    a full-canvas layer and may carry alpha, so showing it on the page's black body
+    lies about what will be approved. Composite motion images over the actual frame.
+    Zooms and inserts have nothing of their own, and their candidate IS that frame.
     """
     if beat["missing"]:
         log(f"⚠ contact_sheet: {beat['file']} is planned at {beat['start']:.1f}s but is "
@@ -159,14 +161,33 @@ def _thumb(beat: dict, video: str, dst: pathlib.Path, *, log) -> str:
         src, seek = str(asset), (0.0 if asset.suffix.lower() in _IMAGE_SUFFIXES else 0.5)
 
     try:
-        media.run(
-            ["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0.0, seek):.3f}", "-i", src,
-             "-frames:v", "1", "-vf", f"scale={_THUMB_W}:-2", str(dst)]
-        )
+        if beat["section"] == "motion" and asset and asset.suffix.lower() in _IMAGE_SUFFIXES:
+            width, height = _video_wh(video)
+            media.run([
+                "ffmpeg", "-v", "error", "-y",
+                "-ss", f"{max(0.0, beat['start']):.3f}", "-i", video,
+                "-i", str(asset),
+                "-filter_complex",
+                f"[1:v]scale={width}:{height}[layer];"
+                f"[0:v][layer]overlay=0:0,scale={_THUMB_W}:-2",
+                "-frames:v", "1", str(dst),
+            ])
+        else:
+            media.run(
+                ["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0.0, seek):.3f}", "-i", src,
+                 "-frames:v", "1", "-vf", f"scale={_THUMB_W}:-2", str(dst)]
+            )
         return "data:image/jpeg;base64," + base64.b64encode(dst.read_bytes()).decode("ascii")
     except (ToolError, OSError):
         log(f"contact_sheet: no frame at {beat['start']:.1f}s from {pathlib.PurePath(src).name}")
         return ""
+
+
+def _video_wh(path: str) -> tuple[int, int]:
+    for stream in media.ffprobe_json(path).get("streams", []):
+        if stream.get("codec_type") == "video" and stream.get("width") and stream.get("height"):
+            return int(stream["width"]), int(stream["height"])
+    return 1920, 1080
 
 
 def _segments(path: pathlib.Path) -> list[dict]:
