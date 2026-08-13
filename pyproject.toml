@@ -21,7 +21,7 @@ whisper = ["faster-whisper>=1.0"]
 # Colour emoji in meaning-inserts (libass draws outline glyphs only, so the emoji is
 # rendered to a PNG and overlaid). Without it inserts still burn — just text-only.
 emoji = ["pillow>=10.0"]
-dev = ["pytest>=8.0", "pillow>=10.0"]
+dev = ["pytest>=8.0", "pillow>=10.0", "qrcode>=8.0"]
 
 [project.scripts]
 chatmonteur = "chatmonteur.cli:main"

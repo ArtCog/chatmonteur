@@ -98,10 +98,11 @@ class CuesTool(Tool):
 
         out = ctx.paths.clips / "cued.mp4"
         encoder = media.detect_encoder(ctx.config.encode.encoder)
+        width, height = _video_wh(input)
         cmd = ["ffmpeg", "-y", "-i", str(input)]
         for cue in plan:
             cmd += ["-an", "-i", cue["file"]]
-        cmd += ["-filter_complex", _filter_graph(plan),
+        cmd += ["-filter_complex", _filter_graph(plan, width=width, height=height),
                 "-map", "[v]", "-map", "0:a?",
                 "-c:v", encoder, *media.encoder_quality_args(encoder),
                 "-pix_fmt", "yuv420p", "-c:a", "copy", str(out)]
@@ -361,16 +362,27 @@ def _duration_of(video: str) -> float | None:
 
 # --- compositing ---------------------------------------------------------------
 
-def _filter_graph(plan: list[dict]) -> str:
-    """Every cue lands 1:1 at 0,0 for exactly its window.
+def _video_wh(path: str) -> tuple[int, int]:
+    for stream in media.ffprobe_json(path).get("streams", []):
+        if stream.get("codec_type") == "video" and stream.get("width") and stream.get("height"):
+            return int(stream["width"]), int(stream["height"])
+    return 1920, 1080
 
-    No scaling and no added fades, unlike the b-roll path in overlays.py: these are
-    full-frame compositions rendered at the project's own size, and each already
-    animates its own entrance and exit. A second fade on top would double them.
+
+def _filter_graph(plan: list[dict], *, width: int, height: int) -> str:
+    """Scale every authored canvas to the input and land it at 0,0 for its window.
+
+    No added fades, unlike the b-roll path in overlays.py: each HyperFrames
+    composition owns its entrance/exit animation, so a generic fade would
+    double-animate it. Scaling is mandatory because reusable components are
+    authored at 1920x1080 while the footage may be 1440p or 4K.
     """
     parts, prev = [], "0:v"
     for i, cue in enumerate(plan):
-        parts.append(f"[{i + 1}:v]setpts=PTS+{cue['start']:.3f}/TB[o{i}]")
+        parts.append(
+            f"[{i + 1}:v]scale={width}:{height}:flags=lanczos,"
+            f"setpts=PTS+{cue['start']:.3f}/TB[o{i}]"
+        )
         parts.append(
             f"[{prev}][o{i}]overlay=0:0:"
             f"enable='between(t,{cue['start']:.3f},{cue['end']:.3f})'[v{i + 1}]")

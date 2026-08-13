@@ -11,7 +11,7 @@ Each entry: the value, why it works, where it lives in our code.
 
 | Fact | Value | Why | Ours |
 |---|---|---|---|
-| Ducking is **sidechain compression**, not a volume dip | `sidechaincompress=threshold=0.02:ratio=9:attack=200:release=500:level_sc=1:mix=0.9`; speech `asplit`s into a play branch and a key branch | Music yields exactly while a word sounds and returns in the gaps. Measured **8.1 dB** of duck on our synthetic bench | `tools/sound.py` |
+| Ducking is **gentle sidechain compression**, not a volume dip | `sidechaincompress=threshold=0.05:ratio=2:attack=20:release=700:level_sc=1:mix=0.9`; speech `asplit`s into a play branch and a key branch | Music yields by roughly 2–6 dB while speech remains present; the bed must not disappear between phrases | `tools/sound.py` |
 | Notch the bed in the **speech band** | `equalizer=f=3000:width_type=o:width=1.6:g=-4` | Intelligibility is won by vacating 2–4 kHz, not by lowering level. Three separate sources call this the single most important mix rule | `tools/sound.py` |
 | Music sits **~20 dB under dialogue** | `-20 dB` | W3C accessibility floor for foreground speech; broadcast practice pulls a little more | `_MUSIC_GAIN_DB` |
 | SFX **lands before its beat** | −15 ms | Hearing is faster than seeing; a hit on the exact frame reads as late | `_sfx_delay_ms` |

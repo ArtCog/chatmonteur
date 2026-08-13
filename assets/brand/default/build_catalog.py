@@ -14,11 +14,17 @@ import io
 import json
 import os
 import re
+import sys
 from collections import Counter
+from pathlib import Path
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "source")
 COMP = os.path.join(ROOT, "components")
+REPO_ROOT = Path(ROOT).parents[2]
+sys.path.insert(0, str(REPO_ROOT))
+
+from chatmonteur import brand  # noqa: E402
 
 # The Mono deck is the current numbered brandbook; the older "Бренд-система" deck still
 # holds six cards the refresh dropped (02·A, 07·C, 07·D, 11, 12·B, 12·C) and is read
@@ -165,6 +171,11 @@ def write_registry_items(cards):
         comp = read_component(name)
         files = [{"path": "index.html", "target": f"compositions/{name}.html",
                   "type": "hyperframes:composition"}]
+        motion = Path(COMP) / name / "index.motion.json"
+        if motion.is_file():
+            files.append({"path": "index.motion.json",
+                          "target": f"compositions/{name}.motion.json",
+                          "type": "hyperframes:asset"})
         files += [{"path": f"fonts/{f}", "target": f"compositions/fonts/{f}",
                    "type": "hyperframes:asset"} for f in comp["fonts"]]
         files += [{"path": a, "target": f"compositions/{a}",
@@ -185,6 +196,20 @@ def write_registry_items(cards):
         with io.open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(item, f, ensure_ascii=False, indent=2)
             f.write("\n")
+        written += 1
+    return written
+
+
+def write_channel_qrs():
+    """Regenerate every shipped Telegram QR from channel.json, never from memory."""
+    payload = brand.telegram_qr_png("default")
+    written = 0
+    for index in Path(COMP).glob("*/index.html"):
+        if 'src="assets/tg-qr.png"' not in index.read_text(encoding="utf-8"):
+            continue
+        target = index.parent / "assets" / "tg-qr.png"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
         written += 1
     return written
 
@@ -248,6 +273,8 @@ def check_tokens(manifest):
 if __name__ == "__main__":
     cards = build_cards()
     check(cards)
+    qrs = write_channel_qrs()
     catalog = write_catalog(cards)
     items = write_registry_items(cards)
-    print(json.dumps(catalog["counts"], ensure_ascii=False), f"· registry-item.json × {items}")
+    print(json.dumps(catalog["counts"], ensure_ascii=True),
+          f"- registry-item.json x {items} - Telegram QR x {qrs}")

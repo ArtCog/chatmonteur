@@ -1,0 +1,10 @@
+{
+  "duration": 7,
+  "assertions": [
+    { "kind": "appearsBy", "selector": "#m44-plate", "bySec": 0.5 },
+    { "kind": "appearsBy", "selector": "#m44-qr", "bySec": 0.55 },
+    { "kind": "before", "a": "#m44-qr", "b": "#m44-copy" },
+    { "kind": "staysInFrame", "selector": "#m44-plate" },
+    { "kind": "staysInFrame", "selector": "#m44-qr" }
+  ]
+}

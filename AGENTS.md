@@ -31,6 +31,15 @@ spoken-script adaptation, and `youtube/` packaging) may wrap the same project,
 but is not part of the public ChatMonteur v0.1 contract. The handoff into the
 public core is source media plus language-neutral transcript/EDL/storyboard data.
 
+## Channel CTA identity
+
+For the default «ИИмерсивный» brand, read `assets/brand/default/channel.json`
+before adding any YouTube or Telegram CTA. The Telegram channel is encoded there
+once and reusable QR assets are generated from it by `build_catalog.py`.
+`@Art_Cog` is Artur's personal account: never put it on screen as a channel
+handle, CTA, link, or QR destination. Do not reconstruct channel addresses from
+memory or from an older composition.
+
 ## Run it
 
 ```

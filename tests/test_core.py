@@ -33,6 +33,7 @@ from chatmonteur.tools.overlays import _load_plan as _load_ovl_plan  # noqa: E40
 from chatmonteur.tools.overlays import TOOL as _OVL_TOOL  # noqa: E402
 from chatmonteur.tools.sound import _load_plan as _load_sound_plan  # noqa: E402
 from chatmonteur.tools.sound import _next_input_index as _snd_next_index  # noqa: E402
+from chatmonteur.tools.sound import _sidechain_filter as _snd_sidechain_filter  # noqa: E402
 from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
 from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
@@ -409,6 +410,12 @@ def test_sound_input_indexes_track_the_ffmpeg_order():
     # a file to its [N:a] label
     assert _snd_next_index(["video.mp4"]) == 1
     assert _snd_next_index(["video.mp4", "-ss", "12.0", "-i", "bed.mp3"]) == 2
+
+
+def test_sound_uses_the_locked_gentle_ducking_contract():
+    graph = _snd_sidechain_filter("[music]", "[key]", "[ducked]")
+    assert "threshold=0.05:ratio=2:attack=20:release=700" in graph
+    assert "mix=0.9" in graph
 
 
 def test_sound_plan_rejects_missing_file(tmp_path):
@@ -879,6 +886,56 @@ def test_brand_is_swappable_without_touching_code(tmp_path, monkeypatch):
     brand.tokens.cache_clear()
 
 
+def test_default_brand_telegram_qr_targets_channel_not_personal_account():
+    """Every reusable Telegram CTA must come from the channel passport.
+
+    @Art_Cog is Artur's personal account.  Keeping the URL beside the brand and
+    deriving every shipped QR from it prevents a later editing session from
+    silently putting the personal account back on screen.
+    """
+    from chatmonteur import brand
+
+    telegram = brand.channel("default")["telegram"]
+
+    assert telegram["name"] == "ИИмерсивный"
+    assert telegram["url"] == "https://t.me/+afIVRcIuSeI2OTYy"
+    assert "@Art_Cog" in telegram["forbiddenCtas"]
+    assert "Art_Cog" not in telegram["url"]
+
+
+def test_every_shipped_telegram_qr_is_generated_from_canonical_channel():
+    """A copied PNG can outlive the prose around it, so compare the pixels too."""
+    from chatmonteur import brand
+
+    expected = brand.telegram_qr_png("default")
+    component_root = Path(__file__).resolve().parents[1] / "assets" / "brand" / "default" / "components"
+
+    for component in ("mono-13a", "mono-13b", "mono-44"):
+        qr = component_root / component / "assets" / "tg-qr.png"
+        assert qr.read_bytes() == expected, f"{component} does not encode the canonical Telegram channel"
+
+
+def test_telegram_overlay_registry_ships_its_motion_contract():
+    """Installed components must keep the check assertions proven in dogfood."""
+    item = json.loads((
+        Path(__file__).resolve().parents[1]
+        / "assets" / "brand" / "default" / "components" / "mono-44" / "registry-item.json"
+    ).read_text(encoding="utf-8"))
+
+    files = {(entry["path"], entry["target"]) for entry in item["files"]}
+    assert ("index.motion.json", "compositions/mono-44.motion.json") in files
+
+
+def test_catalog_builder_status_line_is_windows_codepage_safe():
+    """The builder must not fail after writing files just because stdout is CP1251."""
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "assets" / "brand" / "default" / "build_catalog.py"
+    ).read_text(encoding="utf-8")
+    status_line = next(line for line in source.splitlines() if 'f"' in line and "registry-item.json" in line)
+    assert status_line.isascii()
+
+
 def test_unknown_brand_and_token_fail_loudly():
     from chatmonteur import brand
     with pytest.raises(ToolError, match="no tokens.css"):
@@ -944,7 +1001,13 @@ def _write_plan(tmp_path, data):
 # The manifest's numbers are only worth writing down if something refuses to
 # render the plan that breaks them. These test the refusals, not the ffmpeg.
 
-from chatmonteur.tools.cues import _check, _load_brand, _resolve, _variables  # noqa: E402
+from chatmonteur.tools.cues import (  # noqa: E402
+    _check,
+    _filter_graph as _cue_filter_graph,
+    _load_brand,
+    _resolve,
+    _variables,
+)
 
 
 def _plan(*cues):
@@ -955,6 +1018,22 @@ def _plan(*cues):
 def _gate(plan, duration=600.0, allow_thin=True):
     _, manifest = _load_brand()
     _check(plan, manifest, duration=duration, log=lambda *_: None, allow_thin=allow_thin)
+
+
+def test_cues_scale_hyperframes_canvas_to_the_actual_video_geometry():
+    """Brand components are 1920×1080, while channel masters are 2560×1440.
+
+    A 1:1 overlay silently pins the smaller canvas to the top-left. The contact
+    sheet already scales its alpha snapshot; the real composite must do the same.
+    """
+    graph = _cue_filter_graph(
+        [{"start": 56.0, "end": 63.0}],
+        width=2560,
+        height=1440,
+    )
+
+    assert "[1:v]scale=2560:1440:flags=lanczos" in graph
+    assert "overlay=0:0" in graph
 
 
 def test_cue_rejects_unknown_and_unbuilt_elements():

@@ -9,6 +9,10 @@ component renders it. `brand-manifest.json` holds the rules on top of it (safe z
 budgets, motion timings) and OWNS the colour values; `tokens.css` mirrors them for code,
 and `build_catalog.py` fails if the two disagree. Fonts (bundled TTF): `fonts/`.
 
+Public channel identities live in `channel.json`. Never type or infer a CTA from memory:
+`build_catalog.py` regenerates every shipped Telegram QR from that file. For this brand,
+`@Art_Cog` is Artur's personal account and is forbidden as a channel CTA.
+
 ## Palette
 
 | Token | Hex | Role |

@@ -38,12 +38,12 @@ from .. import media
 # Music sits ~20 dB under dialogue while speaking (W3C accessibility puts the floor
 # at 20 dB below foreground speech; broadcast practice pulls a few more).
 _MUSIC_GAIN_DB = -20.0
-# Sidechain duck: a high ratio with a slow-ish release keeps the bed from pumping
-# between words, while attack stays fast enough not to clip the first syllable.
-_DUCK_RATIO = 9
-_DUCK_ATTACK_MS = 200
-_DUCK_RELEASE_MS = 500
-_DUCK_THRESHOLD = 0.02      # linear amplitude (≈ −34 dBFS), not dB
+# Gentle sidechain ducking keeps the bed present under speech instead of audibly
+# muting it. These values are the locked contract in sound.md.
+_DUCK_RATIO = 2
+_DUCK_ATTACK_MS = 20
+_DUCK_RELEASE_MS = 700
+_DUCK_THRESHOLD = 0.05      # linear amplitude (≈ −26 dBFS), not dB
 # The speech band. Notching the bed here buys intelligibility that level alone can't.
 _SPEECH_BAND_HZ = 3000
 _SPEECH_BAND_OCT = 1.6
@@ -135,12 +135,7 @@ class SoundTool(Tool):
                 f"afade=t=in:d={fade:.3f},afade=t=out:st={fade_out_at:.3f}:d={fade:.3f}[music]"
             )
             if duck:
-                graph.append(
-                    f"[music]{key_label}sidechaincompress="
-                    f"threshold={_DUCK_THRESHOLD}:ratio={_DUCK_RATIO}:"
-                    f"attack={_DUCK_ATTACK_MS}:release={_DUCK_RELEASE_MS}:"
-                    "level_sc=1:mix=0.9[ducked]"
-                )
+                graph.append(_sidechain_filter("[music]", key_label, "[ducked]"))
                 mix_labels.append("[ducked]")
             else:
                 mix_labels.append("[music]")
@@ -194,6 +189,16 @@ def _sfx_delay_ms(at: float) -> int:
     as late. Landing it ``_SFX_LEAD`` before makes picture and sound feel as one.
     """
     return max(0, round((at - _SFX_LEAD) * 1000))
+
+
+def _sidechain_filter(music_label: str, key_label: str, output_label: str) -> str:
+    """Build the canonical gentle-ducking filter used by every mix."""
+    return (
+        f"{music_label}{key_label}sidechaincompress="
+        f"threshold={_DUCK_THRESHOLD}:ratio={_DUCK_RATIO}:"
+        f"attack={_DUCK_ATTACK_MS}:release={_DUCK_RELEASE_MS}:"
+        f"level_sc=1:mix=0.9{output_label}"
+    )
 
 
 def _next_input_index(inputs: list[str]) -> int:

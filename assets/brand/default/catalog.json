@@ -1478,17 +1478,12 @@
         {
           "id": "kicker",
           "label": "What is waiting there",
-          "default": "ПРОМПТ И КОНФИГ АГЕНТА"
+          "default": "КОДЫ ИЗ ЭТОГО ВИДЕО"
         },
         {
           "id": "text",
-          "label": "Where",
-          "default": "в телеграме"
-        },
-        {
-          "id": "handle",
-          "label": "Handle",
-          "default": "@art.immersive"
+          "label": "Destination",
+          "default": "Telegram-канал"
         }
       ]
     },

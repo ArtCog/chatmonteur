@@ -21,6 +21,11 @@
       "type": "hyperframes:composition"
     },
     {
+      "path": "index.motion.json",
+      "target": "compositions/mono-44.motion.json",
+      "type": "hyperframes:asset"
+    },
+    {
       "path": "fonts/GolosText.ttf",
       "target": "compositions/fonts/GolosText.ttf",
       "type": "hyperframes:asset"
@@ -33,6 +38,11 @@
     {
       "path": "fonts/PlayfairDisplay.ttf",
       "target": "compositions/fonts/PlayfairDisplay.ttf",
+      "type": "hyperframes:asset"
+    },
+    {
+      "path": "assets/tg-qr.png",
+      "target": "compositions/assets/tg-qr.png",
       "type": "hyperframes:asset"
     }
   ]

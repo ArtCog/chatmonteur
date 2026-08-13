@@ -28,6 +28,8 @@ accent ships as blue.
 from __future__ import annotations
 
 import functools
+import io
+import json
 import pathlib
 import re
 
@@ -50,6 +52,41 @@ def tokens(name: str = "default") -> dict[str, str]:
     if not found:
         raise ToolError(f"{path} defines no --tokens")
     return found
+
+
+@functools.lru_cache(maxsize=4)
+def channel(name: str = "default") -> dict:
+    """Public channel identities used by on-screen CTAs and generated QR codes."""
+    path = _BRAND_ROOT / name / "channel.json"
+    if not path.is_file():
+        raise ToolError(f"brand '{name}' has no channel.json at {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not isinstance(data.get("telegram"), dict):
+        raise ToolError(f"{path} must define a telegram object")
+    return data
+
+
+def telegram_qr_png(name: str = "default", *, size: int = 540) -> bytes:
+    """Render the brand's canonical Telegram channel as a deterministic QR PNG."""
+    try:
+        import qrcode
+        from PIL import Image
+    except ImportError as exc:  # pragma: no cover - setup error, not an editing branch
+        raise ToolError("QR asset generation needs the dev dependencies: pip install -e .[dev]") from exc
+
+    qr = qrcode.QRCode(
+        version=None,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=12,
+        border=4,
+    )
+    qr.add_data(channel(name)["telegram"]["url"])
+    qr.make(fit=True)
+    image = qr.make_image(fill_color="#0B0B0C", back_color="#FAFAF7").convert("RGB")
+    image = image.resize((size, size), Image.Resampling.NEAREST)
+    output = io.BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
 
 
 def token(key: str, *, brand: str = "default") -> str:

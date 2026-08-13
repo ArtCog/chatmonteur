@@ -1,0 +1,16 @@
+{
+  "$comment": "Public CTA identities for the ИИмерсивный brand. @Art_Cog is Artur's personal account and must never be used as a channel CTA.",
+  "youtube": {
+    "name": "ИИмерсивный",
+    "url": "https://youtube.com/@art.immersive",
+    "handle": "@art.immersive"
+  },
+  "telegram": {
+    "name": "ИИмерсивный",
+    "url": "https://t.me/+afIVRcIuSeI2OTYy",
+    "forbiddenCtas": [
+      "@Art_Cog",
+      "https://t.me/Art_Cog"
+    ]
+  }
+}
