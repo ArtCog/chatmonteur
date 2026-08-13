@@ -17,17 +17,16 @@ educational Russian-language videos about AI coding agents. Every feature must s
 editing his real footage (dogfood) before it counts as done.
 
 **The road, in order:**
-1. Brand-book port into HyperFrames components (in progress — see `PLAN.local.md`)
-2. Dogfood: a full real video through the whole pipeline
-3. Release v0.1 (github.com/ArtCog/chatmonteur)
-4. **Apply to the Claude for Open Source and Codex for Open Source programs** — free
+1. Complete the publication-safe gate on the current real-media dogfood
+2. Audit the public package and release v0.1 (github.com/ArtCog/chatmonteur)
+3. **Apply to the Claude for Open Source and Codex for Open Source programs** — free
    subscriptions for maintainers; the repo, README and a demo are the application
-5. Grow: stars come from being genuinely the best tool, not marketing
+4. Grow: stars come from being genuinely the best tool, not marketing
 
-**Session continuity:** the living state is `PLAN.local.md` (checkpoints, decisions,
-next steps) — read its latest checkpoint at the start of any session. This file and
-`AGENTS.md` (same content for non-Claude agents) are the project's memory; the
-conversation is not.
+**Session continuity:** a maintainer checkout may contain ignored `STATE.md`,
+`PLAN.local.md`, and per-video `PLAN.md`; read those first when present. A fresh
+public clone starts from this file, `README.md`, and
+`docs/production-lifecycle.md`. The conversation is not the project's memory.
 
 ## Mandatory per-video container
 
@@ -85,17 +84,22 @@ tool is a win, not a loss.
 ```
 chatmonteur init <yyyy-slug> --title "Video title"
 chatmonteur edit <raw.mp4> [--lut warm_film] [--project yyyy-slug] [--model large-v3]
+chatmonteur run <capability> --project <yyyy-slug> --params <run.json>
 ```
 
 This runs the **talking_head** pipeline — mechanical steps only: normalize
 (CFR + level prep) → cut pauses by audio level → transcribe → color
 (optional; DEFAULT IS UNGRADED — a LUT only when the user picks one) →
-subtitles → render. Output lands in `projects/<name>/renders/final.mp4`.
-Re-running resumes from checkpoints. Before burning subtitles, ASK which of
+subtitles → render. Output lands in
+`projects/<name>/renders/mechanical-draft.mp4`; it is technically checked but
+still needs the agent-driven finishing gates. Re-running resumes from checkpoints. Before burning subtitles, ASK which of
 the five brand variants fits this video (`skills/subtitles.md`).
+Multi-audio OBS sources are refused at this front door because selecting mix vs
+clean mic is an editorial decision. Route them through Branch B in
+`skills/cutting.md`, then continue through `chatmonteur run`.
 
-For fine control, run capabilities individually via the registry (see
-`docs/extending.md`) instead of the whole pipeline.
+For fine control, run capabilities individually through `chatmonteur run` with a
+UTF-8 JSON parameter object instead of importing package internals.
 
 ## The editorial brain: skills/
 
@@ -143,7 +147,7 @@ Approval gates ask the user; these two ask the work itself, and refuse.
 2. **The file gate** — `qc` is the last pipeline step and blocks delivery of a
    broken render: black frames sampled at 10/35/65/90 %, a silent or clipped audio
    track, missing streams, or a runtime that drifted more than 25 % from what the
-   encoder was handed. Evidence lands in `renders/final.qc.json`.
+   encoder was handed. Evidence lands beside the artifact as `.qc.json`.
 
 When either fires, **never** work around it by re-running with the check disabled.
 Fix what it names. That is the whole point of it existing.
@@ -171,19 +175,14 @@ projects/<name>/
   clips/         normalized, cut, graded intermediates
   transcripts/   master.json, captions.srt, edl.json
   previews/      fast proxy renders
-  renders/       final.mp4  (the only "output")
+  renders/       mechanical drafts, approved masters, and QC reports
   .chatmonteur/      checkpoint.json (resume state)
 ```
 Never write to `raw/` or the repo root. Finals go only to `renders/`.
 
-**Anything Артур has to LOOK at goes to `черновик/`** (gitignored) — Артур 2026-08-04:
-«все наши тесты мы добавляем в папку черновик, там же сортируем, чтобы я мог сразу
-смотреть». Every test render, style variant, preview frame and demo page lands there,
-never in a scratch directory he would have to be told the path to. Sort it: one
-subfolder per topic (`фоны/`, `плашки/`, `моно/`), and inside it the established
-naming — `тема-N-вариант.mp4`, with `СТАНДАРТ` marking the one that won. Ship both
-`.mp4` and `.png` for anything he cannot open otherwise (ProRes, alpha). When a demo
-needs more than one file, add a `СМОТРЕТЬ.html` that opens all of it at once.
+Anything the user has to review belongs to that video's `previews/`; only masters
+and their QC evidence belong to `renders/`. Never route active work back to the
+legacy repo-level `черновик/` or `_audit/` folders.
 
 The brand lives in `assets/brand/default/`: **`catalog.json` is the inventory** — every
 card the designer drew, what it is for, and which component renders it (with its variables

@@ -167,7 +167,7 @@ Approval gates ask the user. These two ask the work, and stop the pipeline.
   screen >60 % of the runtime, repeated captions, three identical zooms in a row. Fix the plan;
   `allow_thin=True` only when plain footage is genuinely right.
 - **`qc` scores the file** last: black frames at 10/35/65/90 %, silence, clipping, missing
-  streams, >25 % duration drift. Evidence in `renders/final.qc.json`.
+  streams, >25 % duration drift. Evidence in the sibling `<artifact>.qc.json`.
 
 When either fires, **never re-run with the check disabled.** Fix what it names.
 

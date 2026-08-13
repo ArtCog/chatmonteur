@@ -1,7 +1,7 @@
 # Production-correctness rules
 
 Hard-won rules from real talking-head production. They are what make an automated
-"one command" edit safe to publish. Encoded into the tools; documented here so
+"one command" draft technically safe to continue editing. Encoded into the tools; documented here so
 agents and contributors understand *why*.
 
 ## Cutting

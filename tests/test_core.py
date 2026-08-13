@@ -491,12 +491,63 @@ def test_pipeline_parse_and_duplicate_id(tmp_path):
         Pipeline.from_yaml(dup)
 
 
+def test_resumed_pipeline_restores_checkpoint_meta(tmp_path):
+    """A cached public `run` must report QC/action metadata, not only artifacts."""
+    from chatmonteur.core import PipelineRunner, RunContext, Step
+    from chatmonteur.core.tool import Tool, ToolManifest, ToolResult
+
+    class FakeTool(Tool):
+        manifest = ToolManifest(name="fake_qc", capability="qc", summary="test")
+        calls = 0
+
+        def run(self, ctx, **params):  # noqa: ANN001
+            self.calls += 1
+            return ToolResult(
+                artifacts={"qc_report": "renders/video.qc.json"},
+                meta={"status": "pass", "recommended_action": "continue_editing"},
+            )
+
+    tool = FakeTool()
+    registry = ToolRegistry()
+    registry.register(tool)
+    runner = PipelineRunner(registry)
+    pipeline = Pipeline(name="run-qc", steps=(Step(id="run_qc", capability="qc"),))
+    ctx = RunContext.for_project(load_config(tmp_path), "video")
+
+    runner.run(ctx, pipeline)
+    cached = runner.run(ctx, pipeline)
+
+    assert tool.calls == 1
+    assert cached["run_qc"].meta == {
+        "status": "pass",
+        "recommended_action": "continue_editing",
+    }
+
+
 def test_registry_discovers_all_capabilities():
     reg = ToolRegistry().discover()
     caps = set(reg._by_capability)
     expected = {"normalize", "transcribe", "cut_silence", "cut_edl", "redact", "subtitles", "inserts", "zooms", "overlays", "storyboard", "stock", "sound",
                 "color", "motion", "render", "qc", "transitions"}
     assert expected <= caps
+
+
+def test_talking_head_pipeline_names_its_output_a_mechanical_draft():
+    """One-command stops before Tier 2, visuals, and sound; it must not claim final."""
+    pipeline = Pipeline.from_yaml(
+        Path(__file__).resolve().parents[1] / "pipelines" / "talking_head.yaml"
+    )
+    render = next(step for step in pipeline.steps if step.id == "render")
+    assert render.params["name"] == "mechanical-draft.mp4"
+
+
+def test_standalone_render_does_not_claim_final_by_default():
+    """Encoding alone cannot imply that editorial and rights gates passed."""
+    import inspect
+    from chatmonteur.tools.render import RenderTool
+
+    default_name = inspect.signature(RenderTool.run).parameters["name"].default
+    assert default_name == "rendered.mp4"
 
 
 def test_overlay_declares_its_pillow_runtime_dependency():
@@ -560,6 +611,38 @@ def test_qc_blocks_silence_and_clipping():
 def test_qc_blocks_missing_audio_and_unreadable_container():
     assert "no_audio" in _checks(_qc_judge(_facts(has_audio=False), 80.0))
     assert _checks(_qc_judge({"readable": False}, 80.0)) == {"container"}
+
+
+def test_qc_pass_on_a_mechanical_draft_says_continue_editing(tmp_path, monkeypatch):
+    """A healthy file gate is not editorial approval."""
+    import chatmonteur.tools.qc as qc
+    from chatmonteur.core import RunContext
+
+    video = tmp_path / "mechanical-draft.mp4"
+    video.write_bytes(b"container")
+    monkeypatch.setattr(qc, "_probe", lambda *_args, **_kwargs: _facts())
+    ctx = RunContext.for_project(load_config(tmp_path), "video")
+
+    result = qc.TOOL.run(ctx, input=str(video), expected=80.0, delivery="draft")
+
+    assert result.meta["status"] == "pass"
+    assert result.meta["recommended_action"] == "continue_editing"
+
+
+def test_qc_pass_on_an_internal_master_still_requires_rights_review(tmp_path, monkeypatch):
+    """Technical health must not turn unknown media rights into permission to publish."""
+    import chatmonteur.tools.qc as qc
+    from chatmonteur.core import RunContext
+
+    video = tmp_path / "internal-master.mp4"
+    video.write_bytes(b"container")
+    monkeypatch.setattr(qc, "_probe", lambda *_args, **_kwargs: _facts())
+    ctx = RunContext.for_project(load_config(tmp_path), "video")
+
+    result = qc.TOOL.run(ctx, input=str(video), expected=80.0, delivery="internal")
+
+    assert result.meta["status"] == "pass"
+    assert result.meta["recommended_action"] == "review_rights"
 
 
 def test_qc_blocks_partial_decode():

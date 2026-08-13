@@ -36,6 +36,10 @@ class Checkpoint:
         entry = self._data["steps"].get(step_id, {})
         return dict(entry.get("artifacts", {}))
 
+    def meta(self, step_id: str) -> dict:
+        entry = self._data["steps"].get(step_id, {})
+        return dict(entry.get("meta", {}))
+
     def record(self, step_id: str, input_hash: str, artifacts: dict[str, str], meta: dict | None = None) -> None:
         self._data["steps"][step_id] = {
             "status": "done",

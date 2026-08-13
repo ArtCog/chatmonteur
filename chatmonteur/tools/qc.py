@@ -71,6 +71,7 @@ class QCTool(Tool):
         *,
         input: str,
         expected: str | float | None = None,
+        delivery: str = "master",
         strict: bool = True,
     ) -> ToolResult:
         media.require("ffmpeg")
@@ -84,7 +85,13 @@ class QCTool(Tool):
 
         report = {
             "status": "fail" if failed else "pass",
-            "recommended_action": "re_render" if failed else "ship",
+            "recommended_action": (
+                "re_render" if failed else
+                "continue_editing" if delivery == "draft" else
+                "review_rights" if delivery == "internal" else
+                "ship"
+            ),
+            "delivery": delivery,
             "file": str(path),
             "checks": facts,
             "issues": issues,

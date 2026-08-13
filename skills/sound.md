@@ -13,9 +13,10 @@ description, so prefer CC0 when two candidates are equally good.
 
 ```
 assets/sound/
-├── music/     CC0 background beds, intro/outro, cinematic inserts
-├── sfx/       whooshes, clicks, pops, risers — short accents
-└── user/      the user's own files — ALWAYS preferred over the bundled pack when present
+├── ledger.jsonl  licence and SHA-256 authority for every bundled file
+├── music/        CC0 background bed
+├── sfx/          CC0 UI accent
+└── user/         local drop-ins — ALWAYS preferred when present; contents stay untracked
 ```
 
 Rules for choosing a track:

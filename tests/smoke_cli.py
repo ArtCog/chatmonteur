@@ -1,7 +1,7 @@
 """Smoke test the full `chatmonteur edit` pipeline end-to-end on a synthetic clip.
 
 Run from repo root:  python tests/smoke_cli.py
-Uses the tiny whisper model. Verifies a final render is produced.
+Uses the tiny whisper model. Verifies a mechanical draft is produced.
 """
 
 from __future__ import annotations
@@ -39,9 +39,9 @@ def run() -> int:
         rc = main(["edit", str(clip), "--root", str(tmp), "--model", "tiny"])
         assert rc == 0, f"edit exited {rc}"
 
-        final = tmp / "projects" / "talk" / "renders" / "final.mp4"
-        assert final.is_file(), f"no final render at {final}"
-        print(f"\nPASS: full pipeline produced {final.name} ({final.stat().st_size} bytes)")
+        draft = tmp / "projects" / "talk" / "renders" / "mechanical-draft.mp4"
+        assert draft.is_file(), f"no mechanical draft at {draft}"
+        print(f"\nPASS: full pipeline produced {draft.name} ({draft.stat().st_size} bytes)")
         return 0
     finally:
         import shutil

@@ -32,17 +32,19 @@ checks are allowed to refuse, and neither is a log warning you can scroll past:
 - **The plan gate.** Before a single frame is burned, the visual plan is scored and rejected
   if it will read as "he just cut the pauses": a stretch over 90 s with no visual event, text
   on screen more than 60 % of the runtime, repeated captions, three identical zooms in a row.
-- **The file gate.** The finished render is re-opened as a stranger would open it — frames
+- **The file gate.** Every encoded artifact is re-opened as a stranger would open it — frames
   sampled at 10/35/65/90 % (not the head and tail, where black is by design), audio checked
   by level for silence and clipping, runtime compared against what the encoder was handed.
-  Anything broken stops delivery and leaves `renders/final.qc.json` as the evidence.
+  Anything broken stops delivery and leaves a sibling `.qc.json` report as the evidence.
+  A healthy mechanical draft says `continue_editing`; an internal master with
+  unresolved media rights says `review_rights`; only a cleared master says `ship`.
 
 Both were built after real failures, and both are unit-tested rule sets rather than
 heuristics buried in a prompt.
 
-> 🚧 **Status: v0.1, building in the open.** The core pipeline works end-to-end
-> (raw → finished video in one command); currently being hardened by editing a real
-> YouTube channel's videos with it, start to finish.
+> 🚧 **Status: v0.1, building in the open.** The mechanical pipeline works end-to-end
+> behind one command; the complete agent-driven workflow has now survived a real
+> YouTube-channel edit from restored raw footage to a checked master.
 
 ## Quick start
 
@@ -52,12 +54,19 @@ git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
 chatmonteur tools           # see capabilities and what's ready
 chatmonteur init 2026-demo --title "My video"       # optional explicit project creation
 chatmonteur edit raw.mp4 --project 2026-demo        # imports raw → projects/2026-demo/raw/
-                                                    # final → projects/2026-demo/renders/final.mp4
+                                                    # draft → projects/2026-demo/renders/mechanical-draft.mp4
+chatmonteur run sound --project 2026-demo --params sound-run.json
+                                                    # execute any listed capability from JSON
 ```
 
-Then just talk to your agent: *"edit raw.mp4 — cut the filler, add captions,
-warm look."* It runs the pipeline, shows you a cut-plan, renders a preview, and
-finalises.
+The command deliberately stops at a technically valid **mechanical draft**. Then
+talk to your agent: *"finish this edit — cut the filler, add captions, graphics,
+and sound."* It shows the required approval gates and promotes only the completed
+edit to a master.
+
+`talking_head` accepts a single audio stream. For an OBS file with separate mix
+and microphone tracks it refuses to guess and points the agent to the documented
+Branch B workflow in `skills/cutting.md`.
 
 ## Why ChatMonteur
 
@@ -95,7 +104,7 @@ agent-driven on top (never automatic):
   → transitions                      cut / crossfade / fade, with one primary kind enforced
                                      across ≥60 % of joins
   → sound                            music bed ducked by sidechain compression under the
-                                     voice (measured 8.1 dB), notched in the speech band
+                                     voice by roughly 2–6 dB, notched in the speech band
 ```
 
 The decision layer behind every step lives in [`skills/`](skills/INDEX.md) — readable,
@@ -103,7 +112,7 @@ auditable, and usable directly by Claude Code / Codex / Cursor.
 
 ## Status & roadmap
 
-v0.1 ships a working talking-head pipeline behind one command, 16 capabilities and 87 tests.
+v0.1 ships a working mechanical front door plus the agent-driven finishing workflow.
 Growth (shorts, podcast, diarization, denoise, auto-reframe) lands as plugins — a new
 capability is one module in `chatmonteur/tools/`, see [docs/extending.md](docs/extending.md).
 

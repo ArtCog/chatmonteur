@@ -110,7 +110,10 @@ class PipelineRunner:
 
             if resume and checkpoint.is_done(step.id, input_hash):
                 ctx.log(f"✓ '{step.id}' cached")
-                results[step.id] = ToolResult(artifacts=checkpoint.artifacts(step.id))
+                results[step.id] = ToolResult(
+                    artifacts=checkpoint.artifacts(step.id),
+                    meta=checkpoint.meta(step.id),
+                )
                 continue
 
             tool = self._pick_tool(step)

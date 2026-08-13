@@ -16,6 +16,17 @@ It **depends on** these tools (installed by setup, not vendored) and keeps their
 
 Optional / growth plugins (added later) will be credited here as they land.
 
+## Bundled CC0 sound assets
+
+The publication-safe fallback in `assets/sound/` is redistributed under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). Its
+machine-readable source of truth is `assets/sound/ledger.jsonl`.
+
+| Asset | Creator | Primary source |
+|---|---|---|
+| Simple menu/background music loop | polosik | https://opengameart.org/content/simple-menubackground-music-loop |
+| Hover (from Dark Sci-Fi Audio Pack) | SRG774 | https://opengameart.org/content/dark-sci-fi-audio-pack |
+
 ## Inspiration
 
 Architecture ideas — tool registry, provider selectors, JSON checkpoints — were learned from

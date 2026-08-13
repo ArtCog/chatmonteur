@@ -6,10 +6,10 @@ heavy lifting is real tools (ffmpeg, faster-whisper, auto-editor, hyperframes).
 **Mission: the most capable open-source autonomous video editor in the world** — MIT,
 free-by-default, quality gates that can refuse a weak edit. First user: Артур's YouTube
 channel «ИИмерсивный» (dogfood on real footage decides what counts as done). Road:
-brand-book port → dogfood → v0.1 release → applications to Claude for Open Source and
-Codex for Open Source. **Where we stand right now: `STATE.md` — read it FIRST at session
-start.** The reasoning behind each decision lives in `PLAN.local.md`; `STATE.md` only
-answers where the work stopped. The conversation is not the project's memory; the files are.
+real-media dogfood → v0.1 release → applications to Claude for Open Source and
+Codex for Open Source. A maintainer checkout may contain ignored `STATE.md` and
+`PLAN.local.md`; read them first when present. A fresh public clone starts from
+this file, `README.md`, and `docs/production-lifecycle.md`.
 
 This file mirrors `CLAUDE.md` — read that for the full contract. Essentials:
 
@@ -46,16 +46,21 @@ memory or from an older composition.
 chatmonteur init <yyyy-slug> --title "Video title"
 chatmonteur edit <raw.mp4> [--lut warm_film] [--project yyyy-slug] [--model large-v3]
 chatmonteur tools     # list capabilities + readiness
+chatmonteur run <capability> --project <yyyy-slug> --params <run.json>
 ```
 
 Pipeline `talking_head` (mechanical only): normalize (CFR + level prep) →
 cut pauses by audio level → transcribe → subtitles → color → render.
-Output: `projects/<name>/renders/final.mp4`. Re-runs resume from checkpoints.
+Output: `projects/<name>/renders/mechanical-draft.mp4`. A passing draft continues
+to the editorial/visual/sound gates; it is not a master. Re-runs resume from checkpoints.
+The front door refuses multi-audio OBS sources rather than guessing a track; route
+those through Branch B in `skills/cutting.md`, then resume with `chatmonteur run`.
 
 The INTELLIGENT cut (fillers/false starts/retakes) is the agent's reasoning,
 not a pipeline step: read `transcripts/master.json`, write `transcripts/edl.json`,
 show the cut-plan, wait for approval, then run the `cut_edl` capability and
-re-run color/render. See `skills/cutting.md` Tier 2.
+re-run color/render. Execute individual capabilities through `chatmonteur run`
+with a JSON parameter object. See `skills/cutting.md` Tier 2.
 
 ## Always
 

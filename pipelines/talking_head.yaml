@@ -1,4 +1,4 @@
-# Talking-head pipeline: raw footage -> finished video, one command.
+# Talking-head pipeline: raw footage -> checked mechanical draft, one command.
 #
 # Every step here is MECHANICAL and safe to run unattended:
 #   normalize (CFR + loudnorm −14) -> cut pauses by AUDIO LEVEL (auto-editor)
@@ -60,14 +60,19 @@ steps:
     capability: render
     params:
       input: "${subtitles.video}"
+      # This unattended path stops before Tier 2, visual storytelling, and the
+      # sound pass. Name the artifact for what it is; an agent promotes a later,
+      # approval-complete render to a master.
+      name: "mechanical-draft.mp4"
 
   # The gate. Nothing is "done" until a stranger could open the file and find it
   # intact: frames that aren't black, audio that plays and isn't clipped, and the
   # same runtime the encoder was handed. `expected` points at the render's OWN
   # input, so drift is measured against the truth rather than a guess. A failure
-  # stops the pipeline and leaves `renders/final.qc.json` as the evidence.
+  # stops the pipeline and leaves `renders/mechanical-draft.qc.json` as evidence.
   - id: qc
     capability: qc
     params:
       input: "${render.video}"
       expected: "${subtitles.video}"
+      delivery: "draft"

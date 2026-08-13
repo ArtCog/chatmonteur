@@ -8,7 +8,7 @@ Decisions behind them live in `docs/adr/`.
 
 - **capability** — one mechanical operation, implemented as a module in
   `chatmonteur/tools/` exposing `TOOL`. Discovered at runtime by the registry;
-  `chatmonteur tools` lists them. 16 exist today.
+  `chatmonteur tools` lists them. 19 exist today.
 - **pipeline** — a YAML in `pipelines/` sequencing capabilities. The default is
   `talking_head`: normalize → cut_silence → transcribe → color → subtitles → render.
 - **Tier 1 cut** (тупая резка) — pause removal by AUDIO LEVEL only (`cut_silence`,

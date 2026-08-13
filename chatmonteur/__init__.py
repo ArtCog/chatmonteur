@@ -1,6 +1,6 @@
 """chatmonteur — agent-orchestrated talking-head video editing.
 
-One command turns raw footage into a finished video. The core is small and
+One command turns raw footage into a checked mechanical draft. The core is small and
 engine-agnostic: tools declare *capabilities*, pipelines order capabilities,
 and the runner executes them with resumable checkpoints.
 """

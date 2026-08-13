@@ -1,8 +1,9 @@
-"""Capability: ``render`` — final encode.
+"""Capability: ``render`` — delivery-quality encode.
 
 Auto-detects a working encoder (NVENC/QSV/VideoToolbox/libx264), scales to the
 configured height, and applies loudness normalisation as the LAST audio step.
-Never stream-copies. This is the step that makes the output safe to publish.
+Never stream-copies. This step makes the media technically suitable for
+delivery; editorial approval and media rights remain separate gates.
 
 Loudness is measured first, then applied — the two-pass form. One-pass loudnorm
 has to guess the programme level as it goes, so it rides the gain and compresses
@@ -68,12 +69,12 @@ class RenderTool(Tool):
     manifest = ToolManifest(
         name="render_ffmpeg",
         capability="render",
-        summary="Final encode with auto-detected encoder + loudnorm (cross-platform).",
+        summary="Delivery-quality encode with auto-detected encoder + loudnorm (cross-platform).",
         backends=("ffmpeg",),
         requires_bin=("ffmpeg",),
     )
 
-    def run(self, ctx: RunContext, *, input: str, name: str = "final.mp4", preview: bool = False) -> ToolResult:
+    def run(self, ctx: RunContext, *, input: str, name: str = "rendered.mp4", preview: bool = False) -> ToolResult:
         media.require("ffmpeg")
         enc_cfg = ctx.config.encode
         encoder = "libx264" if preview else media.detect_encoder(enc_cfg.encoder)

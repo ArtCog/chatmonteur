@@ -35,6 +35,16 @@ The registry discovers it automatically (`chatmonteur tools` will list it). If i
 binaries/modules are missing, that surfaces as a clear `MissingDependencyError`
 only when something actually needs the capability.
 
+Run any discovered capability through the public front door by putting its
+keyword arguments in a UTF-8 JSON object:
+
+```bash
+chatmonteur run denoise --project 2026-demo --params denoise-run.json
+```
+
+The command creates the montage project contract when needed and writes the
+normal capability checkpoint. Use `--no-resume` to force a fresh execution.
+
 **Rules of a good tool:** one capability, read everything from `RunContext`
 (never hardcode paths), write only under `ctx.paths.*`, return artifacts as
 `{logical_name: path}`, raise — never fail silently.

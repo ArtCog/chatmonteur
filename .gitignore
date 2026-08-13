@@ -38,8 +38,17 @@ projects/*/transcripts/*.json
 *.wav
 !examples/**/*.mp4
 
-# --- local agent discovery links (canonical skills are tracked in .agents) ---
+# User-supplied sound is local; only the drop-in instructions are public.
+/assets/sound/user/*
+!/assets/sound/user/README.md
+
+# --- local agent discovery links ---
 /.claude/skills/
+
+# --- private workspace editorial wrapper (ADR-0012: not part of public v0.1) ---
+/.agents/skills/youtube-editorial/
+/docs/superpowers/plans/2026-08-02-youtube-editorial-integration.md
+/docs/superpowers/specs/2026-08-02-editorial-lifecycle-integration-design.md
 
 # --- local strategy docs (not for the public repo) ---
 PLAN.local.md

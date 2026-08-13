@@ -1,53 +1,55 @@
 # Production lifecycle
 
-ChatMonteur closes the video-production loop from editorial development through a QC-approved render. Distribution remains a separate boundary.
+Public ChatMonteur v0.1 begins at montage ingest and ends at a QC-approved
+master. Research, script development, localization, recording, distribution,
+and upload may wrap this lifecycle, but they are separate products and are not
+bundled with the montage core. See ADR 0012.
 
-> **Release boundary:** this document also describes Artur's private workspace
-> wrapper. Public ChatMonteur v0.1 starts at montage ingest and does not ship the
-> private research/script/localization workflow. See ADR 0012.
+## Upstream handoff
 
-## Phase 0: editorial pre-production
+ChatMonteur accepts language-neutral production inputs:
 
-The `youtube-editorial` skill owns:
+- recorded source media;
+- an optional transcript and EDL;
+- optional visual assets with licence metadata;
+- optional cue, storyboard, subtitle, and sound plans.
 
-1. intake and project identity;
-2. research, sources, and structure;
-3. natural Russian spoken-script drafting;
-4. spoken, retention, and evidence audits;
-5. Artur's cold read and explicit approval;
-6. a file-based handoff to recording and montage.
-
-The canonical package is `.agents/skills/youtube-editorial`. Codex and Claude Code discover this same physical directory through local junctions; no runtime-specific skill copy is maintained.
+An upstream editorial system may create these files, but ChatMonteur does not
+require a particular research, scripting, language, or publication workflow.
 
 ## Per-video contract
 
-Every new project is initialized under `projects/<yyyy-slug>/` with:
+Every project lives under `projects/<yyyy-slug>/`:
 
-- `PLAN.md` as the authoritative entry point, state, decisions, and review log;
-- `preproduction/SCRIPT.md` as clean spoken text;
-- `preproduction/REFERENCES.md` as the claim-level evidence ledger;
-- `preproduction/VISUAL-PACK.md` as the acquisition brief;
-- `preproduction/DESIGN.md` for video-specific design exceptions;
-- `raw/`, `assets/`, `clips/`, `transcripts/`, `compositions/`, `previews/`, `renders/`, and `youtube/` for the production lifecycle.
+- `PLAN.md` — current production state and approval decisions;
+- `raw/` — immutable imported recordings;
+- `assets/` — project media and licence records;
+- `clips/` — reproducible technical and editorial intermediates;
+- `transcripts/` — ASR, EDL, cue, subtitle, sound, and storyboard plans;
+- `compositions/` — project motion sources and renders;
+- `previews/` — human approval artifacts;
+- `renders/` — mechanical drafts, approved masters, and QC evidence.
 
-The private `youtube-editorial` initializer creates this full workspace contract.
-Public `chatmonteur init <yyyy-slug>` and `chatmonteur edit ... --project <yyyy-slug>`
-create only the montage contract (`raw/`, `assets/`, `clips/`, `transcripts/`,
-`compositions/`, `previews/`, `renders/`) idempotently. `edit` imports an external
-recording into immutable `raw/`; existing files are never overwritten.
+`chatmonteur init <yyyy-slug>` creates the contract idempotently.
+`chatmonteur edit ... --project <yyyy-slug>` also imports external source media
+into immutable `raw/`; existing files are never overwritten.
 
-`canvas.json` is optional. Chat history is never authoritative project state. Local project dossiers are private and ignored by the public repository; the reusable public skeleton lives inside the skill package.
+## Mechanical front door
 
-## Visual handoff: two passes
+`chatmonteur edit` runs the unattended mechanical pipeline and writes
+`renders/mechanical-draft.mp4`. A passing file gate recommends
+`continue_editing`, because technical correctness is not editorial approval.
 
-Before recording, `VISUAL-PACK.md` states what evidence, screenshot, screencast, diagram, or connective visual must be obtained and why. Captured files and their project manifest live under `assets/`.
+## Agent-driven finishing
 
-After the meaning cut locks timing, montage creates exact placement in `transcripts/storyboard.json`. Reusable media may be promoted to the shared `bank/`; project-specific media stays in the project.
+The agent uses `chatmonteur run <capability> --params <run.json>` for the
+meaning cut, privacy redaction, visual pass, subtitles, transitions, sound,
+final render, and QC. The required human gates live in `skills/montage.md`.
 
-## Human gate
+A technically healthy internal master with unresolved media rights reports
+`review_rights`. Only a rights-cleared master may report `ship`.
 
-Only Artur may approve a script. Agents stop at `human_review_required`, accept cold-read feedback, revise, and wait for explicit approval. Montage may not infer approval from a polished draft.
+## Distribution boundary
 
-## Legacy pilot
-
-The first behavioral test uses `C:\Projects\Video\2026-grill-me-top-5-skills` in place. The initializer may add missing contract files but must not move, delete, rename, or overwrite existing material. Migrating the old `Video` tree is a separate operation.
+Descriptions, thumbnails, upload credentials, scheduling, and platform upload
+are deliberately outside the public v0.1 montage contract.
