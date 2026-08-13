@@ -1156,10 +1156,30 @@ def test_cue_vars_typo_names_the_real_variables():
         _plan({"t": 1, "element": "03", "vars": {"naem": "x", "role": "y"}})
 
 
+def test_opaque_cue_requires_an_explicit_decision_to_replace_the_source():
+    """A full-frame card must never hide useful footage by accident."""
+    with pytest.raises(ToolError, match="replacesSource"):
+        _plan({"t": 0, "element": "39"})
+
+    plan = _plan({"t": 0, "element": "39", "replacesSource": True})
+
+    assert plan[0]["replacesSource"] is True
+
+
+def test_manifest_cue_examples_follow_the_real_resolver_contract():
+    """An agent must be able to copy the canonical examples without hidden fixes."""
+    catalog, manifest = _load_brand()
+
+    plan = _resolve(manifest["cueFormat"]["example"], catalog)
+
+    assert len(plan) == len(manifest["cueFormat"]["example"])
+
+
 def test_gate_refuses_two_cues_on_screen_at_once():
     with pytest.raises(ToolError, match="share the screen"):
         _gate(_plan({"t": 10, "element": "03", "text": ["a", "b"], "holdSec": 5},
-                    {"t": 12, "element": "15", "vars": {}, "holdSec": 5}))
+                    {"t": 12, "element": "15", "vars": {}, "holdSec": 5,
+                     "replacesSource": True}))
 
 
 def test_gate_caps_the_loud_accents():

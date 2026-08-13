@@ -20,6 +20,10 @@ different transitions in one film. Those rules are numbers in the manifest, so
 they are checked here rather than trusted. ``dry_run=True`` runs every check and
 renders nothing — that is the cheap way to hold the gate before approval.
 
+An opaque component also needs ``replacesSource: true``. That explicit editorial
+decision prevents a technically valid full-frame card from casually hiding useful
+footage; an alpha overlay is the default whenever the source still carries meaning.
+
 Text mapping is deliberately dumb. ``vars`` is the real interface and is checked
 against the component's declared variables; ``text`` is sugar that only works
 when it is unambiguous (one string for a one-variable component, or an array
@@ -161,6 +165,13 @@ def _resolve(items: list[dict], catalog: dict) -> list[dict]:
             raise ToolError(f"{where}: element {element} is '{card['status']}' — "
                             f"{card.get('routeNote') or card['name']}. Nothing renders it yet.")
 
+        replaces_source = raw.get("replacesSource")
+        if card.get("layer") == "opaque" and replaces_source is not True:
+            raise ToolError(
+                f"{where}: element {element} is full-frame and hides the source. "
+                "Set replacesSource=true only after deciding that replacing the useful "
+                "footage is editorially justified; otherwise choose an alpha overlay.")
+
         t = float(raw.get("t", -1))
         if t < 0:
             raise ToolError(f"{where}: 't' must be a second in the video, got {raw.get('t')!r}")
@@ -184,6 +195,7 @@ def _resolve(items: list[dict], catalog: dict) -> list[dict]:
             "end": t + hold,
             "vars": variables,
             "position": position,
+            "replacesSource": replaces_source is True,
             # computed here, where the card is in hand; the gate only compares
             "floorSec": _reading_floor(card, variables),
         })

@@ -30,6 +30,15 @@ earns it by elapsed time alone:
 If none of the five fires, add NOTHING. A graphic placed to fill time is worse
 than plain footage: it teaches the viewer that graphics here mean nothing.
 
+**Preserve useful source by default.** A procedural screencast already is visual
+evidence. Do not hide actionable UI behind an invented full-frame hook, a paraphrase,
+or decorative typography. If a path, version, warning, or key conclusion genuinely
+adds information, use the matching alpha accent (`L` for a quiet aside, `O` for an
+insight, `N` for a real risk) over the continuing footage. Use an opaque card only
+when the source cannot express the idea (for example a real structure, comparison,
+or chapter break), and declare `"replacesSource": true` in that cue. The declaration
+is an editorial assertion to review in the contact sheet, not a loophole in the gate.
+
 **Placement law, once decided:** never cover the face (eyes, nose, mouth stay
 visible) · pick a side (left or right) and keep it for the whole film · text
 lives on screen 2–5 s — long enough to read, short enough not to feel stuck.
