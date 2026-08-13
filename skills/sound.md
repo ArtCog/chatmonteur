@@ -29,6 +29,26 @@ Rules for choosing a track:
 - One bed per video section; **never two music tracks at once** — the bed is OFF (0%)
   during any intro/insert/outro.
 
+## Selection branch — default, custom, or none
+
+Read the active brand's `sound.json` before searching. Then follow exactly one
+branch and record it in the video's `PLAN.md` so another agent does not ask again:
+
+1. **Approved brand default exists and the user did not request a special sound:**
+   use `default_background` without a new search or question. Resolve its
+   `ledger_id` through `assets/sound/ledger.jsonl`.
+2. **The user asks for a different mood, a dedicated intro/outro, or per-section
+   music:** show the three choices `default_background`, `custom_sections`, and
+   `no_music`. For `custom_sections`, ask what belongs in background, intro, and
+   outro; `null` means that section stays absent. Search only after this answer.
+3. **No approved brand default exists:** ask the same three-way question once.
+   Never silently turn a random search result into a recurring channel theme.
+4. **The project already records a choice:** reuse it silently unless the user
+   changes it.
+
+Every newly selected track still needs a rights ledger and the short human mix
+gate below. Approval of a fallback does not make it a permanent signature theme.
+
 ## Where sound goes (placement decisions)
 
 | Moment | Sound | Why |
@@ -87,6 +107,8 @@ the camera, where the voice is continuous and only the picture moves.
 
 ## Approval
 
-Before the full render: mix a 30–40 s test clip (bed + duck + one SFX + one overlay),
-show the user, get approval on levels. Music taste is subjective — the locked defaults are
-the starting point, the user's ear is the authority.
+Before the full render, show a 30–40 s test clip when the track or its levels are
+new. Once a recurring brand default and its levels are approved, ordinary videos
+may reuse them without repeating the gate; a new track, new gain, intro/outro, or
+materially different voice mix reopens it. Music taste is subjective — the user's
+ear is the authority.

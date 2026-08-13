@@ -67,3 +67,24 @@ def test_shipped_sound_pack_has_cc0_ledger_for_every_audio_file() -> None:
         assert entry["license_url"] == "https://creativecommons.org/publicdomain/zero/1.0/"
         assert entry["source_url"].startswith("https://opengameart.org/content/")
         assert entry["sha256"] == hashlib.sha256(payload).hexdigest()
+
+
+def test_default_brand_sound_profile_references_ledgered_assets() -> None:
+    """A recurring channel bed must be reusable without searching or path guessing."""
+    profile = json.loads(
+        (ROOT / "assets" / "brand" / "default" / "sound.json").read_text(encoding="utf-8")
+    )
+    ledger_ids = {
+        json.loads(line)["id"]
+        for line in (ROOT / "assets" / "sound" / "ledger.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line.strip()
+    }
+
+    assert profile["selection_policy"]["default_mode"] == "default_background"
+    assert profile["selection_policy"]["choices"] == [
+        "default_background", "custom_sections", "no_music"
+    ]
+    assert profile["defaults"]["background"]["ledger_id"] in ledger_ids
+    assert profile["defaults"]["ui_sfx"]["ledger_id"] in ledger_ids

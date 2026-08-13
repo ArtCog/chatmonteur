@@ -13,6 +13,11 @@ Public channel identities live in `channel.json`. Never type or infer a CTA from
 `build_catalog.py` regenerates every shipped Telegram QR from that file. For this brand,
 `@Art_Cog` is Artur's personal account and is forbidden as a channel CTA.
 
+Sound preferences live in `sound.json`. Its background asset is an approved CC0
+fallback for ordinary videos, so agents do not search or ask on every edit. It is
+not a permanent signature theme: a custom intro/outro or a replacement channel
+track requires an explicit choice and a fresh mix gate under `skills/sound.md`.
+
 ## Palette
 
 | Token | Hex | Role |

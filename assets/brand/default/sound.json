@@ -1,0 +1,36 @@
+{
+  "$comment": "ИИмерсивный sound preference. The current track is an approved publication-safe fallback, not a permanent signature theme.",
+  "schema_version": 1,
+  "selection_policy": {
+    "default_mode": "default_background",
+    "choices": [
+      "default_background",
+      "custom_sections",
+      "no_music"
+    ],
+    "ask_when": [
+      "the user requests a different mood or track",
+      "a dedicated intro or outro is proposed",
+      "the active brand has no approved default"
+    ],
+    "persist_project_choice_in": "PLAN.md"
+  },
+  "defaults": {
+    "background": {
+      "ledger_id": "bgm-simple-loop",
+      "gain_db": -22
+    },
+    "intro": null,
+    "outro": null,
+    "ui_sfx": {
+      "ledger_id": "sfx-ui-hover",
+      "gain_db": -18
+    }
+  },
+  "approval": {
+    "status": "approved_fallback",
+    "approved_by": "Artur",
+    "date": "2026-08-13",
+    "note": "Use without a new search for ordinary videos. Replace only after Artur deliberately chooses a permanent signature track or requests a per-video palette."
+  }
+}
