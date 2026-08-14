@@ -12,7 +12,7 @@ from .errors import (
     PipelineError,
     ToolError,
 )
-from .config import Config, load_config
+from .config import BrandConfig, Config, load_config
 from .context import ProjectPaths, RunContext
 from .tool import Tool, ToolManifest, ToolRegistry, ToolResult
 from .checkpoint import Checkpoint
@@ -25,6 +25,7 @@ __all__ = [
     "MissingDependencyError",
     "PipelineError",
     "Config",
+    "BrandConfig",
     "load_config",
     "ProjectPaths",
     "RunContext",

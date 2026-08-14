@@ -1,20 +1,11 @@
-# ASR correction dictionary — what Whisper reliably mishears on this channel.
+# Generic ASR correction dictionary — product and tool names shared by brands.
 #
 # Keys are matched case-insensitively against the transcript, on WORD boundaries,
 # and may span several words ("клод код" -> "Claude Code"). Punctuation around a
 # match is preserved. A matched span collapses into one token carrying the whole
 # time range, so a brand name highlights as a unit in karaoke captions.
 #
-# Why this file earns its keep: a misspelled brand term burned into a caption is
-# the most visible amateur signal there is, and no model size fixes it — Whisper
-# has simply never seen "ИИмерсивный".
-#
 # Add a line the moment you catch a new mishearing. Left side lowercase.
-
-# --- channel -------------------------------------------------------------------
-иимерсивный: ИИмерсивный
-и имерсивный: ИИмерсивный
-ии мерсивный: ИИмерсивный
 
 # --- tools we talk about every video -------------------------------------------
 клод код: Claude Code

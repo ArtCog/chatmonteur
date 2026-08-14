@@ -32,3 +32,6 @@ Issues = "https://github.com/ArtCog/chatmonteur/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["chatmonteur"]
+
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"

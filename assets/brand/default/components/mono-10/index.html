@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 10 «эндкард» — ported from the designer's source
@@ -25,7 +26,7 @@
 <body>
 <div id="root" data-composition-id="mono-10" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--ink);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
@@ -39,9 +40,9 @@
   <div id="m10-cta" style="position:absolute;left:135px;top:0;width:790px;height:735px;
        display:flex;flex-direction:column;justify-content:center">
     <div id="m10-title" style="font-family:'Playfair Display',serif;font-weight:600;
-         font-size:130px;line-height:1.06;color:#FAFAF7"></div>
+         font-size:130px;line-height:1.06;color:var(--paper)"></div>
     <div style="display:inline-flex;align-self:flex-start;align-items:center;gap:26px;
-         margin-top:57px;background:#FAFAF7;color:#0B0B0C;font-family:'Golos Text',sans-serif;
+         margin-top:57px;background:var(--paper);color:var(--ink);font-family:'Golos Text',sans-serif;
          font-weight:800;font-size:47px;padding:31px 52px">
       <span data-var-text="button">Подписаться</span>
       <span style="font-family:'JetBrains Mono',monospace;font-weight:700">→</span>

@@ -42,15 +42,12 @@ import json
 import math
 import pathlib
 
+from .. import brand as brandkit
 from ..core.context import RunContext
 from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
 from .. import media
 from . import motion_hyperframes as _motion
-
-_BRAND = pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / "default"
-_CATALOG = _BRAND / "catalog.json"
-_MANIFEST = _BRAND / "brand-manifest.json"
 
 # Accent overlays that shout. The manifest caps these separately from the rest:
 # «A и E — на два сильнейших момента», and a film that shouts throughout shouts
@@ -74,16 +71,18 @@ class CuesTool(Tool):
         *,
         input: str,
         cues: str,
+        brand: str | None = None,
         allow_thin: bool = False,
         dry_run: bool = False,
     ) -> ToolResult:
-        catalog, manifest = _load_brand()
-        plan = _resolve(_load_cues(pathlib.Path(cues)), catalog)
+        brand_name = brand or ctx.config.brand.name
+        catalog, manifest = _load_brand(brand_name)
+        plan = _resolve(_load_cues(pathlib.Path(cues)), catalog, brand_name=brand_name)
         _check(plan, manifest, duration=_duration_of(input), log=ctx.log, allow_thin=allow_thin)
 
         if dry_run:
             ctx.log(f"cues: {len(plan)} cues pass the brand gate (dry run, nothing rendered)")
-            return ToolResult(meta={"cues": len(plan), "dry_run": True})
+            return ToolResult(meta={"cues": len(plan), "dry_run": True, "brand": brand_name})
         if not plan:
             ctx.log("cues: list is empty, passing the video through")
             return ToolResult(artifacts={"video": str(input)}, meta={"cues": 0})
@@ -92,7 +91,7 @@ class CuesTool(Tool):
         for i, cue in enumerate(plan):
             res = _motion.TOOL.run(
                 ctx,
-                composition=str(_BRAND / cue["component"] / "index.html"),
+                composition=str(_component_path(brand_name, cue["component"])),
                 name=f"cue_{i + 1:02d}_{cue['component_name']}.mov",
                 variables=cue["vars"] or None,
                 alpha=True,
@@ -113,17 +112,18 @@ class CuesTool(Tool):
         media.run(cmd, log=ctx.log, desc=f"burn {len(plan)} brand cues")
         return ToolResult(artifacts={"video": str(out)},
                           meta={"cues": len(plan),
-                                "elements": [c["element"] for c in plan]})
+                                "elements": [c["element"] for c in plan],
+                                "brand": brand_name})
 
 
 # --- loading -------------------------------------------------------------------
 
-def _load_brand() -> tuple[dict, dict]:
-    for path in (_CATALOG, _MANIFEST):
-        if not path.is_file():
-            raise ToolError(f"brand file missing: {path} (run assets/brand/default/build_catalog.py)")
-    return (json.loads(_CATALOG.read_text(encoding="utf-8")),
-            json.loads(_MANIFEST.read_text(encoding="utf-8")))
+def _load_brand(name: str = "default") -> tuple[dict, dict]:
+    return brandkit.load_pack(name)
+
+
+def _component_path(name: str, relative: str) -> pathlib.Path:
+    return brandkit.component(name, relative)
 
 
 def _load_cues(path: pathlib.Path) -> list[dict]:
@@ -138,7 +138,7 @@ def _load_cues(path: pathlib.Path) -> list[dict]:
 
 # --- resolving a cue to a renderable composition -------------------------------
 
-def _resolve(items: list[dict], catalog: dict) -> list[dict]:
+def _resolve(items: list[dict], catalog: dict, *, brand_name: str = "default") -> list[dict]:
     # The catalog keys cards by their printed id («02·B», «07·A»); cue lists write
     # them the way a keyboard does («02B»), which is also how the manifest's own
     # element lists spell them.
@@ -160,7 +160,7 @@ def _resolve(items: list[dict], catalog: dict) -> list[dict]:
         card = by_id.get(element)
         if card is None:
             raise ToolError(f"{where}: unknown element {element!r}; "
-                            f"see assets/brand/default/catalog.json")
+                            f"see assets/brand/{brand_name}/catalog.json")
         if card["status"] != "ready":
             raise ToolError(f"{where}: element {element} is '{card['status']}' — "
                             f"{card.get('routeNote') or card['name']}. Nothing renders it yet.")

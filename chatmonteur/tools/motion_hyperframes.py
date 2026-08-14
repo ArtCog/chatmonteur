@@ -37,6 +37,10 @@ from .. import media
 # every edge against the footage.
 _ALPHA_FORMAT = "mov"
 _OPAQUE_FORMAT = "mp4"
+# HyperFrames publishes frequently. Rendering through an unpinned ``npx hyperframes``
+# made yesterday's checked component use today's engine without any repository change.
+# Upgrade deliberately: update this pin, run the composition gates, then commit both.
+_HYPERFRAMES_PACKAGE = "hyperframes@0.7.109"
 
 
 class MotionHyperframesTool(Tool):
@@ -71,7 +75,7 @@ class MotionHyperframesTool(Tool):
         # --strict-variables is UNCONDITIONAL: a composition can declare variables the
         # caller forgot to pass, and without the flag that renders a blank card that
         # still writes a file — the out.exists() guard below never notices.
-        cmd = [npx, "--yes", "hyperframes", "render", str(project),
+        cmd = [npx, "--yes", _HYPERFRAMES_PACKAGE, "render", str(project),
                "--output", str(out), "--format", fmt, "--quality", quality,
                "--strict-variables"]
         if comp_file:

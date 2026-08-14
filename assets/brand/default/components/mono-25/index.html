@@ -7,6 +7,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 25 «маркер главы» — ported 1:1 from the designer's source
@@ -27,22 +28,22 @@
 <div id="root" data-composition-id="mono-25" data-start="0" data-duration="4"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div id="m25-large" style="position:absolute;left:104px;top:104px;display:flex;align-items:stretch;gap:34px">
-    <div id="m25-rule" style="width:10px;background:#FAFAF7;transform-origin:top center"></div>
+    <div id="m25-rule" style="width:10px;background:var(--paper);transform-origin:top center"></div>
     <div>
       <div data-var-text="number" style="font-family:'Playfair Display',serif;font-weight:600;
-           font-size:78px;line-height:1;color:#FAFAF7">01</div>
+           font-size:78px;line-height:1;color:var(--paper)">01</div>
       <div data-var-text="title" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-           letter-spacing:.24em;color:#B7B7B2;margin-top:16px;text-transform:uppercase">Монтаж</div>
+           letter-spacing:.24em;color:var(--gray-1);margin-top:16px;text-transform:uppercase">Монтаж</div>
     </div>
   </div>
 
   <div id="m25-compact" style="position:absolute;right:104px;bottom:93px;display:inline-flex;
        align-items:center;gap:23px;background:rgba(8,9,10,.4);padding:18px 31px">
     <span id="m25-c-label" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-          letter-spacing:.2em;color:#FAFAF7">01 · МОНТАЖ</span>
-    <span style="width:42px;height:2px;background:#8A8A85"></span>
+          letter-spacing:.2em;color:var(--paper)">01 · МОНТАЖ</span>
+    <span style="width:42px;height:2px;background:var(--gray-2)"></span>
     <span data-var-text="total" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-          letter-spacing:.14em;color:#8A8A85">05</span>
+          letter-spacing:.14em;color:var(--gray-2)">05</span>
   </div>
 </div>
 

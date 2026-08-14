@@ -135,6 +135,7 @@ class SoundTool(Tool):
                 f"afade=t=in:d={fade:.3f},afade=t=out:st={fade_out_at:.3f}:d={fade:.3f}[music]"
             )
             if duck:
+                assert key_label is not None
                 graph.append(_sidechain_filter("[music]", key_label, "[ducked]"))
                 mix_labels.append("[ducked]")
             else:

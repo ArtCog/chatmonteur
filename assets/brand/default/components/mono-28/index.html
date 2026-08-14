@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 28 «клавиши / команда» — ported from the designer's source
@@ -28,7 +29,7 @@
     <div id="m28-group" style="display:flex;flex-direction:column;align-items:center;gap:36px">
       <div id="m28-keys" style="display:flex;align-items:center;gap:26px"></div>
       <div data-var-text="caption" style="background:rgba(8,9,10,.5);font-family:'Golos Text',sans-serif;
-           font-weight:600;font-size:47px;color:#FAFAF7;padding:21px 42px">палитра команд</div>
+           font-weight:600;font-size:47px;color:var(--paper);padding:21px 42px">палитра команд</div>
     </div>
   </div>
 </div>
@@ -40,10 +41,10 @@
 
   const caps = String(vars.keys ?? "⌘|K").split("|").map(s => s.trim()).filter(Boolean);
   document.getElementById("m28-keys").innerHTML = caps.map((k, i) => {
-    const plus = i ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:52px;color:#8A8A85">+</span>' : "";
-    return plus + `<div class="m28-cap" style="background:#FAFAF7;color:#0B0B0C;`
+    const plus = i ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:52px;color:var(--gray-2)">+</span>' : "";
+    return plus + `<div class="m28-cap" style="background:var(--paper);color:var(--ink);`
       + `font-family:'JetBrains Mono',monospace;font-weight:700;font-size:67px;line-height:1;`
-      + `padding:36px 49px;box-shadow:0 13px 0 #8A8A85">${esc(k)}</div>`;
+      + `padding:36px 49px;box-shadow:0 13px 0 var(--gray-2)">${esc(k)}</div>`;
   }).join("");
 
   const tl = gsap.timeline({ paused: true });

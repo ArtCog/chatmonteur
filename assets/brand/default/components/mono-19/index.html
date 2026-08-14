@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 19 «шаги процесса» — ported from the designer's source
@@ -26,7 +27,7 @@
 <body>
 <div id="root" data-composition-id="mono-19" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--ink);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
@@ -34,7 +35,7 @@
 
   <div data-var-text="kicker" style="position:absolute;left:161px;top:88px;
        font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.28em;
-       color:#8A8A85">ПОРЯДОК РАБОТЫ</div>
+       color:var(--gray-2)">ПОРЯДОК РАБОТЫ</div>
 
   <div style="position:absolute;left:161px;right:161px;top:0;bottom:0;display:flex;
        flex-direction:column;justify-content:center">
@@ -59,13 +60,13 @@
     const now = i + 1 === current;
     const num = String(i + 1).padStart(2, "0");
     const numStyle = now
-      ? "color:#FAFAF7"
+      ? "color:var(--paper)"
       : "color:transparent;-webkit-text-stroke:4px #6E7075";
     const textStyle = now
-      ? "font-weight:800;font-size:65px;color:#FAFAF7"
-      : "font-weight:600;font-size:60px;color:#8A8A85";
+      ? "font-weight:800;font-size:65px;color:var(--paper)"
+      : "font-weight:600;font-size:60px;color:var(--gray-2)";
     return `<div class="m19-step" style="display:flex;align-items:center;gap:57px;padding:18px 0">
-      <span style="width:197px;font-family:'Golos Text',sans-serif;font-weight:900;font-size:109px;
+      <span data-layout-ignore style="width:197px;font-family:'Golos Text',sans-serif;font-weight:900;font-size:109px;
             line-height:1;${numStyle};flex:none">${num}</span>
       <span style="font-family:'Golos Text',sans-serif;line-height:1.15;${textStyle}">${esc(text)}</span>
     </div>`;

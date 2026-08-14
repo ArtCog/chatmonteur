@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 36 «агент думает» — ported from the designer's source
@@ -25,20 +26,20 @@
 <body>
 <div id="root" data-composition-id="mono-36" data-start="0" data-duration="5"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
-  <div id="m36-panel" style="position:absolute;left:135px;bottom:135px;background:#161618;
-       border:3px solid #2A2A2C;box-shadow:0 57px 140px -52px rgba(0,0,0,.7);
+  <div id="m36-panel" style="position:absolute;left:135px;bottom:135px;background:var(--card-dark);
+       border:3px solid var(--card-dark-border);box-shadow:0 57px 140px -52px rgba(0,0,0,.7);
        padding:42px 52px;min-width:856px">
     <div style="display:flex;align-items:center;gap:29px">
       <div style="display:flex;gap:13px">
-        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
-        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
-        <span class="m36-dot" style="width:18px;height:18px;background:#FAFAF7"></span>
+        <span class="m36-dot" style="width:18px;height:18px;background:var(--paper)"></span>
+        <span class="m36-dot" style="width:18px;height:18px;background:var(--paper)"></span>
+        <span class="m36-dot" style="width:18px;height:18px;background:var(--paper)"></span>
       </div>
       <span data-var-text="label" style="font-family:'JetBrains Mono',monospace;font-size:34px;
-            letter-spacing:.14em;color:#FAFAF7;text-transform:uppercase">агент работает</span>
+            letter-spacing:.14em;color:var(--paper);text-transform:uppercase">агент работает</span>
     </div>
     <div id="m36-steps" style="display:flex;flex-direction:column;gap:18px;margin-top:36px;
-         padding-top:34px;border-top:3px solid #2A2A2C;font-family:'JetBrains Mono',monospace;
+         padding-top:34px;border-top:3px solid var(--card-dark-border);font-family:'JetBrains Mono',monospace;
          font-size:34px;line-height:1.5"></div>
   </div>
 </div>
@@ -58,7 +59,7 @@
     const current = line.startsWith("→");
     const cursor = current && i === last
       ? '<span id="m36-cur">▌</span>' : "";
-    return `<div style="color:${current ? "#FAFAF7" : "#8A8A85"}">${esc(line)}${cursor}</div>`;
+    return `<div style="color:${current ? "var(--paper)" : "var(--gray-2)"}">${esc(line)}${cursor}</div>`;
   }).join("");
 
   const tl = gsap.timeline({ paused: true });

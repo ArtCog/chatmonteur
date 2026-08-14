@@ -14,11 +14,12 @@ The registry discovers it automatically.
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import pkgutil
 import shutil
 import sys
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from typing import Any
 
 from .context import RunContext
 from .errors import MissingDependencyError
@@ -45,13 +46,12 @@ class ToolResult:
     meta: dict = field(default_factory=dict)
 
 
-class Tool(ABC):
+class Tool:
     manifest: ToolManifest
-
-    @abstractmethod
-    def run(self, ctx: RunContext, **params) -> ToolResult:
-        """Do the work. Raise a ToolError subclass on failure — never return
-        a partial result silently."""
+    # Each capability has its own validated keyword schema. ``Any`` is deliberate:
+    # pretending every implementation accepts every other tool's kwargs violates
+    # Python's override rules and made the entire tool directory fail pyright.
+    run: Any
 
     def missing_requirements(self) -> list[str]:
         """Return the binaries/modules this tool needs but that aren't present."""

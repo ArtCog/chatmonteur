@@ -7,6 +7,7 @@ defaults, pipeline parsing, registry discovery, param resolution.
 from __future__ import annotations
 
 import sys
+import subprocess
 import tomllib
 from pathlib import Path
 
@@ -37,7 +38,10 @@ from chatmonteur.tools.sound import _sidechain_filter as _snd_sidechain_filter  
 from chatmonteur.tools.sound import _sfx_delay_ms  # noqa: E402
 from chatmonteur.tools.stock import _match_memes  # noqa: E402
 from chatmonteur.tools.stock import _providers_for as _stock_providers  # noqa: E402
-from chatmonteur.tools.motion_hyperframes import _resolve as _hf_resolve  # noqa: E402
+from chatmonteur.tools.motion_hyperframes import (  # noqa: E402
+    _HYPERFRAMES_PACKAGE,
+    _resolve as _hf_resolve,
+)
 from chatmonteur.tools.qc import _expected_seconds as _qc_expected  # noqa: E402
 from chatmonteur.tools.qc import _judge as _qc_judge  # noqa: E402
 from chatmonteur.tools.storyboard import _SECTIONS as _SB_SECTIONS  # noqa: E402
@@ -69,12 +73,21 @@ def test_defaults_are_free_and_cross_platform(tmp_path):
     assert cfg.transcribe.backend == "faster-whisper"  # free, local
     assert cfg.encode.encoder == "auto"  # never hardcoded NVENC
     assert cfg.encode.loudness_lufs == -14.0
+    assert cfg.brand.name == "default"
 
 
 def test_config_unknown_keys_ignored(tmp_path):
     (tmp_path / "config.toml").write_text('[encode]\nfinal_height = 1080\nbogus = 5\n')
     cfg = load_config(tmp_path)
     assert cfg.encode.final_height == 1080  # known applied, unknown ignored
+
+
+def test_config_selects_an_active_brand_pack(tmp_path):
+    (tmp_path / "config.toml").write_text('[brand]\nname = "studio-red"\n')
+
+    cfg = load_config(tmp_path)
+
+    assert cfg.brand.name == "studio-red"
 
 
 def test_merge_overlapping():
@@ -931,6 +944,16 @@ def test_brand_loader_reproduces_every_hardcoded_value():
     assert brand.font_dir().is_dir()
 
 
+def test_default_brand_uses_the_hyperframes_native_frame_spec():
+    from chatmonteur import brand
+
+    spec = brand.frame("default")
+
+    assert spec["name"] == "Immersive Mono"
+    assert spec["colors"]["ink"] == brand.colour("ink")
+    assert spec["typography"]["sans"]["family"] == brand.font("sans")
+
+
 def test_cold_open_outline_text_is_painted_for_hyperframes_check():
     """An outlined headline must not use a transparent fill that the layout gate rejects."""
     component = (
@@ -944,7 +967,7 @@ def test_cold_open_outline_text_is_painted_for_hyperframes_check():
     ).read_text(encoding="utf-8")
     assert 'id="m39-a-text"' in component
     assert "color:transparent;-webkit-text-stroke:5px #FAFAF7" not in component
-    assert "color:#0B0B0C;-webkit-text-stroke:5px #FAFAF7" in component
+    assert "color:var(--ink);-webkit-text-stroke:5px var(--paper)" in component
 
 
 def test_ass_colour_is_byte_reversed():
@@ -1019,6 +1042,54 @@ def test_catalog_builder_status_line_is_windows_codepage_safe():
     assert status_line.isascii()
 
 
+def test_catalog_builder_embeds_a_complete_editorial_profile_for_every_card():
+    """The generated inventory must also tell a fresh editor when to use each card."""
+    root = Path(__file__).resolve().parents[1]
+    brand_root = root / "assets" / "brand" / "default"
+    subprocess.run(
+        [sys.executable, str(brand_root / "build_catalog.py")],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    catalog = json.loads((brand_root / "catalog.json").read_text(encoding="utf-8"))
+
+    assert catalog["counts"]["total"] == 68
+    assert catalog["editorialIntents"] == "../editorial-intents.json"
+    assert all(set(card["editorial"]) == {
+        "intent", "role", "priority", "sections", "sourceTreatment", "useWhen", "avoidWhen", "basis"
+    } for card in catalog["cards"])
+    by_id = {card["id"]: card for card in catalog["cards"]}
+    assert by_id["01"]["editorial"]["priority"] == "explicit-only"
+    assert by_id["02·B"]["status"] == "dropped"
+    assert by_id["19"]["editorial"]["priority"] == "situational"
+    assert by_id["19"]["editorial"]["intent"] == "enumerate"
+    assert by_id["33"]["editorial"]["role"] == "real-chapter-index"
+    assert by_id["N"]["editorial"]["intent"] == "emphasize"
+    assert by_id["N"]["editorial"]["priority"] == "preferred"
+
+
+def test_ready_hyperframes_blocks_consume_the_frame_token_projection():
+    root = Path(__file__).resolve().parents[1] / "assets" / "brand" / "default"
+    catalog = json.loads((root / "catalog.json").read_text(encoding="utf-8"))
+    runtime_tokens = (root / "tokens.css").read_bytes()
+    forbidden_literals = {"#0b0b0c", "#fafaf7", "#b7b7b2", "#8a8a85"}
+
+    for card in catalog["cards"]:
+        if card["status"] != "ready":
+            continue
+        component = root / card["component"]
+        html = (component / "index.html").read_text(encoding="utf-8")
+        registry = json.loads((component / "registry-item.json").read_text(encoding="utf-8"))
+        shipped = {entry["path"] for entry in registry["files"]}
+        assert '<link rel="stylesheet" href="tokens.css">' in html, card["id"]
+        assert (component / "tokens.css").read_bytes() == runtime_tokens, card["id"]
+        assert "tokens.css" in shipped, card["id"]
+        assert not (forbidden_literals & set(_re.findall(r"#[0-9a-f]{6}", html.casefold()))), card["id"]
+
+
 def test_unknown_brand_and_token_fail_loudly():
     from chatmonteur import brand
     with pytest.raises(ToolError, match="no tokens.css"):
@@ -1086,11 +1157,156 @@ def _write_plan(tmp_path, data):
 
 from chatmonteur.tools.cues import (  # noqa: E402
     _check,
+    _component_path,
     _filter_graph as _cue_filter_graph,
     _load_brand,
     _resolve,
     _variables,
 )
+
+
+def test_cues_load_the_selected_pack_instead_of_default(tmp_path, monkeypatch):
+    from chatmonteur import brand
+
+    root = tmp_path / "brands"
+    pack = root / "studio-red"
+    component = pack / "components" / "notice"
+    component.mkdir(parents=True)
+    (pack / "frame.md").write_text(
+        "---\nname: Studio Red\ncolors: {ink: '#111111'}\ntypography: {}\n---\n",
+        encoding="utf-8",
+    )
+    (pack / "tokens.css").write_text(
+        ":root { --ink: #111111; --font-sans: 'Inter'; }", encoding="utf-8"
+    )
+    (pack / "catalog.json").write_text(json.dumps({"cards": []}), encoding="utf-8")
+    (pack / "brand-manifest.json").write_text(json.dumps({"brand": "Studio Red"}), encoding="utf-8")
+    (component / "index.html").write_text("<html></html>", encoding="utf-8")
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+
+    catalog, manifest = _load_brand("studio-red")
+
+    assert catalog == {"cards": []}
+    assert manifest["brand"] == "Studio Red"
+    assert _component_path("studio-red", "components/notice") == component / "index.html"
+
+
+def test_hyperframes_cli_is_reproducibly_pinned():
+    assert _HYPERFRAMES_PACKAGE == "hyperframes@0.7.109"
+
+
+def test_pack_refuses_runtime_tokens_that_drift_from_frame_md(tmp_path, monkeypatch):
+    from chatmonteur import brand
+
+    root = tmp_path / "brands"
+    pack = root / "drifted"
+    pack.mkdir(parents=True)
+    (pack / "frame.md").write_text(
+        "---\nname: Drifted\ncolors: {ink: '#111111'}\ntypography: {}\n---\n",
+        encoding="utf-8",
+    )
+    (pack / "tokens.css").write_text(":root { --ink: #FFFFFF; }", encoding="utf-8")
+    (pack / "catalog.json").write_text(json.dumps({"cards": []}), encoding="utf-8")
+    (pack / "brand-manifest.json").write_text(json.dumps({}), encoding="utf-8")
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+    brand.tokens.cache_clear()
+    brand.frame.cache_clear()
+
+    with pytest.raises(ToolError, match="frame.md.*tokens.css"):
+        brand.load_pack("drifted")
+
+    brand.tokens.cache_clear()
+    brand.frame.cache_clear()
+
+
+def test_ffmpeg_text_layers_follow_the_active_brand(tmp_path, monkeypatch):
+    from chatmonteur import brand
+    from chatmonteur.tools.inserts import _brand_style as insert_style
+    from chatmonteur.tools.subtitles import _brand_style as subtitle_style
+
+    root = tmp_path / "brands"
+    pack = root / "studio-red"
+    (pack / "fonts").mkdir(parents=True)
+    (pack / "frame.md").write_text(
+        "---\nname: Studio Red\ncolors: {ink: '#101112', paper: '#F0F1F2', "
+        "captionScrim: 'rgba(1, 2, 3, 0.5)', captionAccent: '#AABBCC', "
+        "insertAccentOnPaper: '#DDEEFF'}\ntypography: {sans: {family: Inter}, "
+        "mono: {family: Mono Test}}\n---\n",
+        encoding="utf-8",
+    )
+    (pack / "tokens.css").write_text(
+        ":root { --ink:#101112; --paper:#F0F1F2; --scrim:rgba(1,2,3,.5); "
+        "--caption-accent:#AABBCC; --insert-accent-on-paper:#DDEEFF; "
+        "--font-sans:'Inter'; --font-mono:'Mono Test'; }",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+    brand.tokens.cache_clear()
+    brand.frame.cache_clear()
+
+    subs = subtitle_style("studio-red", "typewriter")
+    insert = insert_style("studio-red")
+
+    assert subs["font"] == "Mono Test"
+    assert subs["paper_bgr"] == "&H00F2F1F0"
+    assert subs["scrim_bgr"] == "&H80030201"
+    assert insert["font"] == "Inter"
+    assert insert["accent_dark"] == "&HCCBBAA&"
+    assert insert["accent_paper"] == "&HFFEEDD&"
+
+    brand.tokens.cache_clear()
+    brand.frame.cache_clear()
+
+
+def test_qr_uses_the_selected_brand_colours(tmp_path, monkeypatch):
+    from io import BytesIO
+
+    from PIL import Image
+    from chatmonteur import brand
+
+    root = tmp_path / "brands"
+    pack = root / "studio-red"
+    pack.mkdir(parents=True)
+    (pack / "tokens.css").write_text(
+        ":root { --ink:#112233; --paper:#EEDDCC; }", encoding="utf-8"
+    )
+    (pack / "channel.json").write_text(
+        json.dumps({"telegram": {"url": "https://t.me/example"}}), encoding="utf-8"
+    )
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+    brand.tokens.cache_clear()
+    brand.channel.cache_clear()
+
+    colours = Image.open(BytesIO(brand.telegram_qr_png("studio-red", size=120))).getcolors(
+        maxcolors=120 * 120
+    )
+    pixels = {colour for _, colour in colours or []}
+
+    assert (17, 34, 51) in pixels
+    assert (238, 221, 204) in pixels
+
+    brand.tokens.cache_clear()
+    brand.channel.cache_clear()
+
+
+def test_asr_corrections_include_the_active_brand_dictionary(tmp_path, monkeypatch):
+    from chatmonteur import brand
+    from chatmonteur.core import RunContext
+    from chatmonteur.tools.transcribe_whisper import _load_fixes
+
+    root = tmp_path / "brands"
+    pack = root / "studio-red"
+    pack.mkdir(parents=True)
+    (pack / "asr_fixes.yaml").write_text("студио рэд: Studio Red\n", encoding="utf-8")
+    monkeypatch.setattr(brand, "_BRAND_ROOT", root)
+    (tmp_path / "config.toml").write_text('[brand]\nname = "studio-red"\n', encoding="utf-8")
+    ctx = RunContext.for_project(load_config(tmp_path), "t")
+
+    assert _load_fixes(ctx, None)["студио рэд"] == "Studio Red"
+
+def test_cue_error_points_to_the_selected_pack_catalog():
+    with pytest.raises(ToolError, match=r"assets/brand/studio-red/catalog.json"):
+        _resolve([{"t": 1, "element": "missing"}], {"cards": []}, brand_name="studio-red")
 
 
 def _plan(*cues):

@@ -7,6 +7,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 24 «до / после» — ported from the designer's source
@@ -27,7 +28,7 @@
 <body>
 <div id="root" data-composition-id="mono-24" data-start="0" data-duration="5"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#0B0B0C">
+     style="position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--ink)">
 
   <div id="m24-left" style="position:absolute;left:0;top:0;bottom:0;width:50%;overflow:hidden;
        background:#26282A;background-image:repeating-linear-gradient(135deg,#2E3033 0 5px,#26282A 5px 29px)">
@@ -39,27 +40,27 @@
   </div>
 
   <div id="m24-right" style="position:absolute;right:0;top:0;bottom:0;width:50%;overflow:hidden;
-       background:#1A1B1D;background-image:repeating-linear-gradient(135deg,#212225 0 5px,#1A1B1D 5px 29px)">
+       background:var(--surface);background-image:repeating-linear-gradient(135deg,var(--surface-2) 0 5px,var(--surface) 5px 29px)">
     <div id="m24-right-ph" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
          font-family:'JetBrains Mono',monospace;font-size:34px;letter-spacing:.16em;color:#54565A;
          white-space:nowrap">наш результат</div>
     <div style="position:absolute;right:57px;top:52px;font-family:'JetBrains Mono',monospace;
-         font-size:31px;letter-spacing:.28em;color:#FAFAF7">ПОСЛЕ</div>
+         font-size:31px;letter-spacing:.28em;color:var(--paper)">ПОСЛЕ</div>
     <div id="m24-plate" style="position:absolute;left:67px;bottom:88px;display:flex">
-      <div style="width:10px;background:#FAFAF7"></div>
-      <div style="background:#0B0B0C;padding:26px 39px">
+      <div style="width:10px;background:var(--paper)"></div>
+      <div style="background:var(--ink);padding:26px 39px">
         <div data-var-text="name" style="font-family:'Playfair Display',serif;font-weight:600;
-             font-size:49px;color:#FAFAF7;line-height:1.2">Джулиан Иванов</div>
+             font-size:49px;color:var(--paper);line-height:1.2">Джулиан Иванов</div>
         <div data-var-text="role" style="font-family:'JetBrains Mono',monospace;font-size:26px;
-             letter-spacing:.12em;color:#B7B7B2;margin-top:10px;text-transform:uppercase">AI Automation</div>
+             letter-spacing:.12em;color:var(--gray-1);margin-top:10px;text-transform:uppercase">AI Automation</div>
       </div>
     </div>
   </div>
 
-  <div style="position:absolute;left:50%;top:0;bottom:0;width:8px;background:#FAFAF7;transform:translateX(-50%)"></div>
+  <div style="position:absolute;left:50%;top:0;bottom:0;width:8px;background:var(--paper);transform:translateX(-50%)"></div>
   <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:114px;height:114px;
-       border-radius:50%;background:#FAFAF7;display:flex;align-items:center;justify-content:center;
-       font-family:'JetBrains Mono',monospace;font-weight:700;font-size:39px;color:#0B0B0C;
+       border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;
+       font-family:'JetBrains Mono',monospace;font-weight:700;font-size:39px;color:var(--ink);
        box-shadow:0 16px 47px rgba(0,0,0,.5)">‹›</div>
 </div>
 

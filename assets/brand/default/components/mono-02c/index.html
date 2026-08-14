@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 02·C «титульная · цитата» — ported 1:1 from the designer's
@@ -20,20 +21,20 @@
 <body>
 <div id="root" data-composition-id="mono-02c" data-start="0" data-duration="5"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
        background-size:114px 114px"></div>
   <div style="position:absolute;left:99px;top:26px;font-family:'Playfair Display',serif;
-       font-weight:600;font-size:182px;line-height:1;color:#0B0B0C;opacity:.14">«</div>
+       font-weight:600;font-size:182px;line-height:1;color:var(--ink);opacity:.14">«</div>
 
   <div id="m2c-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
        align-items:center;justify-content:center;gap:62px;text-align:center;padding:0 228px">
     <div data-var-text="quote" style="font-family:'Playfair Display',serif;font-style:italic;
-         font-weight:600;font-size:104px;line-height:1.24;color:#0B0B0C">ИИ не заменит монтажёра — заменит того, кто им не пользуется</div>
+         font-weight:600;font-size:104px;line-height:1.24;color:var(--ink)">ИИ не заменит монтажёра — заменит того, кто им не пользуется</div>
     <div data-var-text="attribution" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">тема выпуска</div>
+         letter-spacing:.28em;color:var(--gray-2);text-transform:uppercase">тема выпуска</div>
   </div>
 </div>
 

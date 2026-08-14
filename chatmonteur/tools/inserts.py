@@ -29,7 +29,7 @@ import sys
 from ..core.context import RunContext
 from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
-from .. import media
+from .. import brand as brandkit, media
 
 
 class InsertsTool(Tool):
@@ -69,12 +69,16 @@ class InsertsTool(Tool):
             ctx.log("inserts: plan is empty, passing the video through")
             return ToolResult(artifacts={"video": str(input)}, meta={"inserts": 0})
 
-        font = font or _BRAND_FONT
-        font_dir = font_dir or _BRAND_FONT_DIR
+        palette = _brand_style(ctx.config.brand.name)
+        font = font or palette["font"]
+        font_dir = font_dir or palette["font_dir"]
         emoji_font = emoji_font or _default_emoji_font()
         w, h = _video_wh(input)
         ass_path = ctx.paths.transcripts / "inserts.ass"
-        ass_path.write_text(_to_ass(items, w, h, font, style, accent), encoding="utf-8")
+        ass_path.write_text(
+            _to_ass(items, w, h, font, style, accent, palette=palette),
+            encoding="utf-8",
+        )
 
         encoder = media.detect_encoder(ctx.config.encode.encoder)
         out = ctx.paths.clips / "inserted.mp4"
@@ -100,6 +104,7 @@ class InsertsTool(Tool):
         return ToolResult(
             artifacts={"video": str(out), "ass": str(ass_path)},
             meta={"inserts": len(items), "style": style, "accent": accent,
+                  "brand": ctx.config.brand.name,
                   "emoji_drawn": len(emoji_pngs)},
         )
 
@@ -125,14 +130,24 @@ _ACCENTS = {
     "yellow": {"dark": "&H00D7FF&", "paper": "&H0C59E8&"},   # #FFD700 / #E8590C
 }
 _STYLES = {"emoji_top", "sticker"}
-_BRAND_FONT = "Golos Text"
-_BRAND_FONT_DIR = str(
-    pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / "default" / "fonts"
-)
 _EMOJI_FONTS = {
     "win32": "Segoe UI Emoji",
     "darwin": "Apple Color Emoji",
 }
+
+
+def _brand_style(name: str = "default") -> dict[str, str]:
+    """Resolve the active pack into the ASS values used by meaning inserts."""
+    brandkit.validate_runtime(name)
+    return {
+        "font": brandkit.font("sans", brand=name),
+        "font_dir": str(brandkit.font_dir(name)),
+        "paper": brandkit.ass_style("paper", brand=name, alpha=0),
+        "ink": brandkit.ass_style("ink", brand=name, alpha=0),
+        "shadow": brandkit.ass_style("ink", brand=name, alpha=128),
+        "accent_dark": brandkit.ass_override("caption-accent", brand=name),
+        "accent_paper": brandkit.ass_override("insert-accent-on-paper", brand=name),
+    }
 
 
 def _default_emoji_font() -> str:
@@ -170,20 +185,27 @@ def _video_wh(path: str) -> tuple[int, int]:
 # --- ASS document --------------------------------------------------------------
 
 def _to_ass(items: list[dict], width: int, height: int, font: str,
-            style: str, accent: str) -> str:
+            style: str, accent: str, palette: dict[str, str] | None = None) -> str:
     """One event per insert — the text line. The emoji is overlaid as a PNG."""
     ts = round(_TEXT_FRAC * height)
     sh = max(2, round(_SHADOW_EM * ts))
     bottom = round(_BOTTOM_FRAC * height)
     side = round(0.06 * width)
     sticker = style == "sticker"
-    ac = _ACCENTS[accent]["paper" if sticker else "dark"]
+    colours = palette or {
+        "paper": _PAPER, "ink": _INK, "shadow": _SHADOW,
+        "accent_dark": _ACCENTS[accent]["dark"],
+        "accent_paper": _ACCENTS[accent]["paper"],
+    }
+    ac = colours["accent_paper" if sticker else "accent_dark"]
     # Sticker = paper plate (BorderStyle 3) with ink text; standard = shadow only.
     text_style = (
-        f"Style: Ins,{font},{ts},{_INK},{_INK},{_PAPER},{_PAPER},-1,0,0,0,100,100,0,0,"
+        f"Style: Ins,{font},{ts},{colours['ink']},{colours['ink']},"
+        f"{colours['paper']},{colours['paper']},-1,0,0,0,100,100,0,0,"
         f"3,{round(ts * 0.34)},0,2,{side},{side},{bottom},1"
         if sticker else
-        f"Style: Ins,{font},{ts},{_PAPER},{_PAPER},{_SHADOW},{_SHADOW},-1,0,0,0,100,100,0,0,"
+        f"Style: Ins,{font},{ts},{colours['paper']},{colours['paper']},"
+        f"{colours['shadow']},{colours['shadow']},-1,0,0,0,100,100,0,0,"
         f"1,0,{sh},2,{side},{side},{bottom},1"
     )
     header = (

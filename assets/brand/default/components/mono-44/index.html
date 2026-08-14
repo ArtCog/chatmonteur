@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 44 «ТГ · полная плашка». Alpha overlay over continuing
@@ -21,22 +22,22 @@
 <div id="root" data-composition-id="mono-44" data-start="0" data-duration="7"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div style="position:absolute;right:110px;bottom:170px">
-    <div id="m44-plate" data-layout-allow-caption-zone style="background:#0B0B0C;padding:28px 36px;
+    <div id="m44-plate" data-layout-allow-caption-zone style="background:var(--ink);padding:28px 36px;
          display:flex;align-items:center;gap:32px;box-shadow:0 38px 100px -36px rgba(0,0,0,.78)">
-      <div id="m44-qr" style="width:190px;height:190px;background:#FAFAF7;padding:13px;flex:0 0 auto">
+      <div id="m44-qr" style="width:190px;height:190px;background:var(--paper);padding:13px;flex:0 0 auto">
         <img src="assets/tg-qr.png" alt="QR-код Telegram-канала ИИмерсивный"
              style="width:100%;height:100%;object-fit:contain;display:block">
       </div>
       <div id="m44-copy">
         <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-             letter-spacing:.18em;color:#B7B7B2">КОДЫ ИЗ ЭТОГО ВИДЕО</div>
+             letter-spacing:.18em;color:var(--gray-1)">КОДЫ ИЗ ЭТОГО ВИДЕО</div>
         <div style="display:flex;align-items:center;gap:20px;margin-top:15px">
-          <span id="m44-glyph" style="display:flex;color:#FAFAF7">
+          <span id="m44-glyph" style="display:flex;color:var(--paper)">
             <svg viewBox="0 0 24 24" width="54" height="54" style="display:block"><path fill="currentColor"
               d="M22 3 1.8 11.2c-.8.3-.8 1 0 1.3l4.9 1.6 1.9 5.9c.2.6.6.7 1 .3l2.7-2.3 4.9 3.6c.5.4 1 .2 1.2-.5L22.9 4c.2-.8-.3-1.2-.9-1Z"/></svg>
           </span>
           <span data-var-text="text" style="font-family:'Golos Text',sans-serif;font-weight:900;
-                font-size:62px;line-height:1.1;color:#FAFAF7">Telegram-канал</span>
+                font-size:62px;line-height:1.1;color:var(--paper)">Telegram-канал</span>
         </div>
       </div>
     </div>

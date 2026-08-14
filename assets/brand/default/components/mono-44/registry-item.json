@@ -21,6 +21,11 @@
       "type": "hyperframes:composition"
     },
     {
+      "path": "tokens.css",
+      "target": "compositions/tokens.css",
+      "type": "hyperframes:asset"
+    },
+    {
       "path": "index.motion.json",
       "target": "compositions/mono-44.motion.json",
       "type": "hyperframes:asset"

@@ -7,6 +7,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 35 «диалог с моделью» — ported from the designer's source
@@ -28,7 +29,7 @@
 <body>
 <div id="root" data-composition-id="mono-35" data-start="0" data-duration="7"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
@@ -38,14 +39,14 @@
        flex-direction:column;justify-content:center;gap:36px">
     <div id="m35-you" style="align-self:flex-end;max-width:74%">
       <div data-var-text="youLabel" style="font-family:'JetBrains Mono',monospace;font-size:27px;
-           letter-spacing:.2em;color:#8A8A85;text-align:right;margin-bottom:16px">ВЫ</div>
-      <div data-var-text="you" style="background:#0B0B0C;color:#FAFAF7;font-family:'Golos Text',sans-serif;
+           letter-spacing:.2em;color:var(--gray-2);text-align:right;margin-bottom:16px">ВЫ</div>
+      <div data-var-text="you" style="background:var(--ink);color:var(--paper);font-family:'Golos Text',sans-serif;
            font-weight:600;font-size:52px;line-height:1.35;padding:36px 49px">Разбей это видео на смысловые блоки и подпиши каждый</div>
     </div>
     <div id="m35-agent" style="align-self:flex-start;max-width:80%">
       <div data-var-text="agentLabel" style="font-family:'JetBrains Mono',monospace;font-size:27px;
-           letter-spacing:.2em;color:#8A8A85;margin-bottom:16px">CLAUDE</div>
-      <div style="background:#FAFAF7;border:5px solid #0B0B0C;color:#0B0B0C;
+           letter-spacing:.2em;color:var(--gray-2);margin-bottom:16px">CLAUDE</div>
+      <div style="background:var(--paper);border:5px solid var(--ink);color:var(--ink);
            font-family:'Golos Text',sans-serif;font-weight:500;font-size:52px;line-height:1.4;
            padding:36px 49px"><span data-var-text="agent">Нашёл 5 блоков. Первый — вступление 0:00–2:14, дальше установка окружения</span><span
            id="m35-cur" style="font-family:'JetBrains Mono',monospace">▌</span></div>

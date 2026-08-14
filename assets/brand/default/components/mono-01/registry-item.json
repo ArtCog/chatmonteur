@@ -22,6 +22,11 @@
       "type": "hyperframes:composition"
     },
     {
+      "path": "tokens.css",
+      "target": "compositions/tokens.css",
+      "type": "hyperframes:asset"
+    },
+    {
       "path": "fonts/GolosText.ttf",
       "target": "compositions/fonts/GolosText.ttf",
       "type": "hyperframes:asset"

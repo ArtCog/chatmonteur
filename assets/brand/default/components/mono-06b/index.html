@@ -8,6 +8,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 06·B «инфографика · B» — ported from the designer's source
@@ -26,7 +27,7 @@
 <body>
 <div id="root" data-composition-id="mono-06b" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
@@ -35,17 +36,17 @@
   <div style="position:absolute;inset:0;display:flex;align-items:center;gap:130px;padding:0 145px">
     <div id="m6b-figure" style="position:relative;flex:0 0 auto">
       <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-           letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">итог</div>
+           letter-spacing:.28em;color:var(--gray-2);text-transform:uppercase">итог</div>
       <!-- line-height 1, not the designer's .82: at 363px the glyph is taller than a
            .82 line box and sat on top of the caption below it -->
       <div data-var-text="value" style="font-family:'Playfair Display',serif;font-weight:600;
-           font-size:363px;line-height:1;color:#0B0B0C;margin-top:16px">5×</div>
+           font-size:363px;line-height:1;color:var(--ink);margin-top:16px">5×</div>
       <div data-var-text="note" style="font-family:'Golos Text',sans-serif;font-size:42px;
            color:#3A3A3A;margin-top:16px;max-width:519px">дешевле при том же результате</div>
     </div>
 
     <div id="m6b-metrics" style="position:relative;flex:1">
-      <div data-var-text="model" style="display:inline-block;background:#0B0B0C;color:#FAFAF7;
+      <div data-var-text="model" style="display:inline-block;background:var(--ink);color:var(--paper);
            font-family:'Golos Text',sans-serif;font-weight:700;font-size:47px;padding:13px 31px;
            margin-bottom:21px">GLM 5.2</div>
       <div id="m6b-rows"></div>
@@ -63,11 +64,11 @@
 
   document.getElementById("m6b-rows").innerHTML = rows.map(([label, value]) => `
     <div style="display:flex;justify-content:space-between;align-items:baseline;padding:39px 0;
-         border-top:3px solid #E0E0DB">
+         border-top:3px solid var(--line)">
       <span style="font-family:'JetBrains Mono',monospace;font-size:34px;letter-spacing:.16em;
-            color:#8A8A85">${esc(label || "")}</span>
+            color:var(--gray-2)">${esc(label || "")}</span>
       <span style="font-family:'Playfair Display',serif;font-weight:600;font-size:67px;
-            color:#0B0B0C">${esc(value || "")}</span>
+            color:var(--ink)">${esc(value || "")}</span>
     </div>`).join("");
 
   const tl = gsap.timeline({ paused: true });

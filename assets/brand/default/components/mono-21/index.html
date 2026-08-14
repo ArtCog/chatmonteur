@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 21 «тост-уведомление» — ported from the designer's source
@@ -24,15 +25,15 @@
 <div id="root" data-composition-id="mono-21" data-start="0" data-duration="4"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div id="m21-toast" style="position:absolute;right:104px;top:104px;display:flex;align-items:center;
-       gap:36px;background:#FAFAF7;padding:36px 52px;box-shadow:0 42px 104px -36px rgba(0,0,0,.6)">
-    <div data-var-text="glyph" style="width:78px;height:78px;border-radius:50%;background:#0B0B0C;
-         color:#FAFAF7;display:flex;align-items:center;justify-content:center;
+       gap:36px;background:var(--paper);padding:36px 52px;box-shadow:0 42px 104px -36px rgba(0,0,0,.6)">
+    <div data-var-text="glyph" style="width:78px;height:78px;border-radius:50%;background:var(--ink);
+         color:var(--paper);display:flex;align-items:center;justify-content:center;
          font-family:'Golos Text',sans-serif;font-weight:800;font-size:44px">✓</div>
     <div>
       <div data-var-text="title" style="font-family:'Golos Text',sans-serif;font-weight:800;
-           font-size:47px;color:#0B0B0C;line-height:1.15">Агент завершил задачу</div>
+           font-size:47px;color:var(--ink);line-height:1.15">Агент завершил задачу</div>
       <div data-var-text="meta" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-           color:#8A8A85;margin-top:10px">12 файлов изменено · 4.2s</div>
+           color:var(--gray-2);margin-top:10px">12 файлов изменено · 4.2s</div>
     </div>
   </div>
 </div>

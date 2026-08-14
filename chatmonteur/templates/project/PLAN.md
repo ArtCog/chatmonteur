@@ -7,6 +7,8 @@ legacy_source_root: "{{LEGACY_SOURCE_ROOT}}"
 # {{PROJECT_TITLE}}
 
 This file is the first read for every agent entering this video project.
+The repository-wide ownership and layer map is `docs/architecture.md`; this
+file records only the state and decisions of this particular video.
 
 ## Current state
 

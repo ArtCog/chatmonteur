@@ -19,6 +19,11 @@
       "path": "index.html",
       "target": "compositions/mono-07b.html",
       "type": "hyperframes:composition"
+    },
+    {
+      "path": "tokens.css",
+      "target": "compositions/tokens.css",
+      "type": "hyperframes:asset"
     }
   ]
 }

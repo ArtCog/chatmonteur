@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element C «зачёрк цены» (strike + reveal) — ported 1:1 from the designer's
@@ -24,13 +25,13 @@
        display:flex;justify-content:center;align-items:center;gap:62px">
     <div id="ac-old" style="position:relative">
       <span data-var-text="old" style="font-family:'Playfair Display',serif;font-weight:600;
-            font-size:119px;line-height:1;color:#8A8A85">$200</span>
+            font-size:119px;line-height:1;color:var(--gray-2)">$200</span>
       <span id="ac-strike" style="position:absolute;left:-16px;right:-16px;top:52%;height:10px;
-            background:#FAFAF7;transform-origin:left center"></span>
+            background:var(--paper);transform-origin:left center"></span>
     </div>
-    <div id="ac-new" style="background:#FAFAF7;padding:31px 57px">
+    <div id="ac-new" style="background:var(--paper);padding:31px 57px">
       <span data-var-text="new" style="font-family:'Golos Text',sans-serif;font-weight:900;
-            font-size:119px;line-height:1;color:#0B0B0C">0 ₽</span>
+            font-size:119px;line-height:1;color:var(--ink)">0 ₽</span>
     </div>
   </div>
 </div>

@@ -13,7 +13,9 @@ from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
 from .. import media
 
-_LUT_DIR = Path(__file__).resolve().parents[2] / "presets" / "luts"
+_PACKAGED_LUT_DIR = Path(__file__).resolve().parents[1] / "assets" / "presets" / "luts"
+_SOURCE_LUT_DIR = Path(__file__).resolve().parents[2] / "presets" / "luts"
+_LUT_DIR = _PACKAGED_LUT_DIR if _PACKAGED_LUT_DIR.is_dir() else _SOURCE_LUT_DIR
 
 
 class ColorTool(Tool):

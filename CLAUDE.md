@@ -1,5 +1,10 @@
 # CLAUDE.md — driving chatmonteur
 
+Before changing subsystem ownership, read `docs/architecture.md`. HyperFrames
+owns the visual brand through native `frame.md` and registry components;
+ChatMonteur owns editorial intent, selection policy, orchestration, approvals,
+compositing, and QC. Do not introduce a competing visual-brand schema.
+
 You (the agent) are the control plane for **chatmonteur**: an extensible talking-head
 video editor. A creator points you at raw footage and describes what they want;
 you run the pipeline and iterate. Default language with the user: theirs.
@@ -109,6 +114,11 @@ editorial work, defines the ①skeleton→②edit→③final pipeline and the ap
 gates). `skills/INDEX.md` maps the rest: cutting (two-tier), subtitles, motion,
 hook editing, sound, plus `skills/references/` loaded on demand. When the
 skills and this file disagree on editing procedure, the skills win.
+
+Before selecting motion graphics, read
+`assets/brand/default/SELECTION-GUIDE.md`, then query `catalog.json` by
+`card.editorial.role`. `usage-profiles.json` is the editorial selection authority
+for all 68 designer cards; do not choose by memory, card number, or appearance.
 
 ## Phase ③ — the visual pass is YOUR plan, one artifact (IMPORTANT)
 

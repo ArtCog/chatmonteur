@@ -31,7 +31,8 @@ from .core import (
 from .project import import_source, initialize_project
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
-_PIPELINES = _REPO_ROOT / "pipelines"
+_PACKAGED_PIPELINES = Path(__file__).resolve().parent / "assets" / "pipelines"
+_PIPELINES = _PACKAGED_PIPELINES if _PACKAGED_PIPELINES.is_dir() else _REPO_ROOT / "pipelines"
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 03 «плашка-имя» — ported 1:1 from the designer's source
@@ -23,14 +24,14 @@
   <!-- bottom-left, clear of the player zone; the light tick is the shared marker
        this element carries with the question plate K and the paragraph M -->
   <div id="m3-wrap" style="position:absolute;left:130px;bottom:146px;display:flex">
-    <div style="width:13px;background:#FAFAF7"></div>
-    <div style="background:#0B0B0C;padding:39px 62px">
+    <div style="width:13px;background:var(--paper)"></div>
+    <div style="background:var(--ink);padding:39px 62px">
       <!-- line-height 1.2, not the designer's 1: Playfair's descenders (Д, у, р)
            sit below the em box, and at 70px a flat line-height clips them -->
       <div data-var-text="name" style="font-family:'Playfair Display',serif;font-weight:600;
-           font-size:70px;color:#FAFAF7;line-height:1.2">Джулиан Иванов</div>
+           font-size:70px;color:var(--paper);line-height:1.2">Джулиан Иванов</div>
       <div data-var-text="role" style="font-family:'JetBrains Mono',monospace;font-size:34px;
-           letter-spacing:.14em;color:#B7B7B2;margin-top:16px;text-transform:uppercase">AI Automation · автор</div>
+           letter-spacing:.14em;color:var(--gray-1);margin-top:16px;text-transform:uppercase">AI Automation · автор</div>
     </div>
   </div>
 </div>

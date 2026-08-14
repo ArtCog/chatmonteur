@@ -2,9 +2,12 @@
   "$comment": "Инвентарь бренда: каждая карточка, которую нарисовал дизайнер, зачем она и — если уже собрана — какая композиция HyperFrames её рендерит. Генерируется build_catalog.py из source/*.dc.html; руками не править.",
   "brand": "ИИмерсивный",
   "manifest": "brand-manifest.json",
+  "usageProfiles": "usage-profiles.json",
+  "selectionGuide": "SELECTION-GUIDE.md",
+  "editorialIntents": "../editorial-intents.json",
   "counts": {
-    "ready": 57,
-    "dropped": 7,
+    "ready": 56,
+    "dropped": 8,
     "todo": 1,
     "deferred": 1,
     "archived": 2,
@@ -24,6 +27,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "identify",
+        "role": "channel-intro",
+        "priority": "explicit-only",
+        "sections": [
+          "intro"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur explicitly asks for the channel intro animation.",
+        "avoidWhen": "Ordinary YouTube videos; never add it by default.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-01",
       "compositionId": "mono-01",
       "durationSec": 3.5,
@@ -50,6 +65,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-title",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -59,8 +84,19 @@
       "hint": "тема, без номера",
       "spec": "призрак-слово · слова плавно по очереди · без номера",
       "source": "ИИмерсивный - Mono.dc.html",
-      "status": "ready",
-      "route": "component",
+      "status": "dropped",
+      "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "episode-topic-title",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Never in the current system.",
+        "avoidWhen": "Do not suggest an episode-topic card; Artur does not expect to use it.",
+        "basis": "Artur decision, 2026-08-14"
+      },
+      "routeNote": "тема выпуска не используется без отдельного нового решения (Артур 2026-08-14)",
       "component": "components/mono-02b",
       "compositionId": "mono-02b",
       "durationSec": 5.0,
@@ -92,6 +128,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "full-frame-thesis-or-quote",
+        "priority": "explicit-only",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur directly requests a full-frame thesis or quote.",
+        "avoidWhen": "Useful footage is visible or an overlay can carry the thought.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-02c",
       "compositionId": "mono-02c",
       "durationSec": 5.0,
@@ -118,6 +167,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "structure",
+        "role": "full-frame-section-title",
+        "priority": "explicit-only",
+        "sections": [
+          "intro",
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur explicitly approves a full-frame section title.",
+        "avoidWhen": "A chapter marker or spoken transition is enough.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-02d",
       "compositionId": "mono-02d",
       "durationSec": 5.0,
@@ -149,6 +211,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "identify",
+        "role": "person-or-role-lower-third",
+        "priority": "situational",
+        "sections": [
+          "intro",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A person, role, or speaker genuinely needs identification.",
+        "avoidWhen": "The identity is already obvious or the plate adds no information.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-03",
       "compositionId": "mono-03",
       "durationSec": 5.0,
@@ -174,7 +249,19 @@
       "spec": "все — мягкий soft-in · A читаем вслух · B акцент · C чисто · D печатная машинка · плашка-подложка",
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "todo",
-      "route": "component"
+      "route": "component",
+      "editorial": {
+        "intent": "caption",
+        "role": "burned-in-captions",
+        "priority": "explicit-only",
+        "sections": [
+          "global"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Artur selects a caption variant for this video.",
+        "avoidWhen": "Full subtitles were not requested.",
+        "basis": "dogfood plan + Artur decision"
+      }
     },
     {
       "id": "05",
@@ -185,6 +272,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "instruct",
+        "role": "point-to-ui-callout",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The viewer must locate one exact control, region, or value.",
+        "avoidWhen": "The callout would cover the target or merely decorate the frame.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-05",
       "compositionId": "mono-05",
       "durationSec": 5.0,
@@ -236,6 +335,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "two-way-comparison-infographic",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Two alternatives require a structured visual comparison.",
+        "avoidWhen": "The source itself already shows the comparison clearly.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-06a",
       "compositionId": "mono-06a",
       "durationSec": 6.0,
@@ -292,6 +403,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "quantify",
+        "role": "numeric-or-list-infographic",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A compact set of values or categories is easier to understand as a graphic.",
+        "avoidWhen": "Numbers are not central to the spoken point.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-06b",
       "compositionId": "mono-06b",
       "durationSec": 6.0,
@@ -333,6 +456,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "transition",
+        "role": "labelled-chapter-transition",
+        "priority": "explicit-only",
+        "sections": [
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "overlay-at-cut",
+        "useWhen": "A real chapter boundary needs an approved labelled transition.",
+        "avoidWhen": "Inside a continuous explanation or without transition approval.",
+        "basis": "Artur approval rule"
+      },
       "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
       "component": "components/mono-07a",
       "compositionId": "mono-07a",
@@ -360,6 +495,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "transition",
+        "role": "unlabelled-chapter-transition",
+        "priority": "explicit-only",
+        "sections": [
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "overlay-at-cut",
+        "useWhen": "A real chapter boundary needs an approved visual transition without text.",
+        "avoidWhen": "Inside a continuous explanation or without transition approval.",
+        "basis": "Artur approval rule"
+      },
       "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
       "component": "components/mono-07b",
       "compositionId": "mono-07b",
@@ -382,6 +529,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-numbered-transition",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -393,6 +550,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-assembly-transition",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -404,6 +571,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "identify",
+        "role": "channel-logo-bug",
+        "priority": "review-needed",
+        "sections": [
+          "global"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Use only after the channel-wide watermark policy is confirmed.",
+        "avoidWhen": "Do not infer that every video requires a persistent logo.",
+        "basis": "designer intent; Artur priority pending"
+      },
       "component": "components/mono-08",
       "compositionId": "mono-08",
       "durationSec": 1.4,
@@ -425,6 +604,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "deferred",
       "route": "deferred",
+      "editorial": {
+        "intent": "navigate",
+        "role": "chapter-progress-bar",
+        "priority": "unavailable",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Not yet; implementation is deferred.",
+        "avoidWhen": "All current productions until dogfood validates it.",
+        "basis": "catalog status"
+      },
       "routeNote": "прогресс-бар опционален, длинный слой — до догфуда"
     },
     {
@@ -436,6 +627,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "call-to-action",
+        "role": "youtube-end-screen",
+        "priority": "explicit-only",
+        "sections": [
+          "outro"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur approves this ending for the specific video.",
+        "avoidWhen": "A natural source ending is stronger or no end screen was requested.",
+        "basis": "Artur dogfood decision"
+      },
       "component": "components/mono-10",
       "compositionId": "mono-10",
       "durationSec": 6.0,
@@ -462,6 +665,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "navigate",
+        "role": "to-be-continued-end-screen",
+        "priority": "explicit-only",
+        "sections": [
+          "outro"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "The video genuinely continues in a named next episode and Artur approves it.",
+        "avoidWhen": "Generic endings or a series promise that does not exist.",
+        "basis": "designer intent + source-replacement rule"
+      },
       "component": "components/mono-10b",
       "compositionId": "mono-10b",
       "durationSec": 5.0,
@@ -488,6 +703,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-terminal-card",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -499,6 +724,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "enumerate",
+        "role": "full-frame-thesis-list",
+        "priority": "explicit-only",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A list must temporarily become the sole visual and Artur approves hiding the source.",
+        "avoidWhen": "A side-panel agenda or in-frame enumeration can preserve useful footage.",
+        "basis": "DF-015 + Artur source-replacement rule"
+      },
       "component": "components/mono-12a",
       "compositionId": "mono-12a",
       "durationSec": 6.0,
@@ -525,6 +763,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-checklist",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -536,6 +784,16 @@
       "source": "Бренд-система ИИмерсивный.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-large-list",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; this pre-Mono design was dropped.",
+        "basis": "catalog status"
+      },
       "routeNote": "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"
     },
     {
@@ -547,6 +805,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "call-to-action",
+        "role": "telegram-qr-cta",
+        "priority": "situational",
+        "sections": [
+          "outro",
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "The narration explicitly invites viewers to the Telegram channel and the QR earns full-frame focus.",
+        "avoidWhen": "No spoken Telegram CTA or useful footage must remain visible.",
+        "basis": "canonical channel rule + source-replacement rule"
+      },
       "component": "components/mono-13a",
       "compositionId": "mono-13a",
       "durationSec": 5.0,
@@ -568,6 +839,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "call-to-action",
+        "role": "minimal-subscribe-cta",
+        "priority": "situational",
+        "sections": [
+          "outro",
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "The script contains a deliberate subscription CTA and the interruption is approved.",
+        "avoidWhen": "Automatic or generic subscription reminders.",
+        "basis": "designer intent + source-replacement rule"
+      },
       "component": "components/mono-13b",
       "compositionId": "mono-13b",
       "durationSec": 5.0,
@@ -599,6 +883,16 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "dropped",
       "route": "dropped",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "youtube-channel-banner",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "outside-video",
+        "useWhen": "Never as a video element.",
+        "avoidWhen": "All video timelines; the live channel banner is managed separately.",
+        "basis": "catalog status"
+      },
       "routeNote": "баннер канала настроен вручную, карточка не нужна (Артур 2026-08-03)"
     },
     {
@@ -610,6 +904,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "term-definition",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A technical term needs a concise definition that narration alone will not make memorable.",
+        "avoidWhen": "The term is familiar or the definition would merely repeat speech.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-15",
       "compositionId": "mono-15",
       "durationSec": 6.0,
@@ -641,6 +947,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "agent-or-system-diagram",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Relationships between agents or system parts need a diagram.",
+        "avoidWhen": "A real UI demonstration already proves the relationship.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-16",
       "compositionId": "mono-16",
       "durationSec": 6.0,
@@ -667,6 +985,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "instruct",
+        "role": "prompt-overlay",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A short prompt fragment must be read while the source remains visible.",
+        "avoidWhen": "Long prompt text or duplicate captions.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-17",
       "compositionId": "mono-17",
       "durationSec": 6.0,
@@ -698,6 +1028,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "benchmark-bars",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Comparable measured values are central to the argument.",
+        "avoidWhen": "The numbers are anecdotal, incomparable, or incidental.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-18",
       "compositionId": "mono-18",
       "durationSec": 6.0,
@@ -729,6 +1071,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "enumerate",
+        "role": "in-body-process-enumeration",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "The narration enumerates concrete process steps and a full-screen interruption is approved.",
+        "avoidWhen": "Hook agenda; useful source footage is present; or the list is decorative.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-19",
       "compositionId": "mono-19",
       "durationSec": 6.0,
@@ -760,6 +1114,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "cite",
+        "role": "source-citation",
+        "priority": "preferred",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A factual claim relies on an external article, paper, or named source.",
+        "avoidWhen": "No source is being cited or the citation is unverifiable.",
+        "basis": "editorial evidence rule"
+      },
       "component": "components/mono-20",
       "compositionId": "mono-20",
       "durationSec": 5.0,
@@ -791,6 +1157,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "show-state",
+        "role": "status-toast",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A completed action or system status needs a brief confirmation.",
+        "avoidWhen": "The underlying UI already shows the same status clearly.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-21",
       "compositionId": "mono-21",
       "durationSec": 4.0,
@@ -822,6 +1200,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "comparison-table",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Several alternatives require row-and-column comparison.",
+        "avoidWhen": "Only one or two values are compared.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-23",
       "compositionId": "mono-23",
       "durationSec": 6.0,
@@ -858,6 +1248,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "before-after-comparison",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A real before/after contrast is part of the evidence.",
+        "avoidWhen": "The two states are not directly comparable.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-24",
       "compositionId": "mono-24",
       "durationSec": 5.0,
@@ -894,6 +1296,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "navigate",
+        "role": "chapter-marker",
+        "priority": "preferred",
+        "sections": [
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A real named chapter begins.",
+        "avoidWhen": "Minor topic shifts inside one chapter.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-25",
       "compositionId": "mono-25",
       "durationSec": 4.0,
@@ -930,6 +1344,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "quantify",
+        "role": "single-kpi-number",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "One measured number is the point of the sentence.",
+        "avoidWhen": "The number lacks evidence or is not worth full-frame emphasis.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-26",
       "compositionId": "mono-26",
       "durationSec": 6.0,
@@ -971,6 +1397,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "cite",
+        "role": "quote-over-footage",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A short verified quote adds evidence while footage remains useful.",
+        "avoidWhen": "The quote merely paraphrases narration or requires several sentences.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-27",
       "compositionId": "mono-27",
       "durationSec": 6.0,
@@ -997,6 +1435,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "instruct",
+        "role": "keyboard-shortcut",
+        "priority": "preferred",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The speaker names a keyboard shortcut the viewer should reproduce.",
+        "avoidWhen": "The keys are not spoken or already unmistakable on screen.",
+        "basis": "real dogfood evidence"
+      },
       "component": "components/mono-28",
       "compositionId": "mono-28",
       "durationSec": 4.0,
@@ -1023,6 +1473,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "instruct",
+        "role": "ui-spotlight",
+        "priority": "preferred",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The viewer must focus on one exact UI region without hiding it.",
+        "avoidWhen": "The spotlight obscures the target or a zoom already solves readability.",
+        "basis": "real dogfood evidence"
+      },
       "routeNote": "alpha-оверлей: карточка ничего не увеличивает, окно только указывает. Нужен зум самого кадра — это отдельное решение, punch в zooms.py",
       "component": "components/mono-29",
       "compositionId": "mono-29",
@@ -1070,6 +1532,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "two-by-two-matrix",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Four categories genuinely depend on two named axes.",
+        "avoidWhen": "A simpler list or comparison communicates the point.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-31",
       "compositionId": "mono-31",
       "durationSec": 6.0,
@@ -1106,6 +1580,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "quantify",
+        "role": "share-or-donation-breakdown",
+        "priority": "explicit-only",
+        "sections": [
+          "body",
+          "outro"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur explicitly requests a share or donation breakdown backed by real values.",
+        "avoidWhen": "Generic fundraising or invented percentages.",
+        "basis": "designer intent + source-replacement rule"
+      },
       "component": "components/mono-32",
       "compositionId": "mono-32",
       "durationSec": 6.0,
@@ -1152,6 +1639,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "navigate",
+        "role": "real-chapter-index",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "outro"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "The displayed rows are real YouTube chapters with meaningful timecodes.",
+        "avoidWhen": "Do not use fake timestamps as decoration or substitute it for the hook agenda.",
+        "basis": "Artur review, 2026-08-14"
+      },
       "component": "components/mono-33",
       "compositionId": "mono-33",
       "durationSec": 6.0,
@@ -1178,6 +1678,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "warn",
+        "role": "literal-warning",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A concrete safety, money, access, or data warning needs an explicit warning treatment.",
+        "avoidWhen": "A general important thought belongs to accent N instead.",
+        "basis": "designer intent + Artur accent taxonomy"
+      },
       "component": "components/mono-34",
       "compositionId": "mono-34",
       "durationSec": 5.0,
@@ -1204,6 +1716,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "model-dialogue",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A short exchange with a model is itself the evidence.",
+        "avoidWhen": "A real chat capture is available and readable.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-35",
       "compositionId": "mono-35",
       "durationSec": 7.0,
@@ -1240,6 +1764,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "show-state",
+        "role": "agent-thinking-state",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A meaningful agent wait or reasoning state would otherwise look like dead time.",
+        "avoidWhen": "Decorative loading or a delay too short to notice.",
+        "basis": "designer intent"
+      },
       "component": "components/mono-36",
       "compositionId": "mono-36",
       "durationSec": 5.0,
@@ -1266,6 +1802,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "disclose",
+        "role": "sponsor-disclosure",
+        "priority": "explicit-only",
+        "sections": [
+          "intro",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The episode has a real sponsor and the disclosure copy is approved.",
+        "avoidWhen": "No sponsorship relationship exists.",
+        "basis": "legal/editorial trigger"
+      },
       "component": "components/mono-37",
       "compositionId": "mono-37",
       "durationSec": 7.0,
@@ -1297,6 +1846,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "structure",
+        "role": "segment-topic-bar",
+        "priority": "explicit-only",
+        "sections": [
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Artur explicitly requests a segment topic label.",
+        "avoidWhen": "Do not add topic labels routinely; narration and chapter markers should carry structure.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/mono-38",
       "compositionId": "mono-38",
       "durationSec": 4.0,
@@ -1323,6 +1884,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "preview",
+        "role": "full-frame-cold-open",
+        "priority": "explicit-only",
+        "sections": [
+          "hook"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "Artur explicitly approves a cold-open card for this hook.",
+        "avoidWhen": "The hook starts with useful live material or screencast evidence.",
+        "basis": "Artur source-replacement rule"
+      },
       "component": "components/mono-39",
       "compositionId": "mono-39",
       "durationSec": 3.5,
@@ -1364,6 +1937,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "enumerate",
+        "role": "voice-free-kinetic-stack",
+        "priority": "explicit-only",
+        "sections": [
+          "intro",
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "replaces-source",
+        "useWhen": "A short voice-free beat needs a kinetic list and Artur approves it.",
+        "avoidWhen": "Narrated agenda or in-body explanation; its fixed rhythm should not fight speech.",
+        "basis": "designer spec + DF-015"
+      },
       "component": "components/mono-40",
       "compositionId": "mono-40",
       "durationSec": 6.0,
@@ -1390,6 +1976,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "error",
+        "role": "error-glitch",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A real failure or broken state is the point of the beat.",
+        "avoidWhen": "Decorative excitement or normal operation.",
+        "basis": "designer intent"
+      },
       "routeNote": "alpha-оверлей: глитчатся только буквы (два призрака со сдвигом), кадр под ними не трогается",
       "component": "components/mono-41",
       "compositionId": "mono-41",
@@ -1417,6 +2015,18 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "transition",
+        "role": "ticker-transition",
+        "priority": "explicit-only",
+        "sections": [
+          "chapter-boundary"
+        ],
+        "sourceTreatment": "overlay-at-cut",
+        "useWhen": "A real chapter boundary uses the approved ticker transition style.",
+        "avoidWhen": "Inside an explanation or mixed with another transition family.",
+        "basis": "one-transition-family rule"
+      },
       "routeNote": "alpha-блок поверх стыка, transitions.py не трогать",
       "component": "components/mono-42",
       "compositionId": "mono-42",
@@ -1444,6 +2054,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "call-to-action",
+        "role": "quiet-telegram-ticker",
+        "priority": "situational",
+        "sections": [
+          "body",
+          "outro"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Telegram is mentioned and a quiet reminder can sit behind the main content.",
+        "avoidWhen": "No spoken Telegram relevance or another CTA is already on screen.",
+        "basis": "canonical channel rule"
+      },
       "component": "components/mono-43",
       "compositionId": "mono-43",
       "durationSec": 12.0,
@@ -1470,6 +2093,19 @@
       "source": "ИИмерсивный - Mono.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "call-to-action",
+        "role": "telegram-qr-overlay",
+        "priority": "situational",
+        "sections": [
+          "body",
+          "outro"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The narration explicitly invites viewers to the Telegram channel and the QR should remain alongside footage.",
+        "avoidWhen": "No spoken CTA; never use the personal @Art_Cog account.",
+        "basis": "Artur channel decision"
+      },
       "component": "components/mono-44",
       "compositionId": "mono-44",
       "durationSec": 7.0,
@@ -1496,6 +2132,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "single-punch-word",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "One spoken word is the strongest beat and benefits from a large typographic hit.",
+        "avoidWhen": "Routine sentences or repeated decoration.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-a",
       "compositionId": "accent-a",
       "durationSec": 4.0,
@@ -1517,6 +2166,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "sweep-highlight",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "One short phrase contains a precise word-level emphasis.",
+        "avoidWhen": "Long explanations or redundant subtitles.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-b",
       "compositionId": "accent-b",
       "durationSec": 4.0,
@@ -1548,6 +2210,18 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "price-change",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A real old and new price or tariff is stated.",
+        "avoidWhen": "No verified price change exists.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-c",
       "compositionId": "accent-c",
       "durationSec": 4.0,
@@ -1573,7 +2247,17 @@
       "spec": "вместо эмодзи — моно-глиф «!» в инверсном квадрате, он пульсирует · вход с отдачей влево-вправо · брендово чище эмодзи",
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "archived",
-      "route": "component"
+      "route": "component",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-alert-glyph",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; archived.",
+        "basis": "catalog status"
+      }
     },
     {
       "id": "E",
@@ -1584,6 +2268,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "strong-moment",
+        "priority": "preferred",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A genuinely strong or high-energy spoken moment earns the fire treatment.",
+        "avoidWhen": "More than the few strongest moments; do not dilute it.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/accent-e",
       "compositionId": "accent-e",
       "durationSec": 4.0,
@@ -1610,6 +2307,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "quantify",
+        "role": "numeric-result-punch",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A verified numeric result is the key payoff.",
+        "avoidWhen": "Incidental or unsupported numbers.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-f",
       "compositionId": "accent-f",
       "durationSec": 4.0,
@@ -1635,7 +2345,17 @@
       "spec": "впечатывается сверху с наклоном −7° · упругий easing, единственный в системе · для предупреждений и выводов",
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "archived",
-      "route": "component"
+      "route": "component",
+      "editorial": {
+        "intent": "unavailable",
+        "role": "legacy-stamp",
+        "priority": "unavailable",
+        "sections": [],
+        "sourceTreatment": "not-applicable",
+        "useWhen": "Never.",
+        "avoidWhen": "All productions; archived.",
+        "basis": "catalog status"
+      }
     },
     {
       "id": "H",
@@ -1646,6 +2366,18 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "compare",
+        "role": "setup-and-payoff",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "Two short lines form a real setup/payoff or before/after thought.",
+        "avoidWhen": "The relationship needs a table or more context.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-h",
       "compositionId": "accent-h",
       "durationSec": 4.0,
@@ -1672,6 +2404,18 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "term-redefinition",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The narration explicitly replaces one term or interpretation with another.",
+        "avoidWhen": "Ordinary correction or decorative word swapping.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-i",
       "compositionId": "accent-i",
       "durationSec": 4.0,
@@ -1703,6 +2447,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "underline-emphasis",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A short phrase needs restrained emphasis without a plate.",
+        "avoidWhen": "A main important thought should use N or the screen is already text-heavy.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-j",
       "compositionId": "accent-j",
       "durationSec": 4.0,
@@ -1724,6 +2481,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "preview",
+        "role": "question-before-answer",
+        "priority": "situational",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A clear spoken question immediately precedes its answer.",
+        "avoidWhen": "Rhetorical filler or questions without an immediate payoff.",
+        "basis": "designer intent"
+      },
       "component": "components/accent-k",
       "compositionId": "accent-k",
       "durationSec": 4.0,
@@ -1750,6 +2520,18 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "short-aside",
+        "priority": "preferred",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A short path, version, caveat, or side note adds useful context.",
+        "avoidWhen": "The aside is the main thought or needs several sentences.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/accent-l",
       "compositionId": "accent-l",
       "durationSec": 4.0,
@@ -1771,6 +2553,18 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "explain",
+        "role": "long-context",
+        "priority": "situational",
+        "sections": [
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A longer explanation needs a compact supporting paragraph and the source remains secondary.",
+        "avoidWhen": "The paragraph duplicates narration or hides actionable UI.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/accent-m",
       "compositionId": "accent-m",
       "durationSec": 7.0,
@@ -1797,6 +2591,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "main-important-thought",
+        "priority": "preferred",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "The narration reaches an important takeaway, rule, or warning; this is the primary accent treatment.",
+        "avoidWhen": "Minor facts or decorative repetition; literal safety warnings may use 34.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/accent-n",
       "compositionId": "accent-n",
       "durationSec": 5.0,
@@ -1828,6 +2635,19 @@
       "source": "ИИмерсивный - Акцентные плашки.dc.html",
       "status": "ready",
       "route": "component",
+      "editorial": {
+        "intent": "emphasize",
+        "role": "insight",
+        "priority": "preferred",
+        "sections": [
+          "hook",
+          "body"
+        ],
+        "sourceTreatment": "overlay",
+        "useWhen": "A real insight, realization, or useful inference is spoken.",
+        "avoidWhen": "Generic explanation without an insight beat.",
+        "basis": "Artur decision, 2026-08-14"
+      },
       "component": "components/accent-o",
       "compositionId": "accent-o",
       "durationSec": 4.0,

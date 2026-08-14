@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 41 «глитч · сбой» — ported from the designer's source
@@ -36,16 +37,16 @@
   <div id="m41-wrap" style="position:absolute;left:0;right:0;bottom:249px;display:flex;
        flex-direction:column;align-items:center;gap:31px">
     <div id="m41-shift" style="position:relative">
-      <span class="m41-word" id="m41-main" data-var-text="text" style="color:#FAFAF7">АГЕНТ УПАЛ</span>
+      <span class="m41-word" id="m41-main" data-var-text="text" style="color:var(--paper)">АГЕНТ УПАЛ</span>
       <span class="m41-word m41-ghost" id="m41-g1" data-var-text="text"
-            style="position:absolute;left:16px;top:0;color:#FAFAF7;opacity:0;
+            style="position:absolute;left:16px;top:0;color:var(--paper);opacity:0;
                    clip-path:inset(0 0 55% 0)">АГЕНТ УПАЛ</span>
       <span class="m41-word m41-ghost" id="m41-g2" data-var-text="text"
-            style="position:absolute;left:-16px;top:0;color:#8A8A85;opacity:0;
+            style="position:absolute;left:-16px;top:0;color:var(--gray-2);opacity:0;
                    clip-path:inset(55% 0 0 0)">АГЕНТ УПАЛ</span>
     </div>
     <div data-var-text="note" style="font-family:'JetBrains Mono',monospace;font-size:39px;
-         letter-spacing:.18em;color:#B7B7B2;background:rgba(8,9,10,.6);
+         letter-spacing:.18em;color:var(--gray-1);background:rgba(8,9,10,.6);
          padding:16px 36px">exit code 1 · смотрим логи</div>
   </div>
 </div>

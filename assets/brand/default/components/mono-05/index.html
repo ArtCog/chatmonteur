@@ -10,6 +10,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 05 «выноска / акцент» — ported from the designer's source
@@ -30,23 +31,23 @@
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div id="m5-callout" style="position:absolute;left:239px;top:311px">
     <div id="m5-box" style="position:relative;width:649px;height:389px">
-      <div style="position:absolute;left:0;top:0;width:67px;height:67px;border-left:8px solid #FAFAF7;border-top:8px solid #FAFAF7"></div>
-      <div style="position:absolute;right:0;top:0;width:67px;height:67px;border-right:8px solid #FAFAF7;border-top:8px solid #FAFAF7"></div>
-      <div style="position:absolute;left:0;bottom:0;width:67px;height:67px;border-left:8px solid #FAFAF7;border-bottom:8px solid #FAFAF7"></div>
-      <div style="position:absolute;right:0;bottom:0;width:67px;height:67px;border-right:8px solid #FAFAF7;border-bottom:8px solid #FAFAF7"></div>
+      <div style="position:absolute;left:0;top:0;width:67px;height:67px;border-left:8px solid var(--paper);border-top:8px solid var(--paper)"></div>
+      <div style="position:absolute;right:0;top:0;width:67px;height:67px;border-right:8px solid var(--paper);border-top:8px solid var(--paper)"></div>
+      <div style="position:absolute;left:0;bottom:0;width:67px;height:67px;border-left:8px solid var(--paper);border-bottom:8px solid var(--paper)"></div>
+      <div style="position:absolute;right:0;bottom:0;width:67px;height:67px;border-right:8px solid var(--paper);border-bottom:8px solid var(--paper)"></div>
     </div>
-    <div id="m5-line" style="position:absolute;left:649px;top:31px;width:239px;height:8px;background:#FAFAF7"></div>
-    <div id="m5-label" style="position:absolute;left:888px;top:-57px;background:#FAFAF7;color:#0B0B0C;
+    <div id="m5-line" style="position:absolute;left:649px;top:31px;width:239px;height:8px;background:var(--paper)"></div>
+    <div id="m5-label" style="position:absolute;left:888px;top:-57px;background:var(--paper);color:var(--ink);
          padding:29px 42px;box-shadow:0 26px 73px rgba(0,0,0,.5)">
       <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:26px;
-           letter-spacing:.2em;color:#8A8A85;margin-bottom:8px">СМОТРИ СЮДА</div>
+           letter-spacing:.2em;color:var(--gray-2);margin-bottom:8px">СМОТРИ СЮДА</div>
       <div data-var-text="label" style="font-family:'Golos Text',sans-serif;font-weight:800;
            font-size:54px;line-height:1.1;white-space:nowrap">эта команда</div>
     </div>
   </div>
 
   <div id="m5-hint" style="position:absolute;left:239px;bottom:223px;display:inline-flex;
-       align-items:center;gap:26px;background:#0B0B0C;color:#FAFAF7;padding:29px 44px;
+       align-items:center;gap:26px;background:var(--ink);color:var(--paper);padding:29px 44px;
        box-shadow:0 26px 73px rgba(0,0,0,.5)">
     <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:44px">→</span>
     <span data-var-text="hint" style="font-family:'Golos Text',sans-serif;font-weight:800;font-size:52px">важный момент</span>

@@ -1,40 +1,11 @@
 {
   "brand": "ИИмерсивный",
-  "handle": "@art.immersive",
   "version": "1.0",
+  "visualSpec": "frame.md",
+  "channelIdentity": "channel.json",
   "catalog": "catalog.json — что из брендбука уже собрано в компонент, с переменными и длительностью; этот файл держит правила, тот держит инвентарь",
-  "comment": "Машиночитаемые токены брендбука. HTML-файлы — визуальный референс для человека; код-агент берёт значения отсюда. Все размеры в пикселях для канваса 1920×1080.",
-  "canvas": {
-    "horizontal": { "width": 1920, "height": 1080 },
-    "vertical": { "width": 1080, "height": 1920 },
-    "designFrame": { "width": 740, "height": 416, "scaleToRender": 2.595 }
-  },
-  "fonts": {
-    "primary": { "family": "Golos Text", "weights": [400, 500, 600, 700, 800, 900], "source": "https://fonts.google.com/specimen/Golos+Text", "usage": "логотип, субтитры, плашки, списки, весь текст акцентных плашек" },
-    "display": { "family": "Playfair Display", "weights": [500, 600, 700], "italic": [500, 600], "source": "https://fonts.google.com/specimen/Playfair+Display", "usage": "заголовки титульных, термины, крупные цифры и проценты; italic — подзаголовки, цитаты, приём J" },
-    "mono": { "family": "JetBrains Mono", "weights": [400, 500, 700, 800], "source": "https://fonts.google.com/specimen/JetBrains+Mono", "usage": "киккеры, метки, таймкоды, терминал, код; всегда uppercase, letter-spacing 0.2em–0.3em" },
-    "substitutionAllowed": false
-  },
-  "colors": {
-    "ink": "#0B0B0C",
-    "paper": "#FAFAF7",
-    "graySecondaryText": "#B7B7B2",
-    "grayLabels": "#8A8A85",
-    "cardDark": "#161618",
-    "cardDarkBorder": "#2A2A2C",
-    "captionBackdrop": "rgba(8,9,10,0.52)",
-    "accents": {
-      "comment": "Разрешены ТОЛЬКО в акцентных плашках, только в отбивке 4px под плашкой. Текст всегда ink или paper.",
-      "hype": { "hex": "#FF5B2E", "emoji": "🔥", "element": "E" },
-      "danger": { "hex": "#FFC53D", "emoji": "⚠️", "element": "N" },
-      "insight": { "hex": "#5BD1FF", "emoji": "💡", "element": "O" }
-    },
-    "emojiPolicy": "Только 🔥 ⚠️ 💡, только в приёмах E, N, O. Единый источник рендера (Noto Color Emoji или PNG), чтобы знак не менялся от ролика к ролику."
-  },
+  "comment": "ChatMonteur editorial policy and enforceable cue budgets. HyperFrames frame.md owns appearance; channel.json owns public identity; usage-profiles.json owns card selection.",
   "motion": {
-    "easeEnter": "cubic-bezier(0.33, 1, 0.68, 1)",
-    "easeTransition": "cubic-bezier(0.45, 0, 0.2, 1)",
-    "linearOnly": ["cursor blink", "background drift"],
     "enterSec": { "min": 0.4, "max": 0.7 },
     "holdSec": { "min": 1.6, "max": 2.4, "paragraphMax": 7 },
     "exitSec": { "min": 0.3, "max": 0.4 },
@@ -42,38 +13,21 @@
     "listItemStaggerSec": 0.95,
     "secondLineDelaySec": 0.35,
     "digitRollStaggerSec": 0.07,
-    "pinStaggerSec": 0.12,
-    "rule": "Одно движение на элемент. Никаких пружин и bounce (исключение — архивный штамп G)."
-  },
-  "safeZones": {
-    "horizontal1920x1080": {
-      "sideMarginPx": 104,
-      "topBand": { "yFrom": 0, "yTo": 250, "usage": "логобар, маркер главы, тема сегмента" },
-      "faceZone": { "yFrom": 250, "yTo": 768, "usage": "лицо/контент, текст не ставить" },
-      "accentBand": { "yFrom": 768, "yTo": 934, "usage": "акцентные плашки и субтитры, базовая линия 900" },
-      "playerZone": { "yFrom": 934, "yTo": 1080, "usage": "НИЧЕГО — плеер YouTube" }
-    },
-    "vertical1080x1920": {
-      "sideMarginPx": 72,
-      "uiZoneRight": "правые 180px свободны — кнопки лайк/шэр в Shorts",
-      "topBand": { "yFrom": 0, "yTo": 220, "usage": "маркер главы компактный" },
-      "accentBand": { "yFrom": 1150, "yTo": 1500, "usage": "акцентные плашки, базовая линия 1420" },
-      "uiZoneBottom": { "yFrom": 1500, "yTo": 1920, "usage": "НИЧЕГО — описание, звук, прогресс Shorts" },
-      "typeScaleVsHorizontal": 1.3,
-      "maxWordsPerPlate": 3
-    }
+    "pinStaggerSec": 0.12
   },
   "monoElements": {
-    "alwaysOn": ["08 логобар", "25 маркер главы"],
-    "everyVideo": ["01 заставка", "02 титульная A–D", "03 плашка-имя", "04 субтитры", "10 эндкард", "13 подписка", "33 таймкоды"],
-    "onDemand": ["05 выноска", "06 инфографика", "09 прогресс", "11 терминал", "12 списки", "15 термин", "16 схема агента", "17 промпт", "18 бенчмарк", "19 шаги", "20 источник", "21 тост", "23 таблица", "24 до/после", "26 карточка числа", "27 цитата на кадре", "28 клавиши", "29 спотлайт", "31 матрица 2×2", "32 донат", "34 предупреждение", "35 диалог", "36 агент думает", "37 партнёр", "38 тема сегмента", "39 холодный старт", "40 кинетический стек", "41 глитч", "43 ТГ тикер", "44 ТГ плашка"],
+    "selectionAuthority": "usage-profiles.json; SELECTION-GUIDE.md is the human entry point",
+    "alwaysOn": [],
+    "everyVideo": [],
+    "onDemand": ["01 заставка", "02 титульная A–D", "03 плашка-имя", "04 субтитры", "05 выноска", "06 инфографика", "08 логобар", "09 прогресс", "10 эндкард", "12 списки", "13 подписка", "15 термин", "16 схема агента", "17 промпт", "18 бенчмарк", "19 шаги", "20 источник", "21 тост", "23 таблица", "24 до/после", "25 маркер главы", "26 карточка числа", "27 цитата на кадре", "28 клавиши", "29 спотлайт", "31 матрица 2×2", "32 донат", "33 таймкоды", "34 предупреждение", "35 диалог", "36 агент думает", "37 партнёр", "38 тема сегмента", "39 холодный старт", "40 кинетический стек", "41 глитч", "43 ТГ тикер", "44 ТГ плашка"],
     "transitions": { "ids": ["07A шторка", "07B полосы", "07C слэб", "07D сборка", "42 тикер-переход"], "rule": "один тип перехода на весь ролик, только между главами" },
     "static": { "ids": ["14 баннер канала"], "rule": "оформление канала, не видеоэлемент: 2048×1152, вне канваса ролика" },
     "notDrawn": { "ids": ["22 таймлайн", "30 шаг N из M"], "rule": "манифест их обещал, дизайнер не рисовал — не изобретать, ждать карточку" }
   },
   "accentOverlays": {
-    "core": { "ids": ["B заливка слова", "J подчёрк линией", "L сноска", "O инсайт"], "loud": ["A слово-удар", "E хайп"], "rule": "B/J/L/O по 2–4 раза, A и E — на два сильнейших момента" },
-    "situational": { "C": "цена/тариф меняется", "F": "результат в цифрах", "H": "сравнение было/стало", "I": "переопределение понятия", "K": "вопрос строго перед ответом", "N": "реальный риск: данные, деньги, безопасность", "M": "только закадровый текст или пауза, 0–1 раз" },
+    "selectionAuthority": "usage-profiles.json; N is the primary important-thought treatment",
+    "core": { "ids": ["B заливка слова", "J подчёрк линией", "L короткая сноска", "N главная важная мысль", "O инсайт"], "loud": ["A слово-удар", "E сильный момент"], "rule": "N — основной акцент важной мысли; O — инсайт; E — только сильнейшие моменты; L — короткая сноска" },
+    "situational": { "C": "цена/тариф меняется", "F": "результат в цифрах", "H": "сравнение было/стало", "I": "переопределение понятия", "K": "вопрос строго перед ответом", "M": "длинный поддерживающий контекст, только когда он добавляет информацию" },
     "archived": { "ids": ["D", "G"], "rule": "не использовать" },
     "budget": { "per10min": { "min": 5, "max": 8 }, "maxLoudHooks": 3, "minGapSec": 20, "onScreenSimultaneously": 1 }
   },
@@ -89,7 +43,6 @@
       "replacesSource": "обязательно true для полноэкранного непрозрачного элемента; это явное редакционное решение скрыть исходный кадр, а не техническая настройка"
     },
     "example": [
-      { "t": 3.0, "element": "02B", "vars": { "kicker": "ТЕМА ВЫПУСКА", "title": "Как устроен код-агент", "ghost": "АГЕНТ" }, "holdSec": 4, "replacesSource": true },
       { "t": 12.4, "element": "03", "text": ["Джулиан Иванов", "AI Automation · автор"], "holdSec": 5 },
       { "t": 84.2, "element": "B", "text": "это абсолютно бесплатно", "highlightWord": "бесплатно", "holdSec": 2 },
       { "t": 141.0, "element": "N", "vars": { "emoji": "⚠️", "line1": "Не давай агенту права на запись.", "line2": "Один промпт — и репозиторий переписан." }, "holdSec": 4 },

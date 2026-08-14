@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element H «две строки» (setup + payoff) — ported 1:1 from the designer's
@@ -25,23 +26,23 @@
          on one right edge or the whole device looks crooked -->
     <div style="display:grid;grid-template-columns:auto auto;gap:21px 36px;align-items:center">
       <div class="ah-row1" style="font-family:'JetBrains Mono',monospace;font-size:34px;
-           letter-spacing:.24em;color:#8A8A85;text-align:right">БЫЛО</div>
+           letter-spacing:.24em;color:var(--gray-2);text-align:right">БЫЛО</div>
       <div class="ah-row1" style="background:rgba(8,9,10,.62);padding:23px 47px">
         <!-- the rule is anchored to the TEXT, not to the plate: the grid stretches
              this cell to the width of the wider payoff row below, and a strike
              pinned to the plate would run on past the words into empty box -->
         <span style="position:relative;display:inline-block">
           <span data-var-text="before" style="display:block;font-family:'Golos Text',sans-serif;
-                font-weight:600;font-size:67px;line-height:1;color:#B7B7B2">три часа работы</span>
+                font-weight:600;font-size:67px;line-height:1;color:var(--gray-1)">три часа работы</span>
           <span id="ah-strike" style="position:absolute;left:-10px;right:-10px;top:50%;height:8px;
-                background:#B7B7B2;transform-origin:left center"></span>
+                background:var(--gray-1);transform-origin:left center"></span>
         </span>
       </div>
       <div class="ah-row2" style="font-family:'JetBrains Mono',monospace;font-size:34px;
-           letter-spacing:.24em;color:#FAFAF7;text-align:right">СТАЛО</div>
-      <div class="ah-row2" style="background:#FAFAF7;padding:31px 47px">
+           letter-spacing:.24em;color:var(--paper);text-align:right">СТАЛО</div>
+      <div class="ah-row2" style="background:var(--paper);padding:31px 47px">
         <span data-var-text="after" style="display:block;font-family:'Golos Text',sans-serif;
-              font-weight:900;font-size:93px;line-height:1;color:#0B0B0C">четыре минуты</span>
+              font-weight:900;font-size:93px;line-height:1;color:var(--ink)">четыре минуты</span>
       </div>
     </div>
   </div>

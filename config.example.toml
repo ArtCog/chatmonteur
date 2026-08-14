@@ -1,6 +1,9 @@
 # chatmonteur config — copy to `config.toml` and edit. All keys are optional;
 # the values shown are the built-in defaults. Unknown keys are ignored.
 
+[brand]
+name = "default"              # folder under assets/brand/; replace the full presentation layer
+
 [transcribe]
 backend = "faster-whisper"   # "faster-whisper" (free, local) | "elevenlabs" (paid)
 model = "large-v3"           # tiny | base | small | medium | large-v3 (smaller = faster)

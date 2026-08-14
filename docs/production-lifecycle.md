@@ -3,7 +3,8 @@
 Public ChatMonteur v0.1 begins at montage ingest and ends at a QC-approved
 master. Research, script development, localization, recording, distribution,
 and upload may wrap this lifecycle, but they are separate products and are not
-bundled with the montage core. See ADR 0012.
+bundled with the montage core. See ADR 0012 and the system ownership map in
+[`architecture.md`](architecture.md).
 
 ## Upstream handoff
 

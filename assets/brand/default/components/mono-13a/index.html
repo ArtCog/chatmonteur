@@ -4,6 +4,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 13·A «подписка · A» — ported from the designer's source
@@ -25,7 +26,7 @@
 <body>
 <div id="root" data-composition-id="mono-13a" data-start="0" data-duration="5"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#0B0B0C;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--ink);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
@@ -34,10 +35,10 @@
   <div id="m13a-body" style="position:absolute;inset:0;display:flex;flex-direction:column;
        align-items:center;justify-content:center;gap:62px">
     <div data-var-text="title" style="font-family:'Playfair Display',serif;font-weight:600;
-         font-size:88px;line-height:1.2;color:#FAFAF7">Telegram</div>
+         font-size:88px;line-height:1.2;color:var(--paper)">Telegram</div>
     <!-- the code sits on paper with padding: rendered straight onto ink it loses
          its quiet zone and phones stop reading it -->
-    <div style="width:477px;height:477px;background:#FAFAF7;padding:29px;
+    <div style="width:477px;height:477px;background:var(--paper);padding:29px;
          box-shadow:0 62px 156px -62px rgba(0,0,0,.6)">
       <img src="assets/tg-qr.png" alt="Telegram QR"
            style="width:100%;height:100%;object-fit:contain;display:block">

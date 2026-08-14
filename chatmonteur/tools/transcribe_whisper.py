@@ -30,6 +30,7 @@ import re
 from ..core.context import RunContext
 from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
+from .. import brand as brandkit
 
 # Whisper's signature inventions over silence: musical notes and the Unicode
 # replacement character.
@@ -196,15 +197,22 @@ def _unreliable_words(segments: list[dict]) -> int:
 # --- the correction dictionary --------------------------------------------------
 
 def _load_fixes(ctx: RunContext, override: str | None) -> dict[str, str]:
-    """Read the correction table; an absent file just means no corrections."""
+    """Merge generic ASR corrections with the active pack's vocabulary."""
     if override:
         path = pathlib.Path(override)
         if not path.is_file():
             raise ToolError(f"asr fixes file not found: {path}")
-    else:
-        path = pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / _FIXES_FILE
-        if not path.is_file():
-            return {}
+        return _read_fixes(path)
+
+    generic = pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / _FIXES_FILE
+    active = brandkit.root(ctx.config.brand.name) / _FIXES_FILE
+    table = _read_fixes(generic) if generic.is_file() else {}
+    if active.is_file() and active != generic:
+        table.update(_read_fixes(active))
+    return table
+
+
+def _read_fixes(path: pathlib.Path) -> dict[str, str]:
     import yaml
 
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}

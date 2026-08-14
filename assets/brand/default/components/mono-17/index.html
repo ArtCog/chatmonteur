@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 17 «промпт-плашка» — ported from the designer's source
@@ -27,17 +28,17 @@
   <!-- flex centring instead of the designer's top:50%/translateY(-50%): GSAP animates
        the panel's own transform, and a hand-written translate would fight it -->
   <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 208px">
-    <div id="m17-panel" style="width:100%;background:#161618;border:3px solid #2A2A2C;
+    <div id="m17-panel" style="width:100%;background:var(--card-dark);border:3px solid var(--card-dark-border);
          box-shadow:0 78px 182px -78px rgba(0,0,0,.7);padding:57px 62px">
       <div style="display:flex;align-items:center;gap:26px;margin-bottom:36px">
         <span data-var-text="label" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-              letter-spacing:.24em;color:#8A8A85;background:#0B0B0C;padding:10px 23px">PROMPT</span>
+              letter-spacing:.24em;color:var(--gray-2);background:var(--ink);padding:10px 23px">PROMPT</span>
         <span data-var-text="meta" style="font-family:'JetBrains Mono',monospace;
-              font-size:29px;color:#3A3B3E">claude · agent</span>
+              font-size:29px;color:var(--gray-3)">claude · agent</span>
       </div>
       <div style="font-family:'Golos Text',sans-serif;font-weight:600;font-size:67px;
-           line-height:1.35;color:#FAFAF7"><span id="m17-text"></span><span id="m17-cur"
-           style="font-family:'JetBrains Mono',monospace;color:#FAFAF7">▌</span></div>
+           line-height:1.35;color:var(--paper)"><span id="m17-text"></span><span id="m17-cur"
+           style="font-family:'JetBrains Mono',monospace;color:var(--paper)">▌</span></div>
     </div>
   </div>
 </div>

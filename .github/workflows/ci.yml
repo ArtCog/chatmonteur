@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.11"
+          - os: windows-latest
+            python: "3.13"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install test and build dependencies
+        run: python -m pip install -e ".[dev]" pyright build
+      - name: Test
+        run: python -m pytest tests -q
+      - name: Type check
+        run: pyright chatmonteur
+      - name: Build distributions
+        run: python -m build
+      - name: Inspect wheel runtime assets
+        shell: python
+        run: |
+          import glob
+          import zipfile
+
+          wheel = glob.glob("dist/chatmonteur-*.whl")[0]
+          with zipfile.ZipFile(wheel) as archive:
+              names = set(archive.namelist())
+          required = {
+              "chatmonteur/assets/brand/default/frame.md",
+              "chatmonteur/assets/brand/default/catalog.json",
+              "chatmonteur/assets/brand/default/components/mono-44/index.html",
+              "chatmonteur/assets/pipelines/talking_head.yaml",
+              "chatmonteur/assets/presets/luts/cool_cinema.cube",
+          }
+          assert required <= names, sorted(required - names)
+          assert not any("/snapshots/" in name or "/.thumbnails/" in name for name in names)
+
+  hyperframes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check representative motion composition
+        run: npx --yes hyperframes@0.7.109 check assets/brand/default/components/mono-44 --json

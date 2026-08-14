@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 18 «бенчмарк» — ported from the designer's source
@@ -25,7 +26,7 @@
 <body>
 <div id="root" data-composition-id="mono-18" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
@@ -34,7 +35,7 @@
   <div style="position:absolute;left:145px;right:145px;top:0;bottom:0;display:flex;
        flex-direction:column;justify-content:center">
     <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-         letter-spacing:.3em;color:#8A8A85;text-transform:uppercase;margin-bottom:36px">бенчмарк · точность, %</div>
+         letter-spacing:.3em;color:var(--gray-2);text-transform:uppercase;margin-bottom:36px">бенчмарк · точность, %</div>
     <div id="m18-rows"></div>
   </div>
 </div>
@@ -56,14 +57,14 @@
   document.getElementById("m18-rows").innerHTML = rows.map((r, i) => `
     <div style="display:flex;align-items:center;gap:42px;padding:31px 0">
       <div style="width:311px;font-family:'Golos Text',sans-serif;font-weight:700;font-size:44px;
-           color:#0B0B0C;text-align:right">${esc(r.name)}</div>
+           color:var(--ink);text-align:right">${esc(r.name)}</div>
       <div style="flex:1;height:67px;background:#ECECE8;position:relative;overflow:hidden">
         <div class="m18-bar" style="position:absolute;left:0;top:0;bottom:0;
              width:${Math.max(0, Math.min(100, (r.value / scale) * 100))}%;
-             background:${r.value === best ? "#0B0B0C" : "#B7B7B2"};transform-origin:left"></div>
+             background:${r.value === best ? "var(--ink)" : "var(--gray-1)"};transform-origin:left"></div>
       </div>
       <div style="width:145px;font-family:'Playfair Display',serif;font-weight:600;font-size:62px;
-           color:#0B0B0C;text-align:right">${esc(String(r.value))}</div>
+           color:var(--ink);text-align:right">${esc(String(r.value))}</div>
     </div>`).join("");
 
   const tl = gsap.timeline({ paused: true });

@@ -4,6 +4,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 08 «логобар / вотермарк» — ported 1:1 from the designer's
@@ -31,24 +32,24 @@
   <div style="position:absolute;left:104px;top:73px;display:inline-flex;align-items:center;gap:21px">
     <div id="m08-dot" style="width:26px;height:26px;border-radius:50%;background:#D8503C"></div>
     <span style="font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;
-          color:#FAFAF7;text-shadow:0 3px 13px rgba(0,0,0,.7)">REC</span>
+          color:var(--paper);text-shadow:0 3px 13px rgba(0,0,0,.7)">REC</span>
   </div>
 
   <!-- lock-up top-right, inside the manifest's 104px side margin -->
   <div style="position:absolute;right:104px;top:67px;display:inline-flex;align-items:center;
        background:rgba(8,9,10,.34);padding:21px 34px">
     <span style="display:inline-flex;align-items:center;font-family:'Golos Text',sans-serif;
-          font-weight:900;font-size:57px;line-height:1;letter-spacing:-.02em;color:#FAFAF7">
-      <span style="background:#0B0B0C;color:#FAFAF7;padding:0 .1em .05em;margin-right:.03em">ИИ</span>мерсивный</span>
+          font-weight:900;font-size:57px;line-height:1;letter-spacing:-.02em;color:var(--paper)">
+      <span style="background:var(--ink);color:var(--paper);padding:0 .1em .05em;margin-right:.03em">ИИ</span>мерсивный</span>
   </div>
 
   <!-- compact mark + handle bottom-left; the shadow keeps the handle legible on
        bright footage without putting a plate behind it -->
   <div style="position:absolute;left:104px;bottom:73px;display:inline-flex;align-items:center;gap:26px">
     <div style="font-family:'Golos Text',sans-serif;font-weight:900;font-size:54px;line-height:1;
-         color:#0B0B0C;background:#FAFAF7;padding:8px 26px 13px">ИИ</div>
+         color:var(--ink);background:var(--paper);padding:8px 26px 13px">ИИ</div>
     <span data-var-text="handle" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-          letter-spacing:.18em;color:#FAFAF7;text-shadow:0 3px 13px rgba(0,0,0,.7)">@art.immersive</span>
+          letter-spacing:.18em;color:var(--paper);text-shadow:0 3px 13px rgba(0,0,0,.7)">@art.immersive</span>
   </div>
 </div>
 

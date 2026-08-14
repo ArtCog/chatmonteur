@@ -4,10 +4,11 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element O «инсайт» — the most compact emoji plate: solid-ink plate,
-     💡 left, the ONLY colour is the #5BD1FF underline (manifest: accents live
+     💡 left, the ONLY colour is the var(--accent-insight) underline (manifest: accents live
      exclusively in the 4px plate underline). Ported 1:1 at ×2.595.
      Emoji renders from the system set (Segoe on Windows); the manifest asks
      for a single render source — pin Noto/PNG here if it ever varies. */
@@ -21,12 +22,12 @@
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div id="ao-wrap" style="position:absolute;left:0;right:0;bottom:145px;
        display:flex;justify-content:center">
-    <div id="ao-plate" style="display:flex;align-items:center;gap:39px;background:#0B0B0C;
-         padding:34px 67px;border-bottom:10px solid #5BD1FF">
+    <div id="ao-plate" style="display:flex;align-items:center;gap:39px;background:var(--ink);
+         padding:34px 67px;border-bottom:10px solid var(--accent-insight)">
       <span id="ao-emoji" style="font-size:88px;line-height:1;display:inline-block">💡</span>
       <span id="ao-text" data-var-text="text" style="font-family:'Golos Text',sans-serif;
             font-weight:800;font-size:83px;line-height:1;letter-spacing:-.01em;
-            color:#FAFAF7">вот в чём фокус</span>
+            color:var(--paper)">вот в чём фокус</span>
     </div>
   </div>
 </div>

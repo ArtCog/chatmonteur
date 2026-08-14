@@ -7,6 +7,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 31 «матрица 2×2» — ported from the designer's source
@@ -25,30 +26,30 @@
 <body>
 <div id="root" data-composition-id="mono-31" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
        background-size:114px 114px"></div>
 
   <div data-var-text="title" style="position:absolute;left:0;right:0;top:67px;text-align:center;
-       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:#8A8A85;
+       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:var(--gray-2);
        text-transform:uppercase">цена и качество</div>
 
   <div id="m31-field" style="position:absolute;left:343px;top:182px;width:1230px;height:727px">
     <div style="position:absolute;left:0;right:0;top:50%;height:3px;background:#D6D6D1"></div>
     <div style="position:absolute;top:0;bottom:0;left:50%;width:3px;background:#D6D6D1"></div>
-    <div style="position:absolute;left:0;right:0;top:0;height:5px;background:#0B0B0C"></div>
-    <div style="position:absolute;left:0;right:0;bottom:0;height:5px;background:#0B0B0C"></div>
-    <div style="position:absolute;top:0;bottom:0;left:0;width:5px;background:#0B0B0C"></div>
-    <div style="position:absolute;top:0;bottom:0;right:0;width:5px;background:#0B0B0C"></div>
+    <div style="position:absolute;left:0;right:0;top:0;height:5px;background:var(--ink)"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--ink)"></div>
+    <div style="position:absolute;top:0;bottom:0;left:0;width:5px;background:var(--ink)"></div>
+    <div style="position:absolute;top:0;bottom:0;right:0;width:5px;background:var(--ink)"></div>
 
     <div id="m31-axis-y" style="position:absolute;left:-306px;top:50%;transform:translateY(-50%);
-         font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;color:#8A8A85;
+         font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;color:var(--gray-2);
          text-align:right;width:260px;line-height:1.4"></div>
     <div data-var-text="axisX" style="position:absolute;left:0;right:0;bottom:-78px;text-align:right;
          font-family:'JetBrains Mono',monospace;font-size:29px;letter-spacing:.2em;
-         color:#8A8A85">ДЕШЕВЛЕ →</div>
+         color:var(--gray-2)">ДЕШЕВЛЕ →</div>
 
     <div id="m31-points"></div>
   </div>
@@ -72,11 +73,11 @@
   document.getElementById("m31-points").innerHTML = points.map(p => {
     const flip = p.x > 55;
     const dot = p.ours
-      ? "width:34px;height:34px;background:#0B0B0C"
-      : "width:34px;height:34px;border:5px solid #8A8A85;background:#FAFAF7";
+      ? "width:34px;height:34px;background:var(--ink)"
+      : "width:34px;height:34px;border:5px solid var(--gray-2);background:var(--paper)";
     const text = p.ours
-      ? "font-weight:700;color:#0B0B0C"
-      : "font-weight:600;color:#8A8A85";
+      ? "font-weight:700;color:var(--ink)"
+      : "font-weight:600;color:var(--gray-2)";
     return `<div class="m31-pin" style="position:absolute;left:${p.x}%;top:${p.y}%;
          transform:translate(${flip ? "-100%" : "0"},-50%);display:flex;align-items:center;
          gap:23px;flex-direction:${flip ? "row-reverse" : "row"}">

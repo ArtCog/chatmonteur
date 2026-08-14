@@ -33,10 +33,18 @@ class EncodeConfig:
 
 
 @dataclass(frozen=True)
+class BrandConfig:
+    """The installable brand pack used by visual and audio presentation tools."""
+
+    name: str = "default"
+
+
+@dataclass(frozen=True)
 class Config:
     root: Path
     transcribe: TranscribeConfig = field(default_factory=TranscribeConfig)
     encode: EncodeConfig = field(default_factory=EncodeConfig)
+    brand: BrandConfig = field(default_factory=BrandConfig)
 
     @property
     def raw_dir(self) -> Path:
@@ -79,6 +87,8 @@ def load_config(root: str | Path) -> Config:
             cfg = replace(cfg, transcribe=replace(cfg.transcribe, **_known(TranscribeConfig, data["transcribe"])))
         if "encode" in data:
             cfg = replace(cfg, encode=replace(cfg.encode, **_known(EncodeConfig, data["encode"])))
+        if "brand" in data:
+            cfg = replace(cfg, brand=replace(cfg.brand, **_known(BrandConfig, data["brand"])))
     except TypeError as exc:
         raise ConfigError(f"invalid value in {toml_path}: {exc}") from exc
 

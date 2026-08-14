@@ -24,6 +24,12 @@ parts that are actually hard:
    (no frozen frames, no A/V desync, no crushed audio).
 3. **Two gates that say no** — the part that actually keeps quality up, below.
 
+The exact ownership boundary — what ChatMonteur builds and what it delegates to
+auto-editor, faster-whisper, Video-Use, HyperFrames, and ffmpeg — is recorded in
+the [architecture map](docs/architecture.md). In particular, HyperFrames owns
+visual brand and motion rendering; ChatMonteur owns editorial selection and the
+end-to-end verified workflow.
+
 ## The two gates
 
 An agent that can only say yes will hand you a weak edit with total confidence. So two

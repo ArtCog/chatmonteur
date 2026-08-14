@@ -4,6 +4,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 07·B «переход · B» — ported from the designer's source
@@ -38,7 +39,7 @@
   const w = 1920 / n;
   document.getElementById("m7b-row").innerHTML = Array.from({ length: n }, (_, i) => `
     <div class="m7b-col" style="position:absolute;top:0;bottom:0;left:${i * w}px;
-         width:${w + 1}px;background:#0B0B0C;transform-origin:bottom"></div>`).join("");
+         width:${w + 1}px;background:var(--ink);transform-origin:bottom"></div>`).join("");
 
   const STEP = 0.08;
   const tl = gsap.timeline({ paused: true });

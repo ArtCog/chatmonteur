@@ -8,6 +8,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 26 «карточка числа» — ported from the designer's source
@@ -30,7 +31,7 @@
 <body>
 <div id="root" data-composition-id="mono-26" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
@@ -39,19 +40,19 @@
   <div style="position:absolute;left:156px;right:156px;top:0;bottom:0;display:flex;
        flex-direction:column;justify-content:center;gap:36px">
     <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">часов сэкономлено за год</div>
+         letter-spacing:.28em;color:var(--gray-2);text-transform:uppercase">часов сэкономлено за год</div>
     <div style="display:flex;align-items:flex-end;gap:62px">
       <div id="m26-digits" style="display:flex;font-family:'Playfair Display',serif;font-weight:600;
-           font-size:306px;line-height:1;color:#0B0B0C;letter-spacing:-.02em"></div>
+           font-size:306px;line-height:1;color:var(--ink);letter-spacing:-.02em"></div>
       <div id="m26-delta" style="display:flex;align-items:center;gap:23px;padding-bottom:52px">
-        <span data-var-text="delta" style="background:#0B0B0C;color:#FAFAF7;
+        <span data-var-text="delta" style="background:var(--ink);color:var(--paper);
               font-family:'Golos Text',sans-serif;font-weight:800;font-size:49px;
               padding:13px 31px;white-space:nowrap">▲ 38%</span>
         <span data-var-text="deltaNote" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-              letter-spacing:.06em;color:#8A8A85;white-space:nowrap">к прошлому году</span>
+              letter-spacing:.06em;color:var(--gray-2);white-space:nowrap">к прошлому году</span>
       </div>
     </div>
-    <div id="m26-rule" style="width:182px;height:8px;background:#0B0B0C;transform-origin:left"></div>
+    <div id="m26-rule" style="width:182px;height:8px;background:var(--ink);transform-origin:left"></div>
     <div data-var-text="caption" style="font-family:'Golos Text',sans-serif;font-size:44px;
          color:#3A3A3A;max-width:1349px;line-height:1.45">Один агент закрывает рутину, на которую уходило по три часа в день.</div>
   </div>

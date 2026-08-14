@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element B «заливка слова» (sweep highlight) — ported 1:1 from the designer's
@@ -27,23 +28,23 @@
     <div id="ab-plate" style="background:rgba(8,9,10,.6);padding:36px 57px;
          display:flex;align-items:center;gap:31px">
       <span id="ab-pre" data-var-text="pre" style="font-family:'Golos Text',sans-serif;
-            font-weight:700;font-size:88px;line-height:1;color:#FAFAF7">это абсолютно</span>
+            font-weight:700;font-size:88px;line-height:1;color:var(--paper)">это абсолютно</span>
       <span style="position:relative;padding:5px 26px;display:inline-block">
         <span id="ab-fill" style="position:absolute;left:0;right:0;top:0;bottom:0;
-              background:#FAFAF7;transform-origin:left center"></span>
+              background:var(--paper);transform-origin:left center"></span>
         <!-- two copies of the word: paper under, ink above revealed by the same
              left-to-right front as the fill — each letter inverts exactly when
              the fill edge covers it, no all-at-once flip, no vanished letters -->
         <span id="ab-word" data-var-text="word" style="position:relative;display:inline-block;
               font-family:'Golos Text',sans-serif;font-weight:900;font-size:88px;
-              line-height:1;color:#FAFAF7">бесплатно</span>
+              line-height:1;color:var(--paper)">бесплатно</span>
         <span id="ab-word-ink" aria-hidden="true" style="position:absolute;left:26px;top:5px;
               display:inline-block;font-family:'Golos Text',sans-serif;font-weight:900;
-              font-size:88px;line-height:1;color:#0B0B0C;white-space:nowrap;
+              font-size:88px;line-height:1;color:var(--ink);white-space:nowrap;
               clip-path:inset(0 100% 0 0)">бесплатно</span>
       </span>
       <span id="ab-post" data-var-text="post" style="font-family:'Golos Text',sans-serif;
-            font-weight:700;font-size:88px;line-height:1;color:#FAFAF7"></span>
+            font-weight:700;font-size:88px;line-height:1;color:var(--paper)"></span>
     </div>
   </div>
 </div>

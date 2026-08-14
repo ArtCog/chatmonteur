@@ -9,7 +9,15 @@ channel «ИИмерсивный» (dogfood on real footage decides what counts 
 real-media dogfood → v0.1 release → applications to Claude for Open Source and
 Codex for Open Source. A maintainer checkout may contain ignored `STATE.md` and
 `PLAN.local.md`; read them first when present. A fresh public clone starts from
-this file, `README.md`, and `docs/production-lifecycle.md`.
+this file, `README.md`, `docs/architecture.md`, and `docs/production-lifecycle.md`.
+
+## Architecture boundary
+
+Read `docs/architecture.md` before changing ownership between ChatMonteur and an
+external engine. HyperFrames owns visual brand through native `frame.md` and its
+registry; ChatMonteur owns editorial intent, component selection, source policy,
+workflow state, approval gates, compositing, and QC. Do not recreate an external
+engine's supported system inside ChatMonteur.
 
 This file mirrors `CLAUDE.md` — read that for the full contract. Essentials:
 
@@ -67,6 +75,10 @@ with a JSON parameter object. See `skills/cutting.md` Tier 2.
 - **Start any edit session from `skills/montage.md`** — it routes mechanical vs
   editorial work and lists the approval gates. `skills/INDEX.md` is the map of
   the whole editorial knowledge base.
+- **Before selecting any motion graphic, read
+  `assets/brand/default/SELECTION-GUIDE.md`.** Then query the generated
+  `catalog.json` by `card.editorial.role`; never choose from memory or by card
+  number alone. `usage-profiles.json` is the selection authority for all 68 cards.
 - **Show a cut-plan before the final render** (read `transcripts/edl.json`,
   summarise removals) and offer a 720p preview first.
 - Follow the **production-correctness rules** in `skills/production-rules.md`

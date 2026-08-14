@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element M «абзац» (несколько предложений) — ported 1:1 from the designer's
@@ -25,12 +26,12 @@
        for read-along text while the speech pauses, not for a spoken moment -->
   <div id="am-wrap" style="position:absolute;left:145px;right:145px;bottom:135px;
        display:flex;align-items:stretch">
-    <div style="width:13px;background:#FAFAF7"></div>
+    <div style="width:13px;background:var(--paper)"></div>
     <div style="flex:1;background:rgba(8,9,10,.74);padding:42px 57px 47px">
       <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-           letter-spacing:.26em;color:#B7B7B2;margin-bottom:23px">КОНТЕКСТ</div>
+           letter-spacing:.26em;color:var(--gray-1);margin-bottom:23px">КОНТЕКСТ</div>
       <div data-var-text="text" style="font-family:'Golos Text',sans-serif;font-weight:500;
-           font-size:57px;line-height:1.42;color:#FAFAF7;text-wrap:pretty;max-width:1453px">Агент
+           font-size:57px;line-height:1.42;color:var(--paper);text-wrap:pretty;max-width:1453px">Агент
         не умеет читать мысли. Вся его точность держится на том, насколько внятно вы описали
         результат. Плохой промпт — плохой код.</div>
     </div>

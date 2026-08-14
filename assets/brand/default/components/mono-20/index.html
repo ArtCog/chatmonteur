@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 20 «плашка источника» — ported from the designer's source
@@ -27,14 +28,14 @@
        and 146 is the lowest baseline that clears the manifest's playerZone (y≥934,
        where YouTube draws its controls). The card's own value overlapped it. -->
   <div id="m20-wrap" style="position:absolute;left:130px;bottom:146px;display:flex;align-items:stretch">
-    <div style="width:13px;background:#FAFAF7"></div>
-    <div style="background:#0B0B0C;padding:34px 52px">
+    <div style="width:13px;background:var(--paper)"></div>
+    <div style="background:var(--ink);padding:34px 52px">
       <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:26px;
-           letter-spacing:.24em;color:#B7B7B2;margin-bottom:13px">ИСТОЧНИК</div>
+           letter-spacing:.24em;color:var(--gray-1);margin-bottom:13px">ИСТОЧНИК</div>
       <div data-var-text="title" style="font-family:'Golos Text',sans-serif;font-weight:700;
-           font-size:49px;color:#FAFAF7;line-height:1.15">«Attention Is All You Need»</div>
+           font-size:49px;color:var(--paper);line-height:1.15">«Attention Is All You Need»</div>
       <div data-var-text="meta" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-           color:#B7B7B2;margin-top:10px">arXiv:1706.03762 · Vaswani et al.</div>
+           color:var(--gray-1);margin-top:10px">arXiv:1706.03762 · Vaswani et al.</div>
     </div>
   </div>
 </div>

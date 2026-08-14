@@ -4,10 +4,13 @@ The default design system for the whole product. Imported from the creator's Cla
 project «ИИмерсивный - Mono» (originals in `source/`). Monochrome — ink & paper.
 This replaces the older «Осциллограф» (Geist/teal) system.
 
-**Start at `catalog.json`** — every card the designer drew, what it is for, and which
-component renders it. `brand-manifest.json` holds the rules on top of it (safe zones,
-budgets, motion timings) and OWNS the colour values; `tokens.css` mirrors them for code,
-and `build_catalog.py` fails if the two disagree. Fonts (bundled TTF): `fonts/`.
+**Start at `SELECTION-GUIDE.md`**, then use `catalog.json` — every card the designer
+drew, its editorial role/priority/triggers, and which component renders it.
+`usage-profiles.json` owns those editorial profiles and is merged into the generated
+catalog. HyperFrames-native `frame.md` owns appearance and safe zones;
+`tokens.css` is its runtime projection for components and ffmpeg/libass.
+`brand-manifest.json` contains only enforceable editorial budgets and cue rules.
+`build_catalog.py` rejects drift between `frame.md` and `tokens.css`. Bundled fonts: `fonts/`.
 
 Public channel identities live in `channel.json`. Never type or infer a CTA from memory:
 `build_catalog.py` regenerates every shipped Telegram QR from that file. For this brand,

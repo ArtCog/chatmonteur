@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 42 «тикер-переход» — ported from the designer's source
@@ -33,7 +34,7 @@
 <body>
 <div id="root" data-composition-id="mono-42" data-start="0" data-duration="2"
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
-  <div id="m42-panel" style="position:absolute;inset:0;background:#0B0B0C;overflow:hidden">
+  <div id="m42-panel" style="position:absolute;inset:0;background:var(--ink);overflow:hidden">
     <div style="position:absolute;inset:0;background-image:
          linear-gradient(rgba(250,250,247,.05) 2px,transparent 2px),
          linear-gradient(90deg,rgba(250,250,247,.05) 2px,transparent 2px);
@@ -45,7 +46,7 @@
 
     <div data-var-text="label" style="position:absolute;left:0;right:0;bottom:202px;
          text-align:center;font-family:'JetBrains Mono',monospace;font-size:31px;
-         letter-spacing:.32em;color:#8A8A85">СЛЕДУЮЩИЙ БЛОК</div>
+         letter-spacing:.32em;color:var(--gray-2)">СЛЕДУЮЩИЙ БЛОК</div>
   </div>
 </div>
 
@@ -57,7 +58,7 @@
 
   document.getElementById("m42-strip").innerHTML = Array.from({ length: 3 }, () => `
     <span style="font-family:'Golos Text',sans-serif;font-weight:900;font-size:249px;
-          line-height:1.1;color:transparent;-webkit-text-stroke:5px #FAFAF7;
+          line-height:1.1;color:transparent;-webkit-text-stroke:5px var(--paper);
           padding-right:104px">${text}&nbsp;</span>`).join("");
 
   const tl = gsap.timeline({ paused: true });

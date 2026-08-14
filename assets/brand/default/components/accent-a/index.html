@@ -4,6 +4,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element A «слово-удар» (punch word) — ported 1:1 from the designer's source
@@ -22,11 +23,11 @@
        (source 4px) is the shared marker of all loud hooks per the designer note -->
   <div id="aa-wrap" style="position:absolute;left:0;right:0;bottom:145px;
        display:flex;justify-content:center">
-    <div id="aa-plate" style="background:#0B0B0C;padding:36px 67px;
-         border-bottom:10px solid #FAFAF7">
+    <div id="aa-plate" style="background:var(--ink);padding:36px 67px;
+         border-bottom:10px solid var(--paper)">
       <span id="aa-word" data-var-text="word" style="display:block;
             font-family:'Golos Text',sans-serif;font-weight:900;font-size:135px;
-            line-height:1;letter-spacing:-.02em;color:#FAFAF7">БЕСПЛАТНО</span>
+            line-height:1;letter-spacing:-.02em;color:var(--paper)">БЕСПЛАТНО</span>
     </div>
   </div>
 </div>

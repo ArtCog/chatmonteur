@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element F «цифра-хук» (number punch) — ported 1:1 from the designer's source
@@ -24,13 +25,13 @@
        display:flex;justify-content:center;align-items:stretch;gap:36px">
     <!-- the number is the loud half: antiqua on paper; the word stays quiet on
          the translucent plate so the eye lands on the figure first -->
-    <div id="af-num" style="background:#FAFAF7;padding:31px 52px;display:flex;align-items:center">
+    <div id="af-num" style="background:var(--paper);padding:31px 52px;display:flex;align-items:center">
       <span data-var-text="number" style="font-family:'Playfair Display',serif;font-weight:600;
-            font-size:145px;line-height:1;color:#0B0B0C">×5</span>
+            font-size:145px;line-height:1;color:var(--ink)">×5</span>
     </div>
     <div id="af-word" style="background:rgba(8,9,10,.6);padding:36px 52px;display:flex;align-items:center">
       <span data-var-text="word" style="font-family:'Golos Text',sans-serif;font-weight:800;
-            font-size:78px;line-height:1;color:#FAFAF7">быстрее</span>
+            font-size:78px;line-height:1;color:var(--paper)">быстрее</span>
     </div>
   </div>
 </div>

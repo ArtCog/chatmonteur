@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 16 «схема агента» — ported from the designer's source
@@ -27,14 +28,14 @@
 <body>
 <div id="root" data-composition-id="mono-16" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
        background-size:114px 114px"></div>
 
   <div data-var-text="kicker" style="position:absolute;left:0;right:0;top:104px;text-align:center;
-       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:#8A8A85;
+       font-family:'JetBrains Mono',monospace;font-size:31px;letter-spacing:.3em;color:var(--gray-2);
        text-transform:uppercase">как работает агент</div>
 
   <div id="m16-row" style="position:absolute;inset:0;display:flex;align-items:center;
@@ -53,12 +54,12 @@
 
   const node = n => `
     <div style="font-family:'Golos Text',sans-serif;font-weight:800;font-size:47px;
-         padding:36px 47px;border:5px solid #0B0B0C;white-space:nowrap;
-         background:${n.key ? "#0B0B0C" : "#FAFAF7"};color:${n.key ? "#FAFAF7" : "#0B0B0C"}
+         padding:36px 47px;border:5px solid var(--ink);white-space:nowrap;
+         background:${n.key ? "var(--ink)" : "var(--paper)"};color:${n.key ? "var(--paper)" : "var(--ink)"}
          ">${esc(n.label)}</div>`;
   const arrow = `
     <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:57px;
-         color:#8A8A85;padding:0 5px">→</div>`;
+         color:var(--gray-2);padding:0 5px">→</div>`;
 
   document.getElementById("m16-row").innerHTML = nodes.map(node).join(arrow);
 

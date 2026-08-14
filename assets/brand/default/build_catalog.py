@@ -14,6 +14,7 @@ import io
 import json
 import os
 import re
+import shutil
 import sys
 from collections import Counter
 from pathlib import Path
@@ -49,6 +50,9 @@ ROUTE = {
     # Артур 2026-08-03: похоронены. Шесть карточек старой колоды — дизайн старше
     # Mono-рефреша, если что-то из них понадобится, дизайнер нарисует заново в Mono.
     "02·A": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
+    # Artur 2026-08-14: the generic episode-topic interruption is not part of the
+    # working language. Keep the source for provenance, but never route it to edits.
+    "02·B": ("dropped", "тема выпуска не используется без отдельного нового решения (Артур 2026-08-14)"),
     "07·C": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
     "07·D": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
     "11": ("dropped", "старая колода, дизайн до Mono-рефреша (Артур 2026-08-03)"),
@@ -59,6 +63,9 @@ ROUTE = {
 }
 ARCHIVED = {"D", "G"}                            # brand-manifest: accentOverlays.archived
 NOT_DRAWN = ["22 таймлайн", "30 шаг N из M"]     # promised by the manifest, drawn nowhere
+EDITORIAL_FIELDS = {
+    "intent", "role", "priority", "sections", "sourceTreatment", "useWhen", "avoidWhen", "basis"
+}
 
 # A card header is always the same span trio: number, name, english hint.
 HEAD = re.compile(
@@ -102,7 +109,29 @@ def read_component(name):
     }
 
 
+def load_usage_profiles():
+    path = os.path.join(ROOT, "usage-profiles.json")
+    data = json.load(io.open(path, encoding="utf-8"))
+    intents_path = Path(ROOT).parent / "editorial-intents.json"
+    intents = json.load(io.open(intents_path, encoding="utf-8"))["intents"]
+    profiles = data.get("cards", {})
+    for card_id, profile in profiles.items():
+        assert set(profile) == EDITORIAL_FIELDS, \
+            f"usage profile {card_id} must contain exactly {sorted(EDITORIAL_FIELDS)}"
+        assert profile["priority"] in data["priorityScale"], \
+            f"usage profile {card_id} has unknown priority {profile['priority']}"
+        assert profile["intent"] in intents, \
+            f"usage profile {card_id} has unknown editorial intent {profile['intent']}"
+        assert isinstance(profile["sections"], list), \
+            f"usage profile {card_id} sections must be a list"
+    for name, profile in data.get("approvedPrototypes", {}).items():
+        assert profile["intent"] in intents, \
+            f"approved prototype {name} has unknown editorial intent {profile['intent']}"
+    return data
+
+
 def build_cards():
+    usage = load_usage_profiles()
     cards, seen = [], set()
     for fname, kind in SOURCES:
         for card in parse_deck(os.path.join(SRC, fname)):
@@ -127,7 +156,8 @@ def build_cards():
                 status = "todo"
             out = {"id": card["num"], "kind": kind, "name": card["name"],
                    "hint": card["hint"], "spec": card["spec"], "source": fname,
-                   "status": status, "route": route}
+                   "status": status, "route": route,
+                   "editorial": usage["cards"].get(card["num"])}
             if why:
                 out["routeNote"] = why
             if comp:
@@ -141,6 +171,10 @@ def build_cards():
                 })
             cards.append(out)
     cards.sort(key=lambda c: ({"mono": 0, "accent": 1}[c["kind"]], c["id"]))
+    card_ids = {card["id"] for card in cards}
+    profile_ids = set(usage["cards"])
+    assert profile_ids == card_ids, \
+        f"usage profile coverage mismatch: missing={sorted(card_ids - profile_ids)}, extra={sorted(profile_ids - card_ids)}"
     return cards
 
 
@@ -151,6 +185,9 @@ def write_catalog(cards):
                     "Генерируется build_catalog.py из source/*.dc.html; руками не править.",
         "brand": "ИИмерсивный",
         "manifest": "brand-manifest.json",
+        "usageProfiles": "usage-profiles.json",
+        "selectionGuide": "SELECTION-GUIDE.md",
+        "editorialIntents": "../editorial-intents.json",
         "counts": dict(Counter(c["status"] for c in cards), total=len(cards)),
         "notDrawn": NOT_DRAWN,
         "cards": cards,
@@ -171,6 +208,8 @@ def write_registry_items(cards):
         comp = read_component(name)
         files = [{"path": "index.html", "target": f"compositions/{name}.html",
                   "type": "hyperframes:composition"}]
+        files.append({"path": "tokens.css", "target": "compositions/tokens.css",
+                      "type": "hyperframes:asset"})
         motion = Path(COMP) / name / "index.motion.json"
         if motion.is_file():
             files.append({"path": "index.motion.json",
@@ -196,6 +235,17 @@ def write_registry_items(cards):
         with io.open(path, "w", encoding="utf-8", newline="\n") as f:
             json.dump(item, f, ensure_ascii=False, indent=2)
             f.write("\n")
+        written += 1
+    return written
+
+
+def write_component_tokens(_cards):
+    """Make every registry block standalone while keeping frame.md as the authority."""
+    source = Path(ROOT) / "tokens.css"
+    written = 0
+    for index in Path(COMP).glob("*/index.html"):
+        target = index.parent / "tokens.css"
+        shutil.copyfile(source, target)
         written += 1
     return written
 
@@ -235,39 +285,10 @@ def check(cards):
     check_tokens(manifest)
 
 
-# tokens.css is hand-written but the manifest owns the values. Nothing enforced that,
-# which is how a green accent survived in tokens.css for weeks after the brandbook
-# dropped it — and Python reads tokens.css, so the stale colour was the one that burned.
-TOKEN_OF = {
-    "ink": "ink", "paper": "paper",
-    "graySecondaryText": "gray-1", "grayLabels": "gray-2",
-    "cardDark": "card-dark", "cardDarkBorder": "card-dark-border",
-    "captionBackdrop": "scrim",
-}
-ACCENT_TOKEN_OF = {"hype": "accent-hype", "danger": "accent-danger", "insight": "accent-insight"}
-
-
-def check_tokens(manifest):
-    css = io.open(os.path.join(ROOT, "tokens.css"), encoding="utf-8").read()
-    have = {k.lower(): v.strip() for k, v in re.findall(r"--([a-z0-9-]+)\s*:\s*([^;]+);", css, re.I)}
-    colors = manifest["colors"]
-
-    def same(a, b):                       # rgba(8, 9, 10, 0.52) == rgba(8,9,10,0.52)
-        return a.replace(" ", "").lower() == b.replace(" ", "").lower()
-
-    for key, name in TOKEN_OF.items():
-        assert name in have, f"tokens.css has no --{name} for manifest colors.{key}"
-        assert same(have[name], colors[key]), \
-            f"--{name} is {have[name]}, manifest says {colors[key]}"
-    for key, name in ACCENT_TOKEN_OF.items():
-        assert same(have[name], colors["accents"][key]["hex"]), \
-            f"--{name} is {have[name]}, manifest says {colors['accents'][key]['hex']}"
-    assert "accent" not in have, \
-        "tokens.css still defines a single --accent; the brandbook is monochrome now"
-
-    for key, name in (("primary", "font-sans"), ("mono", "font-mono"), ("display", "font-serif")):
-        assert manifest["fonts"][key]["family"] in have[name], \
-            f"--{name} does not start with the manifest's {manifest['fonts'][key]['family']}"
+def check_tokens(_manifest):
+    # HyperFrames frame.md owns appearance. tokens.css is only the runtime
+    # projection consumed by standalone blocks and ffmpeg/libass helpers.
+    brand.validate_runtime("default")
 
 
 if __name__ == "__main__":
@@ -275,6 +296,7 @@ if __name__ == "__main__":
     check(cards)
     qrs = write_channel_qrs()
     catalog = write_catalog(cards)
+    tokens_written = write_component_tokens(cards)
     items = write_registry_items(cards)
     print(json.dumps(catalog["counts"], ensure_ascii=True),
-          f"- registry-item.json x {items} - Telegram QR x {qrs}")
+          f"- registry-item.json x {items} - tokens.css x {tokens_written} - Telegram QR x {qrs}")

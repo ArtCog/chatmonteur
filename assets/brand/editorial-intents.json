@@ -1,0 +1,25 @@
+{
+  "$comment": "Brand-neutral reasons for putting graphics on screen. A brand pack maps these stable editorial intents to its own roles, components, priorities, and visual treatment.",
+  "version": 1,
+  "intents": {
+    "identify": "Identify a person, channel, product, or segment without interrupting the source.",
+    "caption": "Make spoken language readable or accessible in sync with speech.",
+    "preview": "Promise or preview what the viewer is about to receive.",
+    "structure": "Expose the current topic or structural boundary.",
+    "enumerate": "Make a spoken sequence, agenda, or process easier to follow.",
+    "emphasize": "Strengthen a genuinely important spoken beat without adding a new claim.",
+    "explain": "Add context, a definition, model, or relationship that narration alone leaves unclear.",
+    "compare": "Make a meaningful contrast between options, states, or evidence explicit.",
+    "quantify": "Make a verified number, result, or distribution legible.",
+    "cite": "Attribute a claim, quotation, or source.",
+    "instruct": "Direct attention to an action, control, shortcut, or prompt.",
+    "show-state": "Expose a system, agent, or workflow state.",
+    "navigate": "Orient the viewer in chapters, progress, or what comes next.",
+    "transition": "Bridge real structural sections of the video.",
+    "warn": "Call out a literal risk, constraint, or failure that needs special attention.",
+    "call-to-action": "Offer an explicit next action when the narration supports it.",
+    "disclose": "Show required commercial or editorial disclosure.",
+    "error": "Make an actual broken or failed state visible.",
+    "unavailable": "Preserve historical inventory without making it selectable."
+  }
+}

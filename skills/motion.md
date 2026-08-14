@@ -5,6 +5,12 @@ Graphics engine: **HyperFrames** (agent-native HTML/CSS/GSAP → MP4). Mechanica
 (static text, PiP, image inserts) → `references/playbooks.md` P5–P7 instead — don't spin up
 a graphics engine for a lower third.
 
+**Selection authority:** before choosing a graphic, read
+`assets/brand/default/SELECTION-GUIDE.md`, then use `catalog.json`'s
+`card.editorial` fields. The guide and `usage-profiles.json` record the role,
+priority, eligible sections, source treatment, and positive/negative trigger for
+all 68 cards. A decision left only in chat or a dogfood note is not a production rule.
+
 ## Why visual interest exists (the retention math)
 
 - **Change something on a meaning boundary, not on a timer.** Something should shift as each
@@ -30,11 +36,18 @@ earns it by elapsed time alone:
 If none of the five fires, add NOTHING. A graphic placed to fill time is worse
 than plain footage: it teaches the viewer that graphics here mean nothing.
 
+For a spoken hook agenda, prefer the approved light true-split prototype: three
+to five promised points, each revealed at its matching transcript cue. For an
+enumeration inside the body, the light process-rail treatment with large outlined
+numbers is situational. Do not interchange those jobs. Card `33` is only for real
+chapter timecodes; card `40` is only for an explicitly approved voice-free beat.
+
 **Preserve useful source by default.** A procedural screencast already is visual
 evidence. Do not hide actionable UI behind an invented full-frame hook, a paraphrase,
 or decorative typography. If a path, version, warning, or key conclusion genuinely
-adds information, use the matching alpha accent (`L` for a quiet aside, `O` for an
-insight, `N` for a real risk) over the continuing footage. Use an opaque card only
+adds information, use the matching alpha accent (`L` for a short aside, `M` for
+longer context, `O` for an insight, `E` for a strongest moment, `N` as the primary
+important-thought treatment) over the continuing footage. Use an opaque card only
 when the source cannot express the idea (for example a real structure, comparison,
 or chapter break), and declare `"replacesSource": true` in that cue. The declaration
 is an editorial assertion to review in the contact sheet, not a loophole in the gate.

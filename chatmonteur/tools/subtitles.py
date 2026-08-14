@@ -21,12 +21,11 @@ Geometry is fixed (5.5% / 9% / 80%); motion and font differ by variant.
 from __future__ import annotations
 
 import json
-import pathlib
 
 from ..core.context import RunContext
 from ..core.errors import ToolError
 from ..core.tool import Tool, ToolManifest, ToolResult
-from .. import media
+from .. import brand as brandkit, media
 
 
 class SubtitlesTool(Tool):
@@ -54,8 +53,9 @@ class SubtitlesTool(Tool):
         media.require("ffmpeg")
         if variant not in _VARIANTS:
             raise ToolError(f"unknown subtitle variant {variant!r}; choose one of {sorted(_VARIANTS)}")
-        font = font or _VARIANT_FONT.get(variant, _BRAND_FONT)
-        font_dir = font_dir or _BRAND_FONT_DIR
+        style = _brand_style(ctx.config.brand.name, variant)
+        font = font or style["font"]
+        font_dir = font_dir or style["font_dir"]
         data = json.loads(open(transcript, encoding="utf-8").read())
         srt_path = ctx.paths.transcripts / "captions.srt"
         srt_path.write_text(_to_srt(data, max_chars), encoding="utf-8")
@@ -79,7 +79,10 @@ class SubtitlesTool(Tool):
             # frame, so FontSize/margins are REAL PIXELS. SRT+force_style is scaled
             # by libass's default 288 PlayResY → a giant caption. (Learned the hard way.)
             ass_path = ctx.paths.transcripts / "captions.ass"
-            ass_path.write_text(_to_ass(data, max_chars, w, h, font, variant), encoding="utf-8")
+            ass_path.write_text(
+                _to_ass(data, max_chars, w, h, font, variant, palette=style),
+                encoding="utf-8",
+            )
             artifacts["ass"] = str(ass_path)
             fd = f":fontsdir='{media.filter_path(font_dir)}'" if font_dir else ""
             # Run from the ASS's folder, reference by bare name (dodge drive colon).
@@ -99,7 +102,8 @@ class SubtitlesTool(Tool):
             artifacts["video"] = str(out)
         return ToolResult(
             artifacts=artifacts,
-            meta={"variant": variant, "cues": data and len(data.get("segments", []))},
+            meta={"variant": variant, "cues": data and len(data.get("segments", [])),
+                  "brand": ctx.config.brand.name},
         )
 
 
@@ -108,7 +112,8 @@ class SubtitlesTool(Tool):
 # they hold at any resolution. STYLE (font/colour/plate): from the brand kit
 # «ИИмерсивный - Mono» — Golos Text Bold, paper-white on a semi-transparent scrim
 # (design "C · чисто" — the default caption). Mirrors skills/subtitles.md +
-# assets/brand/default/brand.md. To retune: change these constants only.
+# Runtime rendering resolves the active pack. Constants below preserve the
+# bundled default for direct helper calls and backwards-compatible tests.
 _SIZE_FRAC = 0.055    # font size = 5.5% of frame height (Артур 2026-07-24: «чуть увеличить»)
 _MARGIN_FRAC = 0.09   # bottom margin = 9% of frame height (above player controls)
 _WIDTH_FRAC = 0.80    # text area = 80% of frame width (L+R margins take the rest)
@@ -122,8 +127,6 @@ _INK_C = "&H0D0B0B&"         # ink #0B0B0D — text inside an inverted chip
 # rgba(8,9,10,.52). Alpha 0x7A = (1 − 0.52) × 255.
 _SCRIM_BGR = "&H7A0A0908"    # style-line form (&HAABBGGRR)
 _SCRIM_C = "&H0A0908&"       # the same colour as an inline \3c value
-_BRAND_FONT = "Golos Text"
-_VARIANT_FONT = {"typewriter": "JetBrains Mono"}  # D uses the mono face
 _VARIANTS = {"clean", "read_aloud", "accent", "typewriter", "highlight"}
 # Plate rule (Артур 2026-08-03, FINAL — supersedes the 2026-07-24 "no plate"):
 # captions follow card 04 as drawn. The line sits on a scrim, and a key word is
@@ -142,8 +145,30 @@ _SCRIM_PAD_EM = 7 / 26       # card 04: 7px padding at a 26px face
 _CHIP_PAD_EM = 3 / 26        # card 04: the chip nests inside the scrim
 _SHADOW_EM = 0.05            # shadow offset as a fraction of font size
 _SHADOW_BGR = "&H800A0908"   # ink #08090A at ~50% — the drop shadow colour
-# Bundled brand fonts (Golos/JetBrains/Playfair, OFL) — libass finds them by family.
-_BRAND_FONT_DIR = str(pathlib.Path(__file__).resolve().parents[2] / "assets" / "brand" / "default" / "fonts")
+def _brand_style(name: str = "default", variant: str = "clean") -> dict[str, str]:
+    """Resolve the active pack into the ASS values used by the subtitle renderer."""
+    brandkit.validate_runtime(name)
+    _, _, _, scrim_opacity = brandkit.rgba("scrim", brand=name)
+    scrim_alpha = round((1.0 - scrim_opacity) * 255)
+    return {
+        "font": brandkit.font("mono" if variant == "typewriter" else "sans", brand=name),
+        "font_dir": str(brandkit.font_dir(name)),
+        "paper_bgr": brandkit.ass_style("paper", brand=name, alpha=0),
+        "paper_c": brandkit.ass_override("paper", brand=name),
+        "ink_c": brandkit.ass_override("ink", brand=name),
+        "scrim_bgr": brandkit.ass_style("scrim", brand=name),
+        "scrim_c": brandkit.ass_override("scrim", brand=name),
+        "scrim_alpha": f"&H{scrim_alpha:02X}&",
+        "shadow_bgr": brandkit.ass_style("ink", brand=name, alpha=128),
+    }
+
+
+def _palette(values: dict[str, str] | None) -> dict[str, str]:
+    return values or {
+        "paper_bgr": _PAPER_BGR, "paper_c": _PAPER_C, "ink_c": _INK_C,
+        "scrim_bgr": _SCRIM_BGR, "scrim_c": _SCRIM_C,
+        "scrim_alpha": "&H7A&", "shadow_bgr": _SHADOW_BGR,
+    }
 
 
 def _video_wh(path: str) -> tuple[int, int]:
@@ -155,7 +180,8 @@ def _video_wh(path: str) -> tuple[int, int]:
 
 # --- ASS document --------------------------------------------------------------
 
-def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str) -> str:
+def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, variant: str,
+            palette: dict[str, str] | None = None) -> str:
     """ASS with PlayRes pinned to the real frame → FontSize/margins are real px.
 
     One Dialogue per cue; the per-variant renderer decides how the cue's text
@@ -169,6 +195,7 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
     bold = 0 if variant == "typewriter" else -1  # D is Mono 500, others Golos 700
     sh = max(2, round(_SHADOW_EM * fs))          # soft drop shadow under the scrim
     scrim = max(2, round(_SCRIM_PAD_EM * fs))    # box padding = the scrim's thickness
+    colours = _palette(palette)
     header = (
         "[Script Info]\n"
         "ScriptType: v4.00+\n"
@@ -180,7 +207,8 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
         # BorderStyle 3 → opaque box: OutlineColour fills it, Outline is its padding.
-        f"Style: Default,{font},{fs},{_PAPER_BGR},{_PAPER_BGR},{_SCRIM_BGR},{_SHADOW_BGR},"
+        f"Style: Default,{font},{fs},{colours['paper_bgr']},{colours['paper_bgr']},"
+        f"{colours['scrim_bgr']},{colours['shadow_bgr']},"
         f"{bold},0,0,0,100,100,0,0,3,{scrim},{sh},2,{side},{side},{mv},1\n\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
@@ -188,7 +216,7 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
     render = _RENDERERS[variant]
     lines = []
     for cue in _build_cues(data, max_chars):
-        body = render(cue, max_chars, fs)
+        body = render(cue, max_chars, fs, colours)
         lines.append(
             f"Dialogue: 0,{_ass_time(cue['start'])},{_ass_time(cue['end'])},Default,,0,0,0,,{body}"
         )
@@ -197,12 +225,14 @@ def _to_ass(data: dict, max_chars: int, width: int, height: int, font: str, vari
 
 # --- per-variant cue renderers (cue -> ASS body text) --------------------------
 
-def _r_clean(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_clean(cue: dict, max_chars: int, fs: int = 0,
+             palette: dict[str, str] | None = None) -> str:
     """C · чисто — the whole line at once, brand soft-in fade."""
     return "{\\fad(180,0)}" + _wrap(cue["text"], max_chars).replace("\n", "\\N")
 
 
-def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_read_aloud(cue: dict, max_chars: int, fs: int = 0,
+                  palette: dict[str, str] | None = None) -> str:
     """A · читаем вслух — each word fades in at its own spoken time."""
     words = cue.get("words") or []
     if not words:
@@ -222,30 +252,35 @@ def _scrim_pad(fs: int) -> int:
     return max(2, round(_SCRIM_PAD_EM * fs))
 
 
-def _chip_state(fs: int) -> str:
+def _chip_state(fs: int, palette: dict[str, str] | None = None) -> str:
     """Override that turns a span into the inverted chip: paper box, ink text.
 
     \\3a is set explicitly — inheriting the scrim's 52% alpha tints the chip grey
     instead of paper, which is exactly how the first test render came out.
     """
-    return f"\\3c{_PAPER_C}\\3a&H00&\\bord{max(2, round(_CHIP_PAD_EM * fs))}\\1c{_INK_C}"
+    colours = _palette(palette)
+    return (f"\\3c{colours['paper_c']}\\3a&H00&"
+            f"\\bord{max(2, round(_CHIP_PAD_EM * fs))}\\1c{colours['ink_c']}")
 
 
-def _scrim_state(fs: int) -> str:
+def _scrim_state(fs: int, palette: dict[str, str] | None = None) -> str:
     """Override that returns a span to the ordinary scrimmed line.
 
     Not \\bord0: the box IS the scrim, so a word with no border punches a notch
     out of the band instead of blending back into it.
     """
-    return f"\\3c{_SCRIM_C}\\3a&H7A&\\bord{_scrim_pad(fs)}\\1c{_PAPER_C}"
+    colours = _palette(palette)
+    return (f"\\3c{colours['scrim_c']}\\3a{colours['scrim_alpha']}"
+            f"\\bord{_scrim_pad(fs)}\\1c{colours['paper_c']}")
 
 
-def _chip(text: str, fs: int) -> str:
+def _chip(text: str, fs: int, palette: dict[str, str] | None = None) -> str:
     """Wrap one word in the inverted chip (card 04, style B)."""
-    return f"{{{_chip_state(fs)}}}{text}{{\\r}}"
+    return f"{{{_chip_state(fs, palette)}}}{text}{{\\r}}"
 
 
-def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_accent(cue: dict, max_chars: int, fs: int = 0,
+              palette: dict[str, str] | None = None) -> str:
     """B · акцент — the emphasised word (``"emph": true``) inverted into a chip.
 
     Card 04 accents by inversion, and the brandbook's rule is that colour never
@@ -260,12 +295,13 @@ def _r_accent(cue: dict, max_chars: int, fs: int = 0) -> str:
         return _r_clean(cue, max_chars)  # nothing marked → plain line
 
     def render(tok: dict) -> str:
-        return _chip(tok["text"], fs) if tok["emph"] else tok["text"]
+        return _chip(tok["text"], fs, palette) if tok["emph"] else tok["text"]
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_highlight(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_highlight(cue: dict, max_chars: int, fs: int = 0,
+                 palette: dict[str, str] | None = None) -> str:
     """E · караоке — the whole line shows at once; the word being SPOKEN inverts
     into a chip, then flips back. Needs word timings.
 
@@ -283,13 +319,15 @@ def _r_highlight(cue: dict, max_chars: int, fs: int = 0) -> str:
 
     def render(tok: dict) -> str:
         s, e = tok["s"], max(tok["e"], tok["s"] + 120)  # holds ≥120ms, never blinks
-        return (f"{{\\t({s},{s},{_chip_state(fs)})\\t({e},{e},{_scrim_state(fs)})}}"
+        return (f"{{\\t({s},{s},{_chip_state(fs, palette)})"
+                f"\\t({e},{e},{_scrim_state(fs, palette)})}}"
                 f"{tok['text']}{{\\r}}")
 
     return "{\\fad(180,0)}" + _layout(tokens, max_chars, render)
 
 
-def _r_typewriter(cue: dict, max_chars: int, fs: int = 0) -> str:
+def _r_typewriter(cue: dict, max_chars: int, fs: int = 0,
+                  palette: dict[str, str] | None = None) -> str:
     """D · печатная машинка — chars type in at a steady pace, cursor follows the caret.
 
     Untyped chars are hidden AND zero-width (`\\fscx0`), not just transparent — else the

@@ -88,3 +88,37 @@ def test_default_brand_sound_profile_references_ledgered_assets() -> None:
     ]
     assert profile["defaults"]["background"]["ledger_id"] in ledger_ids
     assert profile["defaults"]["ui_sfx"]["ledger_id"] in ledger_ids
+def test_wheel_packages_the_runtime_brand_assets():
+    """A wheel without frame.md/components works in-repo and fails after install."""
+    import tomllib
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    data = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+    wheel = data["tool"]["hatch"]["build"]["targets"]["wheel"]
+
+    assert wheel["hooks"]["custom"]["path"] == "hatch_build.py"
+    assert (root / "hatch_build.py").is_file()
+    assert (root / "assets" / "brand" / "default" / "frame.md").is_file()
+    assert (root / "assets" / "brand" / "default" / "catalog.json").is_file()
+
+
+def test_runtime_resources_resolve_in_a_source_checkout():
+    from chatmonteur.cli import _PIPELINES
+    from chatmonteur.tools.color import _LUT_DIR
+
+    assert (_PIPELINES / "talking_head.yaml").is_file()
+    assert (_LUT_DIR / "cool_cinema.cube").is_file()
+
+
+def test_ci_covers_tests_types_build_and_hyperframes():
+    from pathlib import Path
+
+    workflow = (
+        Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
+    ).read_text(encoding="utf-8")
+
+    assert "pytest tests" in workflow
+    assert "pyright chatmonteur" in workflow
+    assert "python -m build" in workflow
+    assert "hyperframes@0.7.109 check" in workflow

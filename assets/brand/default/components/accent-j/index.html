@@ -4,6 +4,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element J «подчёрк линией» (underline) — the quietest accent: NO plate,
@@ -20,9 +21,9 @@
   <!-- left 145px = source 56 × 2.595; bottom 145px puts it in the accent band -->
   <div id="aj-wrap" style="position:absolute;left:145px;bottom:145px">
     <div id="aj-text" data-var-text="text" style="font-family:'Playfair Display',serif;
-         font-style:italic;font-weight:600;font-size:104px;line-height:1.1;color:#FAFAF7;
+         font-style:italic;font-weight:600;font-size:104px;line-height:1.1;color:var(--paper);
          text-shadow:0 5px 36px rgba(0,0,0,.8)">запомни это место</div>
-    <div id="aj-line" style="height:10px;background:#FAFAF7;margin-top:23px;
+    <div id="aj-line" style="height:10px;background:var(--paper);margin-top:23px;
          transform-origin:left center"></div>
   </div>
 </div>

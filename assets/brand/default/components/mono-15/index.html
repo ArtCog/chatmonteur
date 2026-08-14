@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Mono element 15 «определение термина» — ported from the designer's source
@@ -26,7 +27,7 @@
 <body>
 <div id="root" data-composition-id="mono-15" data-start="0" data-duration="6"
      data-width="1920" data-height="1080"
-     style="position:relative;width:1920px;height:1080px;background:#FAFAF7;overflow:hidden">
+     style="position:relative;width:1920px;height:1080px;background:var(--paper);overflow:hidden">
   <div style="position:absolute;inset:0;background-image:
        linear-gradient(rgba(11,11,12,.05) 2px,transparent 2px),
        linear-gradient(90deg,rgba(11,11,12,.05) 2px,transparent 2px);
@@ -35,10 +36,10 @@
   <div id="m15-card" style="position:absolute;left:145px;right:145px;top:0;bottom:0;
        display:flex;flex-direction:column;justify-content:center;gap:42px">
     <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:31px;
-         letter-spacing:.28em;color:#8A8A85;text-transform:uppercase">термин</div>
+         letter-spacing:.28em;color:var(--gray-2);text-transform:uppercase">термин</div>
     <div data-var-text="term" style="font-family:'Playfair Display',serif;font-weight:600;
-         font-size:166px;line-height:1.15;color:#0B0B0C">Инференс</div>
-    <div style="width:156px;height:8px;background:#0B0B0C"></div>
+         font-size:166px;line-height:1.15;color:var(--ink)">Инференс</div>
+    <div style="width:156px;height:8px;background:var(--ink)"></div>
     <div id="m15-def" style="font-family:'Golos Text',sans-serif;font-size:60px;line-height:1.42;
          color:#3A3A3A;max-width:1557px"></div>
   </div>
@@ -51,7 +52,7 @@
     "Запуск обученной модели на новых данных — момент, когда нейросеть **выдаёт ответ**, а не учится.");
   document.getElementById("m15-def").innerHTML =
     raw.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))
-       .replace(/\*\*(.+?)\*\*/g, '<b style="color:#0B0B0C">$1</b>');
+       .replace(/\*\*(.+?)\*\*/g, '<b style="color:var(--ink)">$1</b>');
 
   const tl = gsap.timeline({ paused: true });
   tl.fromTo("#m15-card", { y: 52, opacity: 0 },

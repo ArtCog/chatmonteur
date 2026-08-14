@@ -5,6 +5,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element K «вопрос-хук» (question) — ported 1:1 from the designer's source
@@ -22,12 +23,12 @@
      data-width="1920" data-height="1080" style="position:relative;width:1920px;height:1080px">
   <div id="ak-wrap" style="position:absolute;left:0;right:0;bottom:135px;display:flex;justify-content:center">
     <div style="display:flex;align-items:stretch">
-      <div style="width:13px;background:#FAFAF7"></div>
-      <div style="background:#0B0B0C;padding:34px 62px">
+      <div style="width:13px;background:var(--paper)"></div>
+      <div style="background:var(--ink);padding:34px 62px">
         <div data-var-text="kicker" style="font-family:'JetBrains Mono',monospace;font-size:29px;
-             letter-spacing:.26em;color:#B7B7B2">А ЕСЛИ</div>
+             letter-spacing:.26em;color:var(--gray-1)">А ЕСЛИ</div>
         <div data-var-text="question" style="font-family:'Playfair Display',serif;font-weight:600;
-             font-size:88px;line-height:1.1;color:#FAFAF7;margin-top:10px">агент ошибётся?</div>
+             font-size:88px;line-height:1.1;color:var(--paper);margin-top:10px">агент ошибётся?</div>
       </div>
     </div>
   </div>

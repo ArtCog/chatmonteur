@@ -6,6 +6,7 @@
 ]'>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <style>
   /* Element I «замена слова» (word swap) — ported 1:1 from the designer's source
@@ -23,17 +24,17 @@
   <div id="ai-wrap" style="position:absolute;left:0;right:0;bottom:145px;display:flex;justify-content:center">
     <div style="background:rgba(8,9,10,.6);padding:31px 57px;display:flex;align-items:center;gap:29px">
       <span data-var-text="prefix" style="font-family:'Golos Text',sans-serif;font-weight:500;
-            font-size:67px;line-height:1;color:#8A8A85">это не</span>
+            font-size:67px;line-height:1;color:var(--gray-2)">это не</span>
       <!-- the slot is a FIXED 654px box (designer: 252px × 2.595): both words are
            absolutely positioned inside it, so the grey prefix never shifts when
            the white word is replaced — a re-flow would kill the whole effect -->
       <span style="position:relative;display:block;width:654px;height:99px">
         <span id="ai-w1" data-var-text="word1" style="position:absolute;left:0;top:0;
               font-family:'Golos Text',sans-serif;font-weight:900;font-size:83px;
-              line-height:99px;color:#FAFAF7;white-space:nowrap">сложно</span>
+              line-height:99px;color:var(--paper);white-space:nowrap">сложно</span>
         <span id="ai-w2" data-var-text="word2" style="position:absolute;left:0;top:0;
               font-family:'Golos Text',sans-serif;font-weight:900;font-size:83px;
-              line-height:99px;color:#FAFAF7;white-space:nowrap">это работа</span>
+              line-height:99px;color:var(--paper);white-space:nowrap">это работа</span>
       </span>
     </div>
   </div>

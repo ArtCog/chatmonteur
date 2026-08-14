@@ -67,3 +67,6 @@ _audit/
 bank/*
 !bank/BANK.md
 bank-grill-decisions-*.md
+# HyperFrames check/capture evidence is local and reproducible, not package data.
+assets/brand/default/components/**/snapshots/
+assets/brand/default/components/**/.thumbnails/
