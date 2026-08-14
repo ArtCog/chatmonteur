@@ -1011,14 +1011,21 @@ def test_default_brand_telegram_qr_targets_channel_not_personal_account():
 
 def test_every_shipped_telegram_qr_is_generated_from_canonical_channel():
     """A copied PNG can outlive the prose around it, so compare the pixels too."""
-    from chatmonteur import brand
+    from io import BytesIO
 
-    expected = brand.telegram_qr_png("default")
+    from chatmonteur import brand
+    from PIL import Image, ImageChops
+
+    expected = Image.open(BytesIO(brand.telegram_qr_png("default"))).convert("RGB")
     component_root = Path(__file__).resolve().parents[1] / "assets" / "brand" / "default" / "components"
 
     for component in ("mono-13a", "mono-13b", "mono-44"):
         qr = component_root / component / "assets" / "tg-qr.png"
-        assert qr.read_bytes() == expected, f"{component} does not encode the canonical Telegram channel"
+        actual = Image.open(qr).convert("RGB")
+        assert actual.size == expected.size
+        assert ImageChops.difference(actual, expected).getbbox() is None, (
+            f"{component} does not encode the canonical Telegram channel"
+        )
 
 
 def test_telegram_overlay_registry_ships_its_motion_contract():
