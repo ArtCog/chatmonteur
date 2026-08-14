@@ -122,3 +122,12 @@ def test_ci_covers_tests_types_build_and_hyperframes():
     assert "pyright chatmonteur" in workflow
     assert "python -m build" in workflow
     assert "hyperframes@0.7.109 check" in workflow
+
+
+def test_public_clone_has_its_own_type_check_policy():
+    """CI must not inherit the maintainer workspace's parent Pyright config."""
+    config = json.loads((ROOT / "pyrightconfig.json").read_text(encoding="utf-8"))
+
+    assert config["typeCheckingMode"] == "standard"
+    assert config["reportMissingImports"] == "warning"
+    assert config["reportMissingModuleSource"] == "none"
