@@ -25,7 +25,8 @@ editing his real footage (dogfood) before it counts as done.
 1. Complete the publication-safe gate on the current real-media dogfood
 2. Audit the public package and release v0.1 (github.com/ArtCog/chatmonteur)
 3. **Apply to the Claude for Open Source and Codex for Open Source programs** — free
-   subscriptions for maintainers; the repo, README and a demo are the application
+   subscriptions for maintainers; use the public repository, release, CI, and honest
+   maintenance evidence. A public video demo is optional and currently deferred
 4. Grow: stars come from being genuinely the best tool, not marketing
 
 **Session continuity:** a maintainer checkout may contain ignored `STATE.md`,
