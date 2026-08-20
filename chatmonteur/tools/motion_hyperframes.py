@@ -40,7 +40,7 @@ _OPAQUE_FORMAT = "mp4"
 # HyperFrames publishes frequently. Rendering through an unpinned ``npx hyperframes``
 # made yesterday's checked component use today's engine without any repository change.
 # Upgrade deliberately: update this pin, run the composition gates, then commit both.
-_HYPERFRAMES_PACKAGE = "hyperframes@0.7.109"
+_HYPERFRAMES_PACKAGE = "hyperframes@0.8.4"
 
 
 class MotionHyperframesTool(Tool):

@@ -121,7 +121,7 @@ def test_ci_covers_tests_types_build_and_hyperframes():
     assert "pytest tests" in workflow
     assert "pyright chatmonteur" in workflow
     assert "python -m build" in workflow
-    assert "hyperframes@0.7.109 check" in workflow
+    assert "hyperframes@0.8.4 check" in workflow
 
 
 def test_public_clone_has_its_own_type_check_policy():
@@ -131,3 +131,110 @@ def test_public_clone_has_its_own_type_check_policy():
     assert config["typeCheckingMode"] == "standard"
     assert config["reportMissingImports"] == "warning"
     assert config["reportMissingModuleSource"] == "none"
+
+
+def test_setup_scripts_run_from_the_repository_and_stop_on_failed_installs():
+    """Quick Start must not silently install from the caller's working directory."""
+    powershell = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+    shell = (ROOT / "setup.sh").read_text(encoding="utf-8")
+
+    assert "Push-Location -LiteralPath $PSScriptRoot" in powershell
+    assert "Pop-Location" in powershell
+    assert powershell.count("if ($LASTEXITCODE -ne 0) { throw") >= 2
+    assert 'cd -- "$(dirname -- "${BASH_SOURCE[0]}")"' in shell
+
+
+def test_quick_start_only_references_files_that_ship():
+    readmes = [
+        (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.ru.md")
+    ]
+
+    assert all("--params examples/sound-run.json" in readme for readme in readmes)
+    assert (ROOT / "examples" / "sound-run.json").is_file()
+
+
+def test_agent_guides_route_motion_selection_through_the_active_brand():
+    guides = "\n".join(
+        (ROOT / name).read_text(encoding="utf-8")
+        for name in ("AGENTS.md", "CLAUDE.md", "skills/motion.md")
+    )
+
+    assert "assets/brand/<name>/SELECTION-GUIDE.md" in guides
+    assert "active brand" in guides
+    assert "assets/brand/default/SELECTION-GUIDE.md" not in guides
+
+
+def test_release_copy_does_not_advertise_unshipped_runtime_backends():
+    readmes = "\n".join(
+        (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.ru.md")
+    )
+    credits = (ROOT / "CREDITS.md").read_text(encoding="utf-8")
+    example_config = (ROOT / "config.example.toml").read_text(encoding="utf-8")
+
+    assert "ElevenLabs" not in readmes
+    assert 'backend = "faster-whisper"' not in example_config
+    assert "video-use methodology" in readmes
+    assert "video-use** | editorial methodology" in credits
+
+
+def test_public_pipeline_docs_keep_color_below_captions_and_loudness_last():
+    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    pipeline = (ROOT / "pipelines" / "talking_head.yaml").read_text(encoding="utf-8")
+    readmes = "\n".join(
+        (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.ru.md")
+    )
+
+    assert "transcribe → color → subtitles → render" in agents
+    assert "normalize (CFR + linear level prep)" in pipeline
+    assert "burn subtitles -> color" not in pipeline
+    assert "loudnorm" not in pipeline.split("steps:", 1)[0]
+    assert "normalize (clean CFR, −14 LUFS)" not in readmes
+    assert "нормализация (CFR, −14 LUFS)" not in readmes
+
+
+def test_release_version_is_consistent():
+    import tomllib
+
+    from chatmonteur import __version__
+
+    metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    assert metadata["project"]["version"] == "0.1.0"
+    assert __version__ == "0.1.0"
+
+
+def test_setup_generated_local_config_is_ignored():
+    result = subprocess.run(
+        ["git", "check-ignore", "config.toml"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout.strip() == "config.toml"
+
+
+def test_local_build_artifacts_are_ignored():
+    result = subprocess.run(
+        ["git", "check-ignore", "dist/chatmonteur-0.1.0.tar.gz"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+
+
+def test_public_tree_has_no_maintainer_home_paths():
+    maintainer_home = "C:/Users/" + "magme"
+    result = subprocess.run(
+        ["git", "grep", "-n", maintainer_home],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1, result.stdout

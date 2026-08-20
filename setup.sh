@@ -2,6 +2,8 @@
 # chatmonteur setup (macOS / Linux). Installs chatmonteur + the free local toolchain.
 set -euo pipefail
 
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+
 say() { printf '\n\033[1m%s\033[0m\n' "$1"; }
 have() { command -v "$1" >/dev/null 2>&1; }
 

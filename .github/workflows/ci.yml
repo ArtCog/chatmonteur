@@ -65,4 +65,4 @@ jobs:
         with:
           node-version: "22"
       - name: Check representative motion composition
-        run: npx --yes hyperframes@0.7.109 check assets/brand/default/components/mono-44 --json
+        run: npx --yes hyperframes@0.8.4 check assets/brand/default/components/mono-44 --json

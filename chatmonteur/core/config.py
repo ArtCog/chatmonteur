@@ -17,7 +17,6 @@ from .errors import ConfigError
 
 @dataclass(frozen=True)
 class TranscribeConfig:
-    backend: str = "faster-whisper"  # "faster-whisper" (free, local) | "elevenlabs" (paid)
     model: str = "large-v3"
     language: str | None = None  # None = autodetect
 

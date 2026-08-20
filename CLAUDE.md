@@ -115,8 +115,9 @@ gates). `skills/INDEX.md` maps the rest: cutting (two-tier), subtitles, motion,
 hook editing, sound, plus `skills/references/` loaded on demand. When the
 skills and this file disagree on editing procedure, the skills win.
 
-Before selecting motion graphics, read
-`assets/brand/default/SELECTION-GUIDE.md`, then query `catalog.json` by
+Before selecting motion graphics, read the active brand name from `config.toml`,
+then read `assets/brand/<name>/SELECTION-GUIDE.md`; the active brand is `default`
+only when the config does not override it. Query that pack's `catalog.json` by
 `card.editorial.role`. `usage-profiles.json` is the editorial selection authority
 for all 68 designer cards; do not choose by memory, card number, or appearance.
 
@@ -194,16 +195,18 @@ Anything the user has to review belongs to that video's `previews/`; only master
 and their QC evidence belong to `renders/`. Never route active work back to the
 legacy repo-level `черновик/` or `_audit/` folders.
 
-The brand lives in `assets/brand/default/`: **`catalog.json` is the inventory** — every
-card the designer drew, what it is for, and which component renders it (with its variables
-and duration). `brand-manifest.json` holds the rules on top of it (safe zones, budgets,
-motion timings). Look in the catalog before building any on-screen graphic; rule zero
-applies to our own library too.
+The active brand lives in `assets/brand/<name>/`: **`frame.md` is its visual source
+of truth**, while `catalog.json` inventories its components and
+`usage-profiles.json` maps editorial intents to them. `brand-manifest.json` holds
+cue budgets and enforceable editing rules, not colors, fonts, or safe zones.
+Look in the active catalog before building any on-screen graphic; rule zero applies
+to our own library too.
 
 ## Free by default
 
-Default transcription is local `faster-whisper` (no API key). Paid backends
-(ElevenLabs) are opt-in. Tell the user before invoking any `cost: paid` tool.
+Default transcription is local `faster-whisper` (no API key). Additional
+backends must ship as real tools before they are offered. Tell the user before
+invoking any `cost: paid` tool.
 
 ## Extending
 

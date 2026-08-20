@@ -52,7 +52,7 @@ normal capability checkpoint. Use `--no-resume` to force a fresh execution.
 ### Multiple backends for one capability
 
 Several tools can provide the same capability (e.g. `transcribe` via
-faster-whisper *and* elevenlabs). The runner prefers a tool whose requirements
+faster-whisper and a separately installed hosted-ASR adapter). The runner prefers a tool whose requirements
 are already satisfied; a pipeline step can force one with `backend: <name>`.
 
 ## Add a pipeline

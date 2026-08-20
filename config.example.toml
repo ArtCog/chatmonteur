@@ -5,7 +5,6 @@
 name = "default"              # folder under assets/brand/; replace the full presentation layer
 
 [transcribe]
-backend = "faster-whisper"   # "faster-whisper" (free, local) | "elevenlabs" (paid)
 model = "large-v3"           # tiny | base | small | medium | large-v3 (smaller = faster)
 # language = "ru"            # omit to autodetect
 

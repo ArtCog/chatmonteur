@@ -9,6 +9,7 @@ contract, idempotently, before doing media work.
 from __future__ import annotations
 
 import filecmp
+import re
 import shutil
 from pathlib import Path
 
@@ -34,6 +35,21 @@ REQUIRED_FILES = (
 )
 
 _TEMPLATE_ROOT = Path(__file__).resolve().parent / "templates" / "project"
+_PROJECT_NAME = re.compile(r"^[^\W][\w.-]*$", re.UNICODE)
+
+
+def resolve_project_root(projects_dir: str | Path, name: str) -> Path:
+    """Resolve one safe project slug below ``projects_dir``.
+
+    Project names are identifiers, not paths.  Rejecting separators and dot
+    segments keeps every public CLI front door inside the mandatory
+    ``projects/<name>/`` container on Windows, macOS, and Linux.
+    """
+    if not name or name in {".", ".."} or not _PROJECT_NAME.fullmatch(name):
+        raise ProjectContractError(
+            "project name must be one slug using letters, numbers, '.', '_' or '-'"
+        )
+    return Path(projects_dir).resolve() / name
 
 
 def initialize_project(

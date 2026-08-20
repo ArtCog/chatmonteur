@@ -58,7 +58,7 @@ chatmonteur run <capability> --project <yyyy-slug> --params <run.json>
 ```
 
 Pipeline `talking_head` (mechanical only): normalize (CFR + level prep) →
-cut pauses by audio level → transcribe → subtitles → color → render.
+cut pauses by audio level → transcribe → color → subtitles → render.
 Output: `projects/<name>/renders/mechanical-draft.mp4`. A passing draft continues
 to the editorial/visual/sound gates; it is not a master. Re-runs resume from checkpoints.
 The front door refuses multi-audio OBS sources rather than guessing a track; route
@@ -75,8 +75,9 @@ with a JSON parameter object. See `skills/cutting.md` Tier 2.
 - **Start any edit session from `skills/montage.md`** — it routes mechanical vs
   editorial work and lists the approval gates. `skills/INDEX.md` is the map of
   the whole editorial knowledge base.
-- **Before selecting any motion graphic, read
-  `assets/brand/default/SELECTION-GUIDE.md`.** Then query the generated
+- **Before selecting any motion graphic, read the active brand name from
+  `config.toml`, then read `assets/brand/<name>/SELECTION-GUIDE.md`.** The active
+  brand is `default` only when the config does not override it. Then query its generated
   `catalog.json` by `card.editorial.role`; never choose from memory or by card
   number alone. `usage-profiles.json` is the selection authority for all 68 cards.
 - **Show a cut-plan before the final render** (read `transcripts/edl.json`,

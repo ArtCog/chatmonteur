@@ -3,9 +3,10 @@
 Read at the start of ANY edit session. This skill routes the work; the specialist skills do
 it. `production-rules.md` always applies.
 
-**Default brand:** `assets/brand/default/brand.md` («ИИмерсивный - Mono») — the design system
-for subtitles, lower-thirds, callouts, infographics, colours and fonts. Every on-screen element
-follows it; don't invent styles.
+**Active brand:** read `[brand].name` from `config.toml` (fallback: `default`),
+then use `assets/brand/<name>/frame.md` as the visual source of truth and that
+pack's `usage-profiles.json` for editorial selection. Every on-screen element
+follows the active pack; don't invent styles.
 
 ## Every capability, and when to reach for it
 
@@ -200,10 +201,11 @@ gates cannot catch for you.
 ## Cost honesty
 
 Free-local is the default (faster-whisper, auto-editor, ffmpeg, bundled assets). Before
-invoking anything paid, tell the user what it costs and what the free path trades off —
-then let them choose. The paid slots that exist by design:
+invoking anything paid, verify that a real capability adapter is installed, tell the
+user what it costs and what the free path trades off, then let them choose. Possible
+paid extension points include hosted ASR; v0.1 does not ship one.
 
-- **Hosted ASR** (ElevenLabs Scribe) — when local whisper's word timings aren't enough.
+The paid slots that do exist in the broader workflow:
 - **AI illustrations** (Nano Banana Pro ~$0.04/img, Ideogram ~$0.06 — both handle Cyrillic
   text in-image) — ONLY for the "nothing-fits" row of the source table (motion.md): a
   metaphor that can't be filmed, screenshotted, or drawn as a brand graphic. Fixed

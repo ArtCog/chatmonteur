@@ -16,8 +16,8 @@ source footage + editorial request
 └───────┬────────────┬─────────────┬────────────┬─────────────┘
         │            │             │            │
         ▼            ▼             ▼            ▼
-  auto-editor  faster-whisper  Video-Use   HyperFrames
-  pause cuts   word timing     media work  motion rendering
+  auto-editor  faster-whisper  media APIs  HyperFrames
+  pause cuts   word timing     discovery   motion rendering
         └────────────┴─────────────┴────────────┘
                               │
                               ▼
@@ -33,12 +33,15 @@ source footage + editorial request
 |---|---|---|
 | Pause removal | auto-editor | prepare safe audio thresholds, run per scene, preserve checkpoints |
 | Transcription | faster-whisper | choose backend/model, retain word timing, apply channel term corrections |
-| Media discovery/preparation | Video-Use and media providers | editorial query, rights ledger, placement, reuse history |
+| Media discovery/preparation | media providers + ChatMonteur tools | editorial query, rights ledger, placement, reuse history |
 | Motion rendering | HyperFrames | choose the editorial intent/component, pass exact cues, composite on the source timebase |
 | Visual brand | HyperFrames `frame.md` + registry blocks | select the installed brand and enforce its usage policy |
 | Encode/audio/color | ffmpeg | build deterministic commands and retain one final encode path |
 | Editorial judgment | ChatMonteur agent skills | cuts, emphasis, structure, evidence, pacing, sound and graphic decisions |
 | Quality | ChatMonteur gates + HyperFrames check | reject weak plans, invalid graphics, broken media and uncleared delivery |
+
+Video-Use is a methodology reference for agent-led meaning cuts, not a runtime
+engine or installation dependency in v0.1.
 
 ## Brand boundary
 

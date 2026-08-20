@@ -10,11 +10,12 @@ runs a battle-tested pipeline: transcribe → cut pauses & stumbles by meaning �
 motion graphics → sound → color → render. It edits recordings; it does not generate video
 from scratch.
 
-It does **not** reinvent the engines. It orchestrates the best open tools —
-[video-use](https://github.com/browser-use/video-use),
+It does **not** reinvent the engines. It orchestrates proven open tools —
 [hyperframes](https://github.com/heygen-com/hyperframes),
 [auto-editor](https://github.com/WyattBlue/auto-editor),
-[faster-whisper](https://github.com/SYSTRAN/faster-whisper), ffmpeg — and adds the two
+[faster-whisper](https://github.com/SYSTRAN/faster-whisper), and ffmpeg — while adapting
+the agent-led meaning-cut video-use methodology from
+[video-use](https://github.com/browser-use/video-use). It adds the three
 parts that are actually hard:
 
 1. **An editorial brain** — [`skills/`](skills/INDEX.md): the decision knowledge of a
@@ -25,7 +26,7 @@ parts that are actually hard:
 3. **Two gates that say no** — the part that actually keeps quality up, below.
 
 The exact ownership boundary — what ChatMonteur builds and what it delegates to
-auto-editor, faster-whisper, Video-Use, HyperFrames, and ffmpeg — is recorded in
+auto-editor, faster-whisper, the Video-Use methodology, HyperFrames, and ffmpeg — is recorded in
 the [architecture map](docs/architecture.md). In particular, HyperFrames owns
 visual brand and motion rendering; ChatMonteur owns editorial selection and the
 end-to-end verified workflow.
@@ -48,11 +49,15 @@ checks are allowed to refuse, and neither is a log warning you can scroll past:
 Both were built after real failures, and both are unit-tested rule sets rather than
 heuristics buried in a prompt.
 
-> 🚧 **Status: v0.1, building in the open.** The mechanical pipeline works end-to-end
+> **Status: v0.1.** The mechanical pipeline works end-to-end
 > behind one command; the complete agent-driven workflow has now survived a real
 > YouTube-channel edit from restored raw footage to a checked master.
 
 ## Quick start
+
+The supported v0.1 distribution is the repository checkout because the
+agent-facing editorial knowledge in `skills/` is part of the product, not just
+Python package data.
 
 ```bash
 git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
@@ -61,7 +66,7 @@ chatmonteur tools           # see capabilities and what's ready
 chatmonteur init 2026-demo --title "My video"       # optional explicit project creation
 chatmonteur edit raw.mp4 --project 2026-demo        # imports raw → projects/2026-demo/raw/
                                                     # draft → projects/2026-demo/renders/mechanical-draft.mp4
-chatmonteur run sound --project 2026-demo --params sound-run.json
+chatmonteur run sound --project 2026-demo --params examples/sound-run.json
                                                     # execute any listed capability from JSON
 ```
 
@@ -81,7 +86,7 @@ Branch B workflow in `skills/cutting.md`.
 - **Talking-head depth.** Cut by meaning, kill filler, fix stumbles, sync captions and graphics to words.
 - **An editor's judgment, encoded.** The `skills/` knowledge base came from real published videos, not from a prompt-engineering session.
 - **Numbers, not vibes.** Every threshold in [`engineering-facts.md`](skills/references/engineering-facts.md) is written down with why it holds and where it lives in the code.
-- **Free by default.** Local `faster-whisper` out of the box — no paid API key required. Premium engines (ElevenLabs Scribe) are an opt-in upgrade.
+- **Free by default.** Local `faster-whisper` out of the box — no paid API key required. Additional transcription backends can be added as tools when their adapters exist.
 - **Cross-platform encode.** NVENC when available, graceful fallback to libx264 / VideoToolbox / QSV.
 - **Built to grow.** A plugin/tool registry — new tools and pipelines drop in without touching the core.
 
@@ -89,7 +94,7 @@ Branch B workflow in `skills/cutting.md`.
 
 ```
 raw footage
-  → normalize (clean CFR, −14 LUFS)  don't desync on VFR input; level-control the audio
+  → normalize (clean CFR, linear gain) don't desync on VFR input; prepare audio for cutting
   → cut pauses (audio level)         auto-editor, threshold relative to peak, not absolute
   → transcribe (word-level)          faster-whisper, brand-term dictionary, hallucinations
                                      dropped by the model's own no-speech confidence

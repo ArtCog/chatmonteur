@@ -27,8 +27,8 @@ Based on Netflix Timed Text Style Guides + BBC Subtitle Guidelines. Goal: every 
 ## THE STANDARD (locked — geometry from the tuner, style from the brand kit)
 
 Captions never move. Size/position are a % of frame height/width so they hold at 1080p and
-1440p. **Geometry** was set in the tuner; **style** (font, colour, plate) comes from the default
-brand `assets/brand/default/brand.md` («ИИмерсивный - Mono»). Rendered via ASS with PlayRes
+1440p. **Geometry** was set in the tuner; **style** (font, colour, plate) comes from the active
+brand's `frame.md` and tokens. Rendered via ASS with PlayRes
 pinned to the frame — see `references/edit-sequence.md` and the note below.
 
 | Parameter | Value | px @1080 / @1440 | Why |

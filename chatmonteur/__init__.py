@@ -5,4 +5,4 @@ engine-agnostic: tools declare *capabilities*, pipelines order capabilities,
 and the runner executes them with resumable checkpoints.
 """
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.1.0"

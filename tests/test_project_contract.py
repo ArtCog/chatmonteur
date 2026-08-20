@@ -185,3 +185,16 @@ def test_run_front_door_executes_one_capability_from_json(
     output = json.loads(capsys.readouterr().out)
     assert output["artifacts"]["video"] == "clips/redacted.mp4"
     assert output["meta"]["redactions"] == 1
+
+
+@pytest.mark.parametrize("unsafe", ["../outside", "folder/video", r"folder\video", ".", ""])
+def test_init_refuses_project_names_that_escape_the_projects_container(
+    tmp_path: Path, capsys, unsafe: str
+) -> None:
+    from chatmonteur import cli
+
+    rc = cli.main(["init", unsafe, "--root", str(tmp_path)])
+
+    assert rc == 1
+    assert "project name" in capsys.readouterr().err
+    assert not (tmp_path / "outside").exists()

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "chatmonteur"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Agent-orchestrated talking-head video editing — mechanical draft plus approval-gated finishing."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -5,8 +5,8 @@ Graphics engine: **HyperFrames** (agent-native HTML/CSS/GSAP → MP4). Mechanica
 (static text, PiP, image inserts) → `references/playbooks.md` P5–P7 instead — don't spin up
 a graphics engine for a lower third.
 
-**Selection authority:** before choosing a graphic, read
-`assets/brand/default/SELECTION-GUIDE.md`, then use `catalog.json`'s
+**Selection authority:** read the active brand name from `config.toml`, then read
+`assets/brand/<name>/SELECTION-GUIDE.md` and use that pack's `catalog.json`
 `card.editorial` fields. The guide and `usage-profiles.json` record the role,
 priority, eligible sections, source treatment, and positive/negative trigger for
 all 68 cards. A decision left only in chat or a dogfood note is not a production rule.
@@ -323,7 +323,7 @@ Priority — own/exact first, stock only for generic. What to use per sentence:
 | Narration references… | Visual | Why |
 |---|---|---|
 | code / terminal / output | own screen capture (ffmpeg gdigrab / x11grab / avfoundation) | real, exact, no license |
-| a specific site/product UI | browser-automation capture (Playwright) of the real site — on this machine Playwright lives in `C:/Users/magme/AppData/Local/Programs/Python/Python313/python.exe`, NOT the PATH python | stock never matches a named product |
+| a specific site/product UI | browser-automation capture (Playwright) of the real site, using the interpreter where Playwright is installed | stock never matches a named product |
 | architecture / pipeline / data flow | HyperFrames or Manim diagram | precise, on-brand, anchor-word synced |
 | generic cutaway (hands, server, office) | **`stock` capability**: Openverse (keyless) / Pexels / Pixabay — fetches candidates + license manifest; YOU look at every candidate and score 1–5 (relevance/resolution/style/POV), reject and re-query freely | free; CC-BY needs the credit from `manifest.json` in the description |
 | meme / reaction | **`stock` capability**, `kind="meme"` (Imgflip top-100 templates, keyless) | free |
@@ -349,10 +349,11 @@ transcript — never eyeballed.
 **Take the transcript from the FINAL cut draft** — timings drift after silence removal and
 meaning cuts; a transcript of the raw file is useless for sync.
 
-## Typography — the default brand «Mono»
+## Typography — active brand first
 
-The default design system is `assets/brand/default/brand.md` («ИИмерсивный - Mono», imported
-from Claude Design). **The brand is BLACK-GRAY MONOCHROME (ink `#0B0B0C` / paper `#FAFAF7` /
+The active visual source of truth is `assets/brand/<name>/frame.md`. For the bundled
+`default` pack («ИИмерсивный - Mono»), **the brand is BLACK-GRAY MONOCHROME
+(ink `#0B0B0C` / paper `#FAFAF7` /
 grays)** — colour is a SMALL accent, never the base of a composition (Артур
 2026-07-26: «наш бренд чёрно-серый»). Motion graphics live in that monochrome world.
 Use its fonts — do NOT pick your own:
@@ -362,8 +363,8 @@ Use its fonts — do NOT pick your own:
 - **Playfair Display** (serif) — big numbers, names, editorial accents (used DELIBERATELY here —
   it is not an "AI default" in this system).
 
-TTF bundled in `assets/brand/default/fonts/`. Components (subtitles A/B/C/D, lower-third,
-callout, infographic) with exact specs are in `brand.md` — build them on-brand, don't reinvent.
+Fonts and components live inside the active brand pack. Their exact visual specs
+come from `frame.md` and registry items — build them on-brand, don't reinvent.
 
 Still-banned "AI-default" fonts (never use as a substitute): Inter, Roboto, Open Sans, Lato,
 Poppins, Outfit, Sora, Nunito, Source Sans, PT Sans, Arimo. One display font per video.

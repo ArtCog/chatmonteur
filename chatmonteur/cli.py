@@ -28,7 +28,7 @@ from .core import (
     ToolRegistry,
     load_config,
 )
-from .project import import_source, initialize_project
+from .project import import_source, initialize_project, resolve_project_root
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 _PACKAGED_PIPELINES = Path(__file__).resolve().parent / "assets" / "pipelines"
@@ -112,7 +112,7 @@ def _cmd_edit(args: argparse.Namespace) -> int:
         config = dataclasses.replace(config, transcribe=dataclasses.replace(config.transcribe, model=args.model))
 
     project = args.project or src.stem
-    project_root = config.projects_dir / project
+    project_root = resolve_project_root(config.projects_dir, project)
     initialize_project(project_root, title=project, legacy_source_root=str(src.parent))
     src = import_source(src, project_root)
     ctx = RunContext.for_project(config, project)
@@ -147,7 +147,7 @@ def _refuse_ambiguous_talking_head_audio(src: Path, pipeline_name: str) -> None:
 def _cmd_init(args: argparse.Namespace) -> int:
     config = load_config(args.root)
     project_root = initialize_project(
-        config.projects_dir / args.project,
+        resolve_project_root(config.projects_dir, args.project),
         title=args.title or args.project,
         legacy_source_root=args.legacy_source_root,
     )
@@ -167,7 +167,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
         raise ChatmonteurError(f"params JSON must be an object: {params_path}")
 
     config = load_config(args.root)
-    project_root = config.projects_dir / args.project
+    project_root = resolve_project_root(config.projects_dir, args.project)
     initialize_project(project_root, title=args.project)
     ctx = RunContext.for_project(config, args.project)
     # Keep ad-hoc runs from replacing a same-named checkpoint in a full pipeline.

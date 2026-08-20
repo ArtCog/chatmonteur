@@ -70,7 +70,7 @@ from chatmonteur.tools.subtitles import (  # noqa: E402
 def test_defaults_are_free_and_cross_platform(tmp_path):
     cfg = load_config(tmp_path)
     assert isinstance(cfg, Config)
-    assert cfg.transcribe.backend == "faster-whisper"  # free, local
+    assert not hasattr(cfg.transcribe, "backend")  # no unimplemented paid backend switch
     assert cfg.encode.encoder == "auto"  # never hardcoded NVENC
     assert cfg.encode.loudness_lufs == -14.0
     assert cfg.brand.name == "default"
@@ -1199,7 +1199,7 @@ def test_cues_load_the_selected_pack_instead_of_default(tmp_path, monkeypatch):
 
 
 def test_hyperframes_cli_is_reproducibly_pinned():
-    assert _HYPERFRAMES_PACKAGE == "hyperframes@0.7.109"
+    assert _HYPERFRAMES_PACKAGE == "hyperframes@0.8.4"
 
 
 def test_pack_refuses_runtime_tokens_that_drift_from_frame_md(tmp_path, monkeypatch):

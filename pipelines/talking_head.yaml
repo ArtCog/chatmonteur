@@ -1,8 +1,8 @@
 # Talking-head pipeline: raw footage -> checked mechanical draft, one command.
 #
 # Every step here is MECHANICAL and safe to run unattended:
-#   normalize (CFR + loudnorm −14) -> cut pauses by AUDIO LEVEL (auto-editor)
-#   -> transcribe the pause-cleaned draft -> burn subtitles -> color -> render.
+#   normalize (CFR + linear level prep) -> cut pauses by AUDIO LEVEL (auto-editor)
+#   -> transcribe the pause-cleaned draft -> color -> subtitles -> render.
 #
 # The INTELLIGENT cut (fillers, false starts, retakes) is deliberately NOT a
 # pipeline step. Per skills/cutting.md Tier 2 (video-use methodology), the
@@ -26,7 +26,7 @@ steps:
     capability: cut_silence
     params:
       input: "${normalize.video}"
-      # threshold 0.14 is LOCKED for −14 LUFS-normalised audio (normalize does that).
+      # threshold 0.14 is LOCKED for peak-levelled audio (normalize does that).
       threshold: 0.14
 
   - id: transcribe
