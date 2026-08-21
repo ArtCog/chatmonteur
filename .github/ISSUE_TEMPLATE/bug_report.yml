@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a reproducible ChatMonteur failure
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Remove secrets, personal paths, private media, and transcripts before posting. Report security issues privately through SECURITY.md.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include the smallest safe command, project state, or fixture that reproduces the problem.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ChatMonteur version or commit
+      placeholder: v0.1.0 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Python version, and relevant ffmpeg/GPU details.
+      placeholder: Windows 11, Python 3.13, ffmpeg 7.x, NVENC
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs or QC evidence
+      description: Paste only the relevant, redacted output. Do not upload private footage.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, personal data, private media, and unclear-rights assets from this report.
+          required: true

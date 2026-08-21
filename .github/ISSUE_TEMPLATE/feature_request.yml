@@ -1,0 +1,30 @@
+name: Feature request
+description: Propose a focused capability or workflow improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Editing or maintenance problem
+      description: What real workflow is blocked or unnecessarily difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the result, not only a preferred implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing ChatMonteur tools, upstream projects, or manual workarounds you evaluated.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Real-world evidence
+      description: If available, explain which production run, artifact, or repeated failure demonstrates the need.

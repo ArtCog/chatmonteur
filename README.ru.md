@@ -110,6 +110,12 @@ chatmonteur run sound --project 2026-demo --params examples/sound-run.json
 v0.1 — рабочий механический вход плюс агентный finishing workflow. Рост (shorts, подкаст, B-roll,
 диаризация, денойз, замена фона) — плагинами.
 
+## Как внести вклад
+
+Баг-репорты, исправления документации и сфокусированные pull request приветствуются.
+Правила — в [CONTRIBUTING.md](CONTRIBUTING.md); о возможных уязвимостях сообщайте
+приватно по инструкции из [SECURITY.md](SECURITY.md).
+
 ## Кредиты и лицензия
 
 Стоит на плечах open-source инструментов — см. [CREDITS.md](CREDITS.md). Идеи архитектуры (реестр тулз, чекпоинты) вдохновлены [OpenMontage](https://github.com/calesthio/OpenMontage); код не копировался.

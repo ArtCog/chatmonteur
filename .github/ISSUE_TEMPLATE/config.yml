@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ArtCog/chatmonteur/security/advisories/new
+    about: Report security and privacy issues privately.

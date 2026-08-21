@@ -127,6 +127,12 @@ v0.1 ships a working mechanical front door plus the agent-driven finishing workf
 Growth (shorts, podcast, diarization, denoise, auto-reframe) lands as plugins — a new
 capability is one module in `chatmonteur/tools/`, see [docs/extending.md](docs/extending.md).
 
+## Contributing
+
+Bug reports, documentation fixes, and focused pull requests are welcome. See
+[CONTRIBUTING.md](CONTRIBUTING.md); report suspected vulnerabilities privately
+through [SECURITY.md](SECURITY.md).
+
 ## Credits & license
 
 Built on the shoulders of open-source tools — see [CREDITS.md](CREDITS.md). Architecture ideas (tool registry, checkpoints) inspired by [OpenMontage](https://github.com/calesthio/OpenMontage); no code copied.

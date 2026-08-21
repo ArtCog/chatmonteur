@@ -1,40 +1,80 @@
-# Contributing to chatmonteur
+# Contributing to ChatMonteur
 
-chatmonteur grows by adding tools and pipelines — contributions welcome.
+Thanks for helping make agent-driven video editing more reliable. Bug reports,
+documentation fixes, focused feature proposals, and tested pull requests are
+welcome.
 
-## Dev setup
+## Before opening an issue
+
+- Search existing issues first.
+- Use the bug form for reproducible failures and the feature form for new
+  capabilities or workflow changes.
+- Remove API keys, personal paths, private footage, transcripts, and licensed
+  media from logs and examples.
+- Report suspected vulnerabilities through the private process in
+  [SECURITY.md](SECURITY.md), not through a public issue.
+
+## Local development
+
+ChatMonteur requires Python 3.11 or newer. FFmpeg is required for media
+operations but not for every unit test.
 
 ```bash
-git clone https://github.com/ArtCog/chatmonteur && cd chatmonteur
+git clone https://github.com/ArtCog/chatmonteur.git
+cd chatmonteur
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -e ".[whisper,emoji,dev]"
-python -m pip install auto-editor      # silence removal backend
-git config core.hooksPath .githooks    # block private files and likely secrets
-pytest -q                              # fast guard tests (no ffmpeg)
+python -m pip install auto-editor
+git config core.hooksPath .githooks
+python -m pytest -q
 ```
 
-The media smoke tests need ffmpeg on PATH:
+The full setup scripts install the local editing toolchain used by the product,
+but contributors still need the `dev` extra for the test suite:
+
+```bash
+./setup.sh
+# Windows: ./setup.ps1
+```
+
+The media smoke tests require ffmpeg on `PATH`:
 
 ```bash
 python tests/smoke_ffmpeg.py
 python tests/smoke_cut_edl.py
 ```
 
-## Adding things
+## Adding capabilities and flows
 
-- **A capability (tool):** new module in `chatmonteur/tools/` exposing `TOOL`.
-- **A flow (pipeline):** a YAML in `pipelines/`.
+- **Capability (tool):** add a module in `chatmonteur/tools/` that exposes
+  `TOOL`.
+- **Flow (pipeline):** add a YAML definition in `pipelines/`.
 
-See [docs/extending.md](docs/extending.md). Tools must read everything from
-`RunContext` (no hardcoded paths), write only under `ctx.paths.*`, and raise on
-failure — never fail silently.
+See [docs/extending.md](docs/extending.md). Tools must read runtime state through
+`RunContext`, write only under `ctx.paths.*`, and raise on failure rather than
+silently continuing.
 
-## Non-negotiables
+Respect the non-negotiable production rules in
+[skills/production-rules.md](skills/production-rules.md): normalize VFR input,
+never stream-copy edited cuts, apply loudness normalization at the final stage,
+verify audio by level, and detect the available encoder. Credit any new
+third-party engine in [CREDITS.md](CREDITS.md).
 
-Respect the [production-correctness rules](skills/production-rules.md): never
-`-c copy` on a cut, normalize to CFR first, loudnorm last, verify audio by level,
-auto-detect the encoder. These are what keep automated edits publishable.
+## Pull requests
 
-## PRs
+1. Keep the change focused and explain the user-visible or maintainer-visible
+   problem it solves.
+2. Add or update tests for behavior changes. A bug fix should include a
+   regression test whenever practical.
+3. Update the relevant user or architecture documentation when a public
+   command, project artifact, gate, or tool contract changes.
+4. Do not commit generated renders, private project files, credentials, or media
+   whose redistribution rights are unclear.
+5. Confirm `python -m pytest -q` passes. The repository CI also checks supported
+   Windows/Linux environments and the HyperFrames integration.
 
-Keep them focused. Add/adjust a guard test in `tests/` for new logic. Credit any
-third-party engine you wrap in `CREDITS.md`.
+By contributing, you agree that your contribution is licensed under the
+repository's [MIT license](LICENSE).
